@@ -1,7 +1,16 @@
 ## Interface: 90002
 ## Author: 绿毛龟12138
-## Version: v1.0-alpha
+## Version: Alpha-v1.0
 ## Title: |cFF00FFFFS|r|cFFFFC0CBp|r|cFFFF6347a|rUI
 ## Notes: 暴雪界面增强，部分代码来源于其它插件及论坛
 ## DefaultState: enabled
 ## Dependencies: Scorpio
+
+#locales
+Localization/Locale-zhCN.lua
+
+#Core
+Core/Core.lua
+
+#Features
+Features/AutoSell.lua
