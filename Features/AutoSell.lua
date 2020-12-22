@@ -2,16 +2,10 @@ Scorpio "SpaUI.Features.AutoSell" ""
 
 --售卖间隔，防止频繁点击商人后打印无效的售卖信息引起误导
 SELL_INTERVAL = 1
-
-LastSellTime = 0
 L = _Locale
 
-__SystemEvent__() __Async__()
+__SystemEvent__() __AsyncSingle__()
 function MERCHANT_SHOW()
-    local current = GetTime()
-    if current - LastSellTime < SELL_INTERVAL then return end
-    LastSellTime = current
-
     local total = 0
     for container = 0, 4 do
         local slotNum = GetContainerNumSlots(container)
@@ -25,13 +19,15 @@ function MERCHANT_SHOW()
                     UseContainerItem(container, slot)
                     PickupMerchantItem()
                     total = total + price
-                    print(string.format(L["auto_sell_detail"], link, GetCoinTextureString(price)))
+                    ShowMessage(string.format(L["auto_sell_detail"], link, GetCoinTextureString(price)))
                 end
             end
         end
     end
 
     if total > 0 then
-        print(string.format(L["auto_sell_total"], GetCoinTextureString(total)))
+        ShowMessage(string.format(L["auto_sell_total"], GetCoinTextureString(total)))
     end
+
+    Delay(SELL_INTERVAL)
 end

@@ -14,3 +14,7 @@ Core/Core.lua
 
 #Features
 Features/AutoSell.lua
+Features/AutoRepair.lua
+
+#Chat
+Chat/ChatTab.lua
