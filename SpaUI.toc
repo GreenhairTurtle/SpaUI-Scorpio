@@ -17,5 +17,4 @@ Features/AutoSell.lua
 Features/AutoRepair.lua
 
 #Chat
-Chat/Chat.lua
-Chat/ChatTab.lua
+Chat/Chat.xml
