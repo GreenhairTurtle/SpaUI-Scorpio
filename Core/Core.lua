@@ -16,3 +16,9 @@ end
 function OnLoad(self)
     ShowMessage(L["addon_loaded_tip"]:format(GetAddOnMetadata(addonName,"version")))
 end
+
+-- 简化/reload
+__SlashCmd__ "rl"
+function Reload()
+    ReloadUI()
+end

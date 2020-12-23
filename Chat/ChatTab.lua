@@ -1,18 +1,7 @@
 Scorpio "SpaUI.Chat.ChatTab" ""
 
-BIG_FOOT_CHANNEL_NAME = "大脚世界频道"
-
--- todo
--- 切换到大脚世界频道
-local function ChangeToWorldChannel(editbox)
-    local channelTarget = SpaUI:GetWorldChannelID()
-    if channelTarget then
-        editbox:SetAttribute("chatType", "CHANNEL")
-        editbox:SetAttribute("channelTarget", channelTarget)
-    else
-        editbox:SetAttribute("chatType", "SAY")
-    end
-end
+local IsInGroup,IsInRaid,IsInGuild = IsInGroup,IsInRaid,IsInGuild
+local ChatEdit_UpdateHeader = ChatEdit_UpdateHeader
 
 -- tab切换频道，当既在副本又在非副本的小队或团里时，切换逻辑会较生硬
 -- 符合预期，不准备改好，两个团队频道来回切换也没什么大不了的
@@ -55,7 +44,7 @@ function _G.ChatEdit_CustomTabPressed(self)
             self:SetAttribute("chatType", "GUILD")
         else
             ChangeToWorldChannel(self)
-        end
+        end 
     elseif type == "GUILD" then
         -- 公会切换到世界频道
         ChangeToWorldChannel(self)

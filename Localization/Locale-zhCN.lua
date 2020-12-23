@@ -8,6 +8,14 @@ L["addon_name"] = "|cFF00FFFFS|r|cFFFFC0CBp|r|cFFFF6347a|rUI"
 L["addon_loaded_tip"] = "|cFF00BFFF%s|r 已载入"
 L["debug_format"] = L["addon_name"].." Debug:"
 L["message_format"] = L["addon_name"]..":%s"
+-- 命令
+L["command_help"] = [[
+以下为常用的宏命令：
+|cFF00BFFF/rl|r 重载界面
+|cFF00BFFF/spa|r 打开此面板
+|cFF00BFFF/spa align|r 显示或隐藏网格线
+]]
+L["command_reload"] = "重载界面"
 -- Bindings
 L["toggle_raid_marker_frame"] = "打开/关闭世界标记窗口"
 -- Config
@@ -16,13 +24,6 @@ L["config_addon_author"] = "作者：|cFFADD8E6%s|r"
 L["config_addon_introduct"] = [[
 |cFF00FFFFS|r|cFFFFC0CBp|r|cFFFF6347a|rUI只对暴雪原生界面进行了功能增强，几乎没有任何"美化"，未来也不会考虑
     ]]
-L["config_macro"] = [[
-以下为常用的宏命令：
-
-    |cFF00BFFF/rl|r 重载界面
-    |cFF00BFFF/spa|r 打开此面板
-    |cFF00BFFF/spa align|r 显示或隐藏网格线
-]]
 L["config_id_tip"] = "鼠标提示显示ID"
 L["config_id_tip_tooltip"] = "在鼠标提示内显示任务ID，法术ID，货币ID，NPCID等"
 L["config_debug"] = "调试模式"
