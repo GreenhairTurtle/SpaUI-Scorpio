@@ -2,10 +2,6 @@ Scorpio "SpaUI.Chat.ChatBar" ""
 
 L = _Locale
 
---------------
--- 添加ChatBar
---------------
-
 CHAT_BAR_MESSAGE_TYPES = {
     "Say", "Yell", "Party", "Raid", "Instance_Chat", "Guild", "World", "Roll"
 }
@@ -28,46 +24,10 @@ local ChatMenu_SetChatType = ChatMenu_SetChatType
 local RandomRoll = RandomRoll
 local ChatFrame_OpenChat = ChatFrame_OpenChat
 
--- local function SetOrHookScript(scriptType)
---     if ChatFrame1EditBox:GetScript(scriptType) then
---         ChatFrame1EditBox:HookScript(scriptType, OnEditBoxStatusChange)
---     else
---         ChatFrame1EditBox:SetScript(scriptType, OnEditBoxStatusChange)
---     end
--- end
-
--- -- 生成表情按钮
--- local function CreateChatEmoteButton()
---     if not SpaUIChatBar then return end
---     local ChatEmoteButton = CreateFrame("Button", "SpaUIChatEmoteButton",
---                                         UIParent)
---     ChatEmoteButton:SetWidth(CHAT_BAR_BUTTON_SIZE)
---     ChatEmoteButton:SetHeight(CHAT_BAR_BUTTON_SIZE)
---     ChatEmoteButton:SetPoint("RIGHT", SpaUIChatBar, "LEFT",
---                              -CHAT_BAR_BUTTON_MARGIN, 0)
---     ChatEmoteButton:SetAlpha(ALPHA_LEAVE)
---     ChatEmoteButton:SetNormalTexture(
---         "Interface\\Addons\\SpaUI\\chat\\emojis\\greet")
---     ChatEmoteButton:SetScript("OnEnter",
---                               function(self) self:SetAlpha(ALPHA_ENTER) end)
---     ChatEmoteButton:SetScript("OnLeave",
---                               function(self) self:SetAlpha(ALPHA_LEAVE) end)
---     ChatEmoteButton:SetScript("OnMouseUp",
---                               function(self) self:SetScale(SCALE_UP) end)
---     ChatEmoteButton:SetScript("OnMouseDown",
---                               function(self) self:SetScale(SCALE_PRESS) end)
-
---     local ChatEmoteTable = Widget:GetEmoteTable()
---     ChatEmoteTable:SetPoint("BOTTOMLEFT", ChatEmoteButton, "TOPRIGHT", 3, 3)
---     ChatEmoteButton:SetScript("OnClick",
---                               function(self) Widget:ToggleEmoteTable() end)
--- end
-
--- -- 切换聊天风格的时候更改锚点
--- hooksecurefunc("ChatEdit_ActivateChat", ChangeChatBarPoint)
-
 function OnEnable(self)
+    -- 创建聊天条和表情按钮
     CreateChatBar()
+    CreateChatEmoteButton()
 end
 
 local function SetOrHookScript(scriptType)
@@ -171,6 +131,7 @@ function CreateChatBarButton(index)
     elseif type == "Roll" then
     --     -- roll点
         Style[button] = {
+            location = {Anchor("LEFT",(index-1)*(CHAT_BAR_BUTTON_MARGIN + CHAT_BAR_BUTTON_SIZE)+3,0,nil,"LEFT")},
             normalTexture = {
                 file = [[Interface\Addons\SpaUI\Media\roll]],
                 setAllPoints = true
@@ -214,4 +175,40 @@ function OnEditBoxStatusChange(editbox)
         if editbox:GetText():len() <= 0 then ChatBar:Show() end
         -- Widget:CloseEmoteTable()
     end
+end
+
+-- 生成表情按钮
+function CreateChatEmoteButton()
+    if not ChatBar then return end
+    ChatEmoteButton = Button("SpaUIChatEmoteButton")
+    Style[ChatEmoteButton] = {
+        size = Size(CHAT_BAR_BUTTON_SIZE,CHAT_BAR_BUTTON_SIZE),
+        location = {Anchor("RIGHT",-CHAT_BAR_BUTTON_MARGIN,0,ChatBar:GetName(),"LEFT")},
+        alpha = ALPHA_LEAVE,
+        normalTexture = {
+            file = [[Interface\Addons\SpaUI\Chat\emojis\greet]],
+            setAllPoints = true
+        }
+    }
+    
+    function ChatEmoteButton:OnEnter()
+        self:SetAlpha(ALPHA_ENTER)     
+    end
+
+    function ChatEmoteButton:OnLeave()
+        self:SetAlpha(ALPHA_LEAVE)     
+    end
+    
+    function ChatEmoteButton:OnMouseUp()
+        self:SetScale(SCALE_UP)
+    end
+
+    function ChatEmoteButton:OnMouseDown()
+        self:SetScale(SCALE_PRESS)
+    end
+
+    -- local ChatEmoteTable = Widget:GetEmoteTable()
+    -- ChatEmoteTable:SetPoint("BOTTOMLEFT", ChatEmoteButton, "TOPRIGHT", 3, 3)
+    -- ChatEmoteButton:SetScript("OnClick",
+    --                           function(self) Widget:ToggleEmoteTable() end)
 end
