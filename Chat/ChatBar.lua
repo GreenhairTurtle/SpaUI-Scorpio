@@ -21,107 +21,12 @@ CHANNEL_WORLD_DEFAULT_COLOR_B = 0.75294125080109
 
 local ChatTypeInfo = ChatTypeInfo
 local ChatEdit_UpdateHeader = ChatEdit_UpdateHeader
-
--- 点击世界频道按钮
--- function OnWorldChannelButtonClick(button,key)
---     local channelTarget = GetWorldChannelID()
---     if channelTarget then
---         local chatTypeInfo = ChatTypeInfo["CHANNEL" .. channelTarget]
---         -- 改下世界频道的按钮颜色
---         if chatTypeInfo then
---             local text = FormatColorTextByRGBPerc(L["chat_bar_channel_world"], chatTypeInfo.r,chatTypeInfo.g, chatTypeInfo.b)
---             button.Text:SetText(text)
---         end
---         local editbox = ChatFrame_OpenChat("", ChatFrame1)
---         editbox:SetAttribute("chatType", "CHANNEL")
---         editbox:SetAttribute("channelTarget", channelTarget)
---         ChatEdit_UpdateHeader(editbox)
---     end
--- end
-
--- -- 创建ChatBar按钮
--- local function CreateChatBarButton(bar, index)
---     local type = CHAT_BAR_MESSAGE_TYPES[index]
---     bar[type] = CreateFrame("Button", "SpaUIChatBar" .. type .. "Button", bar)
---     bar[type]:SetWidth(CHAT_BAR_BUTTON_SIZE)
---     bar[type]:SetHeight(CHAT_BAR_BUTTON_SIZE)
---     bar[type]:SetAlpha(ALPHA_LEAVE)
---     bar[type]:SetScript("OnEnter", function(self) self:SetAlpha(ALPHA_ENTER) end)
---     bar[type]:SetScript("OnLeave", function(self) self:SetAlpha(ALPHA_LEAVE) end)
---     bar[type]:SetPoint("LEFT", bar, "LEFT", (index - 1) *
---                            (CHAT_BAR_BUTTON_MARGIN + CHAT_BAR_BUTTON_SIZE), 0)
---     local chatTypeInfo = ChatTypeInfo[strupper(type)]
---     if chatTypeInfo then
---         -- 更改按钮颜色 设置点击事件
---         local text = SpaUI:formatColorTextByRGBPerc(
---                          L["chat_bar_channel_" .. (strlower(type))],
---                          chatTypeInfo.r, chatTypeInfo.g, chatTypeInfo.b)
---         bar[type].Text = bar[type]:CreateFontString(bar[type], nil,
---                                                     "GameFontNormal")
---         bar[type].Text:SetPoint("CENTER", bar[type], "CENTER")
---         bar[type].Text:SetJustifyH("CENTER")
---         bar[type].Text:SetText(text)
---         bar[type]:SetScript("OnClick", function(self)
---             ChatMenu_SetChatType(ChatFrame1, strupper(type))
---         end)
---     elseif type == "World" then
---         local channelTarget = SpaUI:GetWorldChannelID()
---         local chatTypeInfo = channelTarget and
---                                  ChatTypeInfo["CHANNEL" .. channelTarget] or nil
---         local r = chatTypeInfo and chatTypeInfo.r or
---                       CHANNEL_WORLD_DEFAULT_COLOR_R
---         local g = chatTypeInfo and chatTypeInfo.g or
---                       CHANNEL_WORLD_DEFAULT_COLOR_G
---         local b = chatTypeInfo and chatTypeInfo.b or
---                       CHANNEL_WORLD_DEFAULT_COLOR_B
---         -- 世界频道按钮
---         local text = SpaUI:formatColorTextByRGBPerc(
---                          L["chat_bar_channel_" .. (strlower(type))], r, g, b)
---         bar[type].Text = bar[type]:CreateFontString(bar[type], nil,
---                                                     "GameFontNormal")
---         bar[type].Text:SetPoint("CENTER", bar[type], "CENTER")
---         bar[type].Text:SetJustifyH("CENTER")
---         bar[type].Text:SetText(text)
---         bar[type]:SetScript("OnClick", function(self,button) OnWorldChannelButtonClick(self,button) end)
---     elseif type == "Roll" then
---         -- roll点
---         bar[type]:SetNormalTexture("Interface\\Addons\\SpaUI\\Media\\roll")
---         bar[type]:SetHighlightTexture("Interface\\Addons\\SpaUI\\Media\\roll_highlight")
---         bar[type]:SetPushedTexture("Interface\\Addons\\SpaUI\\Media\\roll_pressed")
---         bar[type]:SetScript("OnClick", function(self) RandomRoll(1, 100) end)
---     end
--- end
-
--- -- 更改ChatBar锚点
--- local function ChangeChatBarPoint(editbox)
---     if not editbox or editbox ~= ChatFrame1EditBox or not SpaUIChatBar then
---         return
---     end
---     local chatStyle = GetCVar("chatStyle")
---     local relativeTo
---     if chatStyle == "classic" then
---         relativeTo = ChatFrame1Background
---     else
---         relativeTo = editbox
---     end
-
---     if SpaUIChatBar.chatStyle ~= chatStyle or SpaUIChatBar.relativeTo ~=
---         relativeTo then
---         SpaUIChatBar:SetPoint("TOPLEFT", relativeTo, "BOTTOMLEFT", 0, 0)
---         SpaUIChatBar.chatStyle = chatStyle
---         SpaUIChatBar.relativeTo = relativeTo
---     end
--- end
-
--- -- 状态变更
--- local function OnEditBoxStatusChange(editbox)
---     if editbox:HasFocus() then
---         SpaUIChatBar:Hide()
---     else
---         if editbox:GetText():len() <= 0 then SpaUIChatBar:Show() end
---         Widget:CloseEmoteTable()
---     end
--- end
+local ChatFrame1EditBox = ChatFrame1EditBox
+local ChatFrame1Background = ChatFrame1Background
+local GetCVar = GetCVar
+local ChatMenu_SetChatType = ChatMenu_SetChatType
+local RandomRoll = RandomRoll
+local ChatFrame_OpenChat = ChatFrame_OpenChat
 
 -- local function SetOrHookScript(scriptType)
 --     if ChatFrame1EditBox:GetScript(scriptType) then
@@ -158,32 +63,155 @@ local ChatEdit_UpdateHeader = ChatEdit_UpdateHeader
 --                               function(self) Widget:ToggleEmoteTable() end)
 -- end
 
--- -- 创建ChatBar
---todo
-function CreateChatBar()
-    if not ChatFrame1EditBox then return end
-    local ChatBar = Frame("SpaUIChatBar")
-    ChatBar:SetWidth(#CHAT_BAR_MESSAGE_TYPES *
-                         (CHAT_BAR_BUTTON_SIZE + CHAT_BAR_BUTTON_MARGIN))
-    ChatBar:SetHeight(CHAT_BAR_BUTTON_SIZE)
-    ChatBar:SetFrameStrata(ChatFrame1:GetFrameStrata())
-
-    ChangeChatBarPoint(ChatFrame1EditBox)
-
-    for i = 1, #CHAT_BAR_MESSAGE_TYPES do CreateChatBarButton(ChatBar, i) end
-
-    SetOrHookScript("OnEditFocusLost")
-    SetOrHookScript("OnEditFocusGained")
-
-    if ChatBar:GetBottom() < 0 then SpaUI:ShowMessage(L["chat_bar_outside"]) end
-
-    CreateChatEmoteButton()
-    Widget.ChatBar = ChatBar
-end
-
 -- -- 切换聊天风格的时候更改锚点
 -- hooksecurefunc("ChatEdit_ActivateChat", ChangeChatBarPoint)
 
 function OnEnable(self)
+    CreateChatBar()
+end
 
+local function SetOrHookScript(scriptType)
+    if ChatFrame1EditBox:GetScript(scriptType) then
+        ChatFrame1EditBox:HookScript(scriptType, OnEditBoxStatusChange)
+    else
+        ChatFrame1EditBox:SetScript(scriptType, OnEditBoxStatusChange)
+    end
+end
+
+-- -- 创建ChatBar
+--todo
+function CreateChatBar()
+    if not ChatFrame1EditBox then return end
+    ChatBar = Frame("SpaUIChatBar")
+    Style[ChatBar] = {
+            size = Size(#CHAT_BAR_MESSAGE_TYPES * (CHAT_BAR_BUTTON_SIZE + CHAT_BAR_BUTTON_MARGIN), CHAT_BAR_BUTTON_SIZE),
+            frameStrata = ChatFrame1:GetFrameStrata(),
+    }
+
+    ChangeChatBarLocation(ChatFrame1EditBox)
+
+    for i = 1, #CHAT_BAR_MESSAGE_TYPES do CreateChatBarButton(i) end
+
+    SetOrHookScript("OnEditFocusLost")
+    SetOrHookScript("OnEditFocusGained")
+
+    if ChatBar.relativeTo:GetBottom() < CHAT_BAR_BUTTON_SIZE then
+        ShowMessage(L["chat_bar_outside"])
+    end
+
+    -- CreateChatEmoteButton()
+end
+
+-- 更改ChatBar锚点
+__SecureHook__(_G,"ChatEdit_ActivateChat")
+function ChangeChatBarLocation(editbox)
+    if not editbox or editbox ~= ChatFrame1EditBox or not ChatBar then
+        return
+    end
+    local chatStyle = GetCVar("chatStyle")
+    local relativeTo
+    if chatStyle == "classic" then
+        relativeTo = ChatFrame1Background
+    else
+        relativeTo = editbox
+    end
+    if ChatBar.chatStyle ~= chatStyle or ChatBar.relativeTo ~= relativeTo then
+        ChatBar:SetLocation(Anchors({Anchor("TOPLEFT", 0, 0, relativeTo:GetName(), "BOTTOMLEFT")}))
+        ChatBar.chatStyle = chatStyle
+        ChatBar.relativeTo = relativeTo
+    end
+end
+
+-- 创建ChatBar按钮
+function CreateChatBarButton(index)
+    local type = CHAT_BAR_MESSAGE_TYPES[index]
+    local button = Button("SpaUIChatBarButton"..type, ChatBar)
+    -- 默认样式
+    Style[button] = {
+        size = Size(CHAT_BAR_BUTTON_SIZE,CHAT_BAR_BUTTON_SIZE),
+        alpha = ALPHA_LEAVE,
+        location = {Anchor("LEFT",(index-1)*(CHAT_BAR_BUTTON_MARGIN + CHAT_BAR_BUTTON_SIZE),0,nil,"LEFT")},
+    }
+
+    --淡入淡出
+    function button:OnEnter()
+        self:SetAlpha(ALPHA_ENTER)
+    end
+    function button:OnLeave()
+        self:SetAlpha(ALPHA_LEAVE)
+    end
+
+    local chatTypeInfo = ChatTypeInfo[strupper(type)]
+    if chatTypeInfo then
+        -- 更改按钮颜色 设置点击事件
+        local Text = FontString("Text",button,"GameFontNormal")
+        Style[Text] = {
+            setAllPoints = true,
+            text = FormatColorTextByRGBPerc(L["chat_bar_channel_" .. (strlower(type))],chatTypeInfo.r, chatTypeInfo.g, chatTypeInfo.b)
+        }
+        function button:OnClick()
+            ChatMenu_SetChatType(ChatFrame1,strupper(type))
+        end
+    elseif type == "World" then
+        local channelTarget = GetWorldChannelID()
+        local info = channelTarget and ChatTypeInfo["CHANNEL" .. channelTarget] or nil
+        local r = info and info.r or CHANNEL_WORLD_DEFAULT_COLOR_R
+        local g = info and info.g or CHANNEL_WORLD_DEFAULT_COLOR_G
+        local b = info and info.b or CHANNEL_WORLD_DEFAULT_COLOR_B
+        -- 世界频道按钮
+        local Text = FontString("Text",button,"GameFontNormal")
+        Style[Text] = {
+            setAllPoints = true,
+            text = FormatColorTextByRGBPerc(L["chat_bar_channel_" .. (strlower(type))], r, g, b)
+        }
+
+        function button:OnClick(button)
+            OnWorldChannelButtonClick(self,button)
+        end
+    elseif type == "Roll" then
+    --     -- roll点
+        Style[button] = {
+            normalTexture = {
+                file = [[Interface\Addons\SpaUI\Media\roll]],
+                setAllPoints = true
+            },
+            highlightTexture = {
+                file = [[Interface\Addons\SpaUI\Media\roll_highlight]],
+                setAllPoints = true
+            },
+            pushedTexture = {
+                file = [[Interface\Addons\SpaUI\Media\roll_pressed]],
+                setAllPoints = true
+            }
+        }
+        function button:OnClick()
+            RandomRoll(1,100)
+        end
+    end
+end
+
+-- 点击世界频道按钮
+function OnWorldChannelButtonClick(button,key)
+    local channelTarget = GetWorldChannelID()
+    if channelTarget then
+        local chatTypeInfo = ChatTypeInfo["CHANNEL" .. channelTarget]
+        -- 改下世界频道的按钮颜色
+        if chatTypeInfo then
+            button.Text:SetText(FormatColorTextByRGBPerc(L["chat_bar_channel_world"], chatTypeInfo.r,chatTypeInfo.g, chatTypeInfo.b))
+        end
+        local editbox = ChatFrame_OpenChat("", ChatFrame1)
+        editbox:SetAttribute("chatType", "CHANNEL")
+        editbox:SetAttribute("channelTarget", channelTarget)
+        ChatEdit_UpdateHeader(editbox)
+    end
+end
+
+-- -- 状态变更
+function OnEditBoxStatusChange(editbox)
+    if editbox:HasFocus() then
+        ChatBar:Hide()
+    else
+        if editbox:GetText():len() <= 0 then ChatBar:Show() end
+        -- Widget:CloseEmoteTable()
+    end
 end
