@@ -101,62 +101,69 @@ function OnEmoteClick(button, clickType)
         end
         ChatFrameEditBox:Insert(button.text)
     end
-    Widget:ToggleEmoteTable()
+    ToggleEmoteTable()
 end
 
--- function CreateEmoteTableFrame()
---     local EmoteTableFrame = CreateFrame("Frame", "SpaUIEmoteTableFrame",
---                                         UIParent, "SpaUIBasicFrameTemplate")
---     -- 响应Esc                                    
---     tinsert(UISpecialFrames, EmoteTableFrame:GetName())
---     EmoteTableFrame.Container = CreateFrame("Frame",
---                                             "SpaUIEmoteTableFrameContainer",
---                                             EmoteTableFrame)
---     EmoteTableFrame.Container:SetPoint("TOPLEFT", EmoteTableFrame.LeftBorder,
---                                        "TOPRIGHT")
---     EmoteTableFrame.Container:SetPoint("BOTTOMRIGHT",
---                                        EmoteTableFrame.RightBorder, "BOTTOMLEFT")
---     EmoteTableFrame:SetWidth((EMOTE_SIZE + EMOTE_SIZE_MARGIN) * EMOTE_RAW_SIZE +
---                                  20)
---     EmoteTableFrame.TitleText:SetText(L["chat_bar_emote_table"])
---     EmoteTableFrame:Hide()
---     EmoteTableFrame:SetFrameStrata("DIALOG")
+function CreateEmoteTableFrame()
+    EmoteTableFrame = Frame("SpaUIEmoteTableFrame", UIParent, "BasicFrameTemplateWithInset")
+    
+    local Container = Frame("SpaUIEmoteTableFrameContainer", EmoteTableFrame)
+    Container:SetPoint("TOPLEFT", EmoteTableFrame.LeftBorder, "TOPRIGHT")
+    Container:SetPoint("BOTTOMRIGHT", EmoteTableFrame.RightBorder, "BOTTOMLEFT")
+    EmoteTableFrame.TitleText:SetText(L["chat_bar_emote_table"])
 
---     local icon, row, col, text, texture
---     for i = 1, #EMOTES do
---         row = floor((i - 1) / EMOTE_RAW_SIZE)
---         col = floor((i - 1) % EMOTE_RAW_SIZE)
---         text = EMOTES[i][1]
---         texture = EMOTES[i][2]
+    local icon, row, col, text, texture
+    for i = 1, #EMOTES do
+        row = floor((i - 1) / EMOTE_RAW_SIZE)
+        col = floor((i - 1) % EMOTE_RAW_SIZE)
+        text = EMOTES[i][1]
+        texture = EMOTES[i][2]
 
---         icon = CreateFrame("Button", format("SpaUIEmoteIcon%d", i),
---                            EmoteTableFrame.Container)
---         icon:SetWidth(EMOTE_SIZE)
---         icon:SetHeight(EMOTE_SIZE)
---         icon.text = text
---         icon:SetNormalTexture(texture)
---         icon:SetHighlightTexture("Interface\\Buttons\\UI-Common-MouseHilight",
---                                  "ADD")
---         icon:Show()
---         icon:SetPoint("LEFT", EmoteTableFrame.Container, "LEFT",
---                       col * (EMOTE_SIZE + EMOTE_SIZE_MARGIN), 0)
---         icon:SetPoint("TOP", EmoteTableFrame.Container, "TOP", 0,
---                       -row * (EMOTE_SIZE + EMOTE_SIZE_MARGIN))
---         icon:SetScript("OnEnter", function(self)
---             GameTooltip:SetOwner(self, "ANCHOR_RIGHT")
---             GameTooltip:AddLine(EMOTES[i][1])
---             GameTooltip:Show()
---         end)
---         icon:SetScript("OnLeave", function(self) GameTooltip:Hide() end)
---         icon:SetScript("OnMouseDown",
---                        function(self) self:SetAlpha(ALPHA_PRESS) end)
---         icon:SetScript("OnMouseUp", function(self, button)
---             self:SetAlpha(ALPHA_NORMAL)
---             OnEmoteClick(self, button)
---         end)
---     end
---     EmoteTableFrame:SetHeight((row + 1) * (EMOTE_SIZE + EMOTE_SIZE_MARGIN) + 35)
--- end
+        icon = Button(format("SpaUIEmoteIcon%d", i),Container)
+        icon.text = text
+        Style[icon] = {
+            size = Size(EMOTE_SIZE,EMOTE_SIZE),
+            location = {
+                Anchor("LEFT", col * (EMOTE_SIZE + EMOTE_SIZE_MARGIN), 0, Container:GetName(true), "LEFT"),
+                Anchor("TOP", 0, -row * (EMOTE_SIZE + EMOTE_SIZE_MARGIN), Container:GetName(true), "TOP")
+            },
+            normalTexture = {
+                file = texture,
+                setAllPoints = true
+            },
+            highlightTexture = {
+                file = [[Interface\Buttons\UI-Common-MouseHilight]],
+                alphaMode = "ADD",
+                setAllPoints = true
+            }
+        }
+        function icon:OnEnter()
+            GameTooltip:SetOwner(self, "ANCHOR_RIGHT")
+            GameTooltip:AddLine(self.text)
+            GameTooltip:Show()
+        end
+        
+        function icon:OnLeave()
+            GameTooltip:Hide()
+        end
+
+        function icon:OnMouseDown()
+            self:SetAlpha(ALPHA_PRESS)
+        end
+
+        function icon:OnMouseUp(button)
+            self:SetAlpha(ALPHA_NORMAL)
+            OnEmoteClick(self, button)
+        end
+    end
+
+    Style[EmoteTableFrame] = {
+        size = Size((EMOTE_SIZE + EMOTE_SIZE_MARGIN) * EMOTE_RAW_SIZE + 20, (row + 1) * (EMOTE_SIZE + EMOTE_SIZE_MARGIN) + 35),
+        frameStrata = "DIALOG"
+    }
+
+    EmoteTableFrame:Hide()
+end
 
 -- -- 注册需要解析表情的频道
 -- ChatFrame_AddMessageEventFilter("CHAT_MSG_CHANNEL", ChatEmoteFilter) -- 公共频道
@@ -254,13 +261,18 @@ end
 --     ChatEmoteTable:Hide()
 -- end
 
--- -- 打开/关闭表情面板
--- function Widget:ToggleEmoteTable()
---     local ChatEmoteTable = self:GetEmoteTable()
---     if ChatEmoteTable:IsShown() then
---         ChatEmoteTable:Hide()
---     else
---         ChatEmoteTable:Show()
---     end
--- end
+-- 打开/关闭表情面板
+__SystemEvent__("SPAUI_TOGGLE_EMOTE_FRAME")
+__Arguments__{Variable.Optional(Archors, nil)}
+function ToggleEmoteTable(location)
+    if not EmoteTableFrame then
+        CreateEmoteTableFrame()
+    end
+    if EmoteTableFrame:IsShown() then
+        EmoteTableFrame:Hide()
+    else
+        EmoteTableFrame:SetLocation(location)
+        EmoteTableFrame:Show()
+    end
+end
 

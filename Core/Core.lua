@@ -13,44 +13,17 @@ function Reload()
     ReloadUI()
 end
 
--------------------
--- 常用的一些方法 --
--------------------
-
--- RGB颜色转16进制
-function RGBToHex(r, g, b)
-    r = r <= 255 and r >= 0 and r or 0
-    g = g <= 255 and g >= 0 and g or 0
-    b = b <= 255 and b >= 0 and b or 0
-    return string.format("%02x%02x%02x", r, g, b)
-end
-
--- 字符串颜色格式化
--- return non nil
-function FormatColorTextByRGB(text, r, g, b)
-    if not text then return "" end
-    r = r <= 255 and r >= 0 and r or 0
-    g = g <= 255 and g >= 0 and g or 0
-    b = b <= 255 and b >= 0 and b or 0
-    return string.format("\124cff%02x%02x%02x%s\124r", r, g, b, text)
-end
-
--- RGB颜色(百分比)转16进制
-function RGBPercToHex(r, g, b)
-    r = r <= 1 and r >= 0 and r or 0
-    g = g <= 1 and g >= 0 and g or 0
-    b = b <= 1 and b >= 0 and b or 0
-    return string.format("%02x%02x%02x", r * 255, g * 255, b * 255)
-end
-
--- 字符串颜色格式化
--- return non nil
-function FormatColorTextByRGBPerc(text, r, g, b)
-    if not text then return "" end
-    r = r <= 1 and r >= 0 and r or 0
-    g = g <= 1 and g >= 0 and g or 0
-    b = b <= 1 and b >= 0 and b or 0
-    return string.format("\124cff%02x%02x%02x%s\124r", r * 255, g * 255, b * 255 , text)
+-- 字符串染色
+__Static__()
+__Arguments__{
+    Variable("text",NEString),
+    Variable("r",ColorFloat),
+    Variable("g",ColorFloat),
+    Variable("b",ColorFloat),
+    Variable("a",ColorFloat,true,1)
+}
+function Color.ColorText(text,r,g,b,a)
+    return Color(r,g,b,a)..text..Color.CLOSE
 end
 
 -- 显示红字错误

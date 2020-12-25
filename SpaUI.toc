@@ -10,7 +10,7 @@
 Localization/Locale-zhCN.lua
 
 #Core
-Core/Core.lua
+Core/Core.xml
 
 #Features
 Features/AutoSell.lua

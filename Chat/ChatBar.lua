@@ -58,8 +58,6 @@ function CreateChatBar()
     if ChatBar.relativeTo:GetBottom() < CHAT_BAR_BUTTON_SIZE then
         ShowMessage(L["chat_bar_outside"])
     end
-
-    -- CreateChatEmoteButton()
 end
 
 -- 更改ChatBar锚点
@@ -107,7 +105,7 @@ function CreateChatBarButton(index)
         local Text = FontString("Text",button,"GameFontNormal")
         Style[Text] = {
             setAllPoints = true,
-            text = FormatColorTextByRGBPerc(L["chat_bar_channel_" .. (strlower(type))],chatTypeInfo.r, chatTypeInfo.g, chatTypeInfo.b)
+            text = Color.ColorText(L["chat_bar_channel_"..strlower(type)],chatTypeInfo.r,chatTypeInfo.g,chatTypeInfo.b)
         }
         function button:OnClick()
             ChatMenu_SetChatType(ChatFrame1,strupper(type))
@@ -122,7 +120,7 @@ function CreateChatBarButton(index)
         local Text = FontString("Text",button,"GameFontNormal")
         Style[Text] = {
             setAllPoints = true,
-            text = FormatColorTextByRGBPerc(L["chat_bar_channel_" .. (strlower(type))], r, g, b)
+            text = Color.ColorText(L["chat_bar_channel_" .. (strlower(type))],r,g,b)
         }
 
         function button:OnClick(button)
@@ -158,7 +156,7 @@ function OnWorldChannelButtonClick(button,key)
         local chatTypeInfo = ChatTypeInfo["CHANNEL" .. channelTarget]
         -- 改下世界频道的按钮颜色
         if chatTypeInfo then
-            button.Text:SetText(FormatColorTextByRGBPerc(L["chat_bar_channel_world"], chatTypeInfo.r,chatTypeInfo.g, chatTypeInfo.b))
+            button.Text:SetText(Color.ColorText(L["chat_bar_channel_world"], chatTypeInfo.r,chatTypeInfo.g, chatTypeInfo.b))
         end
         local editbox = ChatFrame_OpenChat("", ChatFrame1)
         editbox:SetAttribute("chatType", "CHANNEL")
@@ -207,8 +205,7 @@ function CreateChatEmoteButton()
         self:SetScale(SCALE_PRESS)
     end
 
-    -- local ChatEmoteTable = Widget:GetEmoteTable()
-    -- ChatEmoteTable:SetPoint("BOTTOMLEFT", ChatEmoteButton, "TOPRIGHT", 3, 3)
-    -- ChatEmoteButton:SetScript("OnClick",
-    --                           function(self) Widget:ToggleEmoteTable() end)
+    function ChatEmoteButton:OnClick()
+        FireSystemEvent("SPAUI_TOGGLE_EMOTE_FRAME",Anchors{Anchor("BOTTOMLEFT",3,3,self:GetName(),"TOPRIGHT")})
+    end
 end
