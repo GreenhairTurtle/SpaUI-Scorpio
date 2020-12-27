@@ -26,12 +26,25 @@ function Color.ColorText(text,r,g,b,a)
     return Color(r,g,b,a)..text..Color.CLOSE
 end
 
+__Arguments__(NEString)
+function Color:FormatText(text)
+    return self..text..Color.CLOSE
+end
+
 -- 显示红字错误
-function ShowUIError(string)
-    UIErrorsFrame:AddMessage(string, 1.0, 0.0, 0.0, 1, 3)
+__Arguments__{NEString}
+function ShowUIError(text)
+    UIErrorsFrame:AddMessage(text, 1.0, 0.0, 0.0, 1, 3)
 end
 
 -- 显示消息
-function ShowMessage(string)
-    print(L["message_format"]:format(string))
+__Arguments__{NEString}
+function ShowMessage(text)
+    print(L["message_format"]:format(text))
+end
+
+-- log
+__Arguments__{String}
+function Log(string)
+    print(L["debug_prefix"]..string)
 end

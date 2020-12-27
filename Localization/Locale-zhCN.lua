@@ -6,7 +6,7 @@ if not L then return end
 
 L["addon_name"] = "|cFF00FFFFS|r|cFFFFC0CBp|r|cFFFF6347a|rUI"
 L["addon_loaded_tip"] = "|cFF00BFFF%s|r 已载入"
-L["debug_format"] = L["addon_name"].." Debug:"
+L["debug_prefix"] = L["addon_name"].." Debug:"
 L["message_format"] = L["addon_name"]..":%s"
 -- 命令
 L["command_help"] = [[

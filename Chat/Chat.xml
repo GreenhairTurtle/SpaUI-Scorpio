@@ -3,4 +3,5 @@
     <Script file="Chat/ChatTab.lua"/>
     <Script file="Chat/ChatEmote.lua"/>
     <Script file="Chat/ChatBar.lua"/>
+    <Script file="Chat/ChatLinkTooltips.lua"/>
 </Ui>

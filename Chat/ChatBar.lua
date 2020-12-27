@@ -30,16 +30,7 @@ function OnEnable(self)
     CreateChatEmoteButton()
 end
 
-local function SetOrHookScript(scriptType)
-    if ChatFrame1EditBox:GetScript(scriptType) then
-        ChatFrame1EditBox:HookScript(scriptType, OnEditBoxStatusChange)
-    else
-        ChatFrame1EditBox:SetScript(scriptType, OnEditBoxStatusChange)
-    end
-end
-
--- -- 创建ChatBar
---todo
+-- 创建ChatBar
 function CreateChatBar()
     if not ChatFrame1EditBox then return end
     ChatBar = Frame("SpaUIChatBar")
@@ -52,8 +43,8 @@ function CreateChatBar()
 
     for i = 1, #CHAT_BAR_MESSAGE_TYPES do CreateChatBarButton(i) end
 
-    SetOrHookScript("OnEditFocusLost")
-    SetOrHookScript("OnEditFocusGained")
+    ChatFrame1EditBox:HookScript("OnEditFocusLost", OnEditBoxStatusChange)
+    ChatFrame1EditBox:HookScript("OnEditFocusGained", OnEditBoxStatusChange)
 
     if ChatBar.relativeTo:GetBottom() < CHAT_BAR_BUTTON_SIZE then
         ShowMessage(L["chat_bar_outside"])
@@ -102,7 +93,7 @@ function CreateChatBarButton(index)
     local chatTypeInfo = ChatTypeInfo[strupper(type)]
     if chatTypeInfo then
         -- 更改按钮颜色 设置点击事件
-        local Text = FontString("Text",button,"GameFontNormal")
+        local Text = FontString("Text",button,nil,"GameFontNormal")
         Style[Text] = {
             setAllPoints = true,
             text = Color.ColorText(L["chat_bar_channel_"..strlower(type)],chatTypeInfo.r,chatTypeInfo.g,chatTypeInfo.b)
@@ -117,7 +108,7 @@ function CreateChatBarButton(index)
         local g = info and info.g or CHANNEL_WORLD_DEFAULT_COLOR_G
         local b = info and info.b or CHANNEL_WORLD_DEFAULT_COLOR_B
         -- 世界频道按钮
-        local Text = FontString("Text",button,"GameFontNormal")
+        local Text = FontString("Text",button,nil,"GameFontNormal")
         Style[Text] = {
             setAllPoints = true,
             text = Color.ColorText(L["chat_bar_channel_" .. (strlower(type))],r,g,b)
@@ -165,13 +156,13 @@ function OnWorldChannelButtonClick(button,key)
     end
 end
 
--- -- 状态变更
+-- 状态变更
 function OnEditBoxStatusChange(editbox)
     if editbox:HasFocus() then
         ChatBar:Hide()
     else
         if editbox:GetText():len() <= 0 then ChatBar:Show() end
-        -- Widget:CloseEmoteTable()
+        FireSystemEvent("SPAUI_CLOSE_EMOTE_FRAME")
     end
 end
 

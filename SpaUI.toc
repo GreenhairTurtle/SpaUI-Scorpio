@@ -13,8 +13,7 @@ Localization/Locale-zhCN.lua
 Core/Core.xml
 
 #Features
-Features/AutoSell.lua
-Features/AutoRepair.lua
+Features/Features.xml
 
 #Chat
 Chat/Chat.xml

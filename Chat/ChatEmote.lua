@@ -10,6 +10,8 @@ ALPHA_PRESS = 0.6
 ALPHA_NORMAL = 1
 local format = format
 local ChatEdit_ChooseBoxForSend = ChatEdit_ChooseBoxForSend
+local GetAllChatBubbles = C_ChatBubbles.GetAllChatBubbles
+local GetCVarBool = C_CVar.GetCVarBool
 
 EMOTES = {
     -- 原版暴雪提供的8个图标
@@ -165,101 +167,112 @@ function CreateEmoteTableFrame()
     EmoteTableFrame:Hide()
 end
 
--- -- 注册需要解析表情的频道
--- ChatFrame_AddMessageEventFilter("CHAT_MSG_CHANNEL", ChatEmoteFilter) -- 公共频道
--- ChatFrame_AddMessageEventFilter("CHAT_MSG_SAY", ChatEmoteFilter) -- 说
--- ChatFrame_AddMessageEventFilter("CHAT_MSG_YELL", ChatEmoteFilter) -- 大喊
--- ChatFrame_AddMessageEventFilter("CHAT_MSG_RAID", ChatEmoteFilter) -- 团队
--- ChatFrame_AddMessageEventFilter("CHAT_MSG_RAID_LEADER", ChatEmoteFilter) -- 团队领袖
--- ChatFrame_AddMessageEventFilter("CHAT_MSG_PARTY", ChatEmoteFilter) -- 队伍
--- ChatFrame_AddMessageEventFilter("CHAT_MSG_PARTY_LEADER", ChatEmoteFilter) -- 队伍领袖
--- ChatFrame_AddMessageEventFilter("CHAT_MSG_GUILD", ChatEmoteFilter) -- 公会
+-- 注册需要解析表情的频道
+ChatFrame_AddMessageEventFilter("CHAT_MSG_CHANNEL", ChatEmoteFilter) -- 公共频道
+ChatFrame_AddMessageEventFilter("CHAT_MSG_SAY", ChatEmoteFilter) -- 说
+ChatFrame_AddMessageEventFilter("CHAT_MSG_YELL", ChatEmoteFilter) -- 大喊
+ChatFrame_AddMessageEventFilter("CHAT_MSG_RAID", ChatEmoteFilter) -- 团队
+ChatFrame_AddMessageEventFilter("CHAT_MSG_RAID_LEADER", ChatEmoteFilter) -- 团队领袖
+ChatFrame_AddMessageEventFilter("CHAT_MSG_PARTY", ChatEmoteFilter) -- 队伍
+ChatFrame_AddMessageEventFilter("CHAT_MSG_PARTY_LEADER", ChatEmoteFilter) -- 队伍领袖
+ChatFrame_AddMessageEventFilter("CHAT_MSG_GUILD", ChatEmoteFilter) -- 公会
+ChatFrame_AddMessageEventFilter("CHAT_MSG_AFK", ChatEmoteFilter) -- AFK玩家自动回复
+ChatFrame_AddMessageEventFilter("CHAT_MSG_DND", ChatEmoteFilter) -- 切勿打扰自动回复
 
--- ChatFrame_AddMessageEventFilter("CHAT_MSG_AFK", ChatEmoteFilter) -- AFK玩家自动回复
--- ChatFrame_AddMessageEventFilter("CHAT_MSG_DND", ChatEmoteFilter) -- 切勿打扰自动回复
+-- 副本和副本领袖
+ChatFrame_AddMessageEventFilter("CHAT_MSG_INSTANCE_CHAT", ChatEmoteFilter)
+ChatFrame_AddMessageEventFilter("CHAT_MSG_INSTANCE_CHAT_LEADER", ChatEmoteFilter)
+-- 解析战网私聊
+ChatFrame_AddMessageEventFilter("CHAT_MSG_WHISPER", ChatEmoteFilter)
+ChatFrame_AddMessageEventFilter("CHAT_MSG_WHISPER_INFORM", ChatEmoteFilter)
+ChatFrame_AddMessageEventFilter("CHAT_MSG_BN_WHISPER", ChatEmoteFilter)
+ChatFrame_AddMessageEventFilter("CHAT_MSG_BN_WHISPER_INFORM", ChatEmoteFilter)
+-- 解析社区聊天内容
+ChatFrame_AddMessageEventFilter("CHAT_MSG_COMMUNITIES_CHANNEL", ChatEmoteFilter)
 
--- -- 副本和副本领袖
--- ChatFrame_AddMessageEventFilter("CHAT_MSG_INSTANCE_CHAT", ChatEmoteFilter)
--- ChatFrame_AddMessageEventFilter("CHAT_MSG_INSTANCE_CHAT_LEADER", ChatEmoteFilter)
--- -- 解析战网私聊
--- ChatFrame_AddMessageEventFilter("CHAT_MSG_WHISPER", ChatEmoteFilter)
--- ChatFrame_AddMessageEventFilter("CHAT_MSG_WHISPER_INFORM", ChatEmoteFilter)
--- ChatFrame_AddMessageEventFilter("CHAT_MSG_BN_WHISPER", ChatEmoteFilter)
--- ChatFrame_AddMessageEventFilter("CHAT_MSG_BN_WHISPER_INFORM", ChatEmoteFilter)
--- -- 解析社区聊天内容
--- ChatFrame_AddMessageEventFilter("CHAT_MSG_COMMUNITIES_CHANNEL", ChatEmoteFilter)
+----------------
+--  聊天气泡   --
+----------------
+EMOTE_CHAT_DEFAULT_RULE = format("\124T%%s:%d\124t", EMOTE_SIZE)
 
--- local EMOTE_CHAT_DEFAULT_RULE = format("\124T%%s:%d\124t", EMOTE_SIZE)     
+function DefaultReplaceEmote(msg)
+    for i = 9, #EMOTES do
+        if msg == EMOTES[i][1] then
+            return format(EMOTE_CHAT_DEFAULT_RULE,EMOTES[i][2])
+        end
+    end
+    return msg
+end
 
--- local function DefaultReplaceEmote(msg)
---     for i = 9, #EMOTES do
---         if msg == EMOTES[i][1] then
---             return format(EMOTE_CHAT_DEFAULT_RULE,EMOTES[i][2])
---         end
---     end
---     return msg
--- end
+-- 替换聊天气泡表情
+function ReplaceChatBubbleEmote()
+    local chatBubbles = GetAllChatBubbles()
+    local frame, text, after
+    for _, v in pairs(chatBubbles) do
+        frame = v:GetChildren()
+        if (frame and frame.String) then
+            text = frame.String:GetText()
+            after = text:gsub("%{.-%}", DefaultReplaceEmote)
+            if (after ~= text) then
+                return frame.String:SetText(after)
+            end
+        end
+    end
+end
 
--- -- 替换聊天气泡表情
--- local function ReplaceChatBubbleEmote()
---     local chatBubbles = C_ChatBubbles.GetAllChatBubbles()
---         local frame, text, after
---         for _, v in pairs(chatBubbles) do
---             frame = v:GetChildren()
---             if (frame and frame.String) then
---                 text = frame.String:GetText()
---                 after = text:gsub("%{.-%}", DefaultReplaceEmote)
---                 if (after ~= text) then
---                     return frame.String:SetText(after)
---                 end
---             end
---         end
--- end
+-- 聊天气泡消息接收监听
+__AsyncSingle__(true)
+function OnChatBubblesMsgReceived()
+    -- 最多重试5次
+    local count = 5
+    repeat
+        Delay(0.1)
+        local chatBubbles = GetAllChatBubbles()
+        local frame, text, after
+        for _, v in pairs(chatBubbles) do
+            frame = v:GetChildren()
+            if (frame and frame.String) then
+                text = frame.String:GetText()
+                after = text:gsub("%{.-%}", DefaultReplaceEmote)
+                if (after ~= text) then
+                    return frame.String:SetText(after)
+                end
+            end
+        end
+        if #chatBubbles > 0 then
+            break
+        end
+        count = count -1
+    until count < 0
+end
 
--- local CHAT_BUBBLE_TASK_NAME = "ChatBubbles"
+-- 监听聊天气泡设置变更
+__SecureHook__(_G,"InterfaceOptionsDisplayPanelChatBubblesDropDown_SetValue")
+function OnChatBubblesSettingChanged()
+    local chatBubbles = GetCVarBool("chatBubbles")
+    local chatBubblesParty = GetCVarBool("chatBubblesParty")
+    if chatBubbles then
+        _M:RegisterEvent('CHAT_MSG_SAY',OnChatBubblesMsgReceived)
+    else
+        _M:UnregisterEvent('CHAT_MSG_SAY')
+    end
+    if chatBubblesParty then
+        _M:RegisterEvent('CHAT_MSG_PARTY',OnChatBubblesMsgReceived)
+    else
+        _M:UnregisterEvent('CHAT_MSG_PARTY')
+    end
+end
 
--- -- 聊天气泡消息接收监听
--- local function OnChatBubblesMsgReceived()
---     local task = SpaUI:GetTimerTask(CHAT_BUBBLE_TASK_NAME) 
---     if not task then
---         SpaUI:Schedule(CHAT_BUBBLE_TASK_NAME,0.15,0.15,5,ReplaceChatBubbleEmote)
---     else
---         task:ReStart()
---     end
--- end
+function OnEnable(self)
+    OnChatBubblesSettingChanged()
+end
 
--- -- 聊天气泡设置变更回调
--- local function OnChatBubblesSettingChanged()
---     local chatBubbles = C_CVar.GetCVarBool("chatBubbles")
---     local chatBubblesParty = C_CVar.GetCVarBool("chatBubblesParty")
---     if chatBubbles then
---         SpaUI:RegisterEvent('CHAT_MSG_SAY',OnChatBubblesMsgReceived)
---     else
---         SpaUI:UnregisterEvent('CHAT_MSG_SAY',OnChatBubblesMsgReceived)
---     end
---     if chatBubblesParty then
---         SpaUI:RegisterEvent('CHAT_MSG_PARTY',OnChatBubblesMsgReceived)
---     else
---         SpaUI:UnregisterEvent('CHAT_MSG_PARTY',OnChatBubblesMsgReceived)
---     end
---     return true
--- end
-
--- -- 监听聊天气泡设置变更
--- hooksecurefunc("InterfaceOptionsDisplayPanelChatBubblesDropDown_SetValue",OnChatBubblesSettingChanged)
--- SpaUI:CallbackOnce('PLAYER_LOGIN',OnChatBubblesSettingChanged)
-
--- -- 获取表情面板
--- function Widget:GetEmoteTable()
---     if not SpaUIEmoteTableFrame then CreateEmoteTableFrame() end
---     return SpaUIEmoteTableFrame
--- end
-
--- -- 关闭表情面板
--- function Widget:CloseEmoteTable()
---     local ChatEmoteTable = self:GetEmoteTable()
---     ChatEmoteTable:Hide()
--- end
+-- 关闭表情面板
+__SystemEvent__("SPAUI_CLOSE_EMOTE_FRAME")
+function CloseEmoteTable()
+    if not EmoteTableFrame then return end
+    EmoteTableFrame:Hide()
+end
 
 -- 打开/关闭表情面板
 __SystemEvent__("SPAUI_TOGGLE_EMOTE_FRAME")
@@ -275,4 +288,3 @@ function ToggleEmoteTable(location)
         EmoteTableFrame:Show()
     end
 end
-
