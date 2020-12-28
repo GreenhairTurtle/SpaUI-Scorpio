@@ -5,5 +5,8 @@
     <Script file="Features/CastBar.lua"/>
     <Script file="Features/EasyDelete.lua"/>
     <Script file="Features/KeystoneRewardLevel.lua"/>
-    <Script file="Features/EncounterJournalSavedInstances.lua"
+    <Script file="Features/EncounterJournalSavedInstances.lua"/>
+    <Script file="Features/Align.lua"/>
+    <Script file="Features/Movable.lua"/>
+    <Script file="Features/Resizable.lua"/>
 </Ui>

@@ -248,6 +248,7 @@ end
 
 -- 监听聊天气泡设置变更
 __SecureHook__(_G,"InterfaceOptionsDisplayPanelChatBubblesDropDown_SetValue")
+__Async__()
 function OnChatBubblesSettingChanged()
     local chatBubbles = GetCVarBool("chatBubbles")
     local chatBubblesParty = GetCVarBool("chatBubblesParty")
@@ -277,6 +278,7 @@ end
 -- 打开/关闭表情面板
 __SystemEvent__("SPAUI_TOGGLE_EMOTE_FRAME")
 __Arguments__{Variable.Optional(Archors, nil)}
+__AsyncSingle__(true)
 function ToggleEmoteTable(location)
     if not EmoteTableFrame then
         CreateEmoteTableFrame()

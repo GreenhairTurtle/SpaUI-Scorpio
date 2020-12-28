@@ -40,6 +40,7 @@ local function CastingBarFrame_OnUpdate_Hook(self, elapsed)
     end
 end
 
+__Async__()
 function CreateTimerAndLag()
     local CastBarTimer = FontString("SpaUICastBarTimer", CastingBarFrame)
     local CastBarLag = Texture("SpaUICastBarLag", CastingBarFrame)

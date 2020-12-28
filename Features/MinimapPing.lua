@@ -8,16 +8,18 @@ local IsInRaid = IsInRaid
 local GetNumGroupMembers = GetNumGroupMembers
 local GetRaidRosterInfo = GetRaidRosterInfo
 
+__Async__()
 function CreateMinimapFrame()
     MinimapPingFrame = Frame("SpaUIMinimapPingFrame", Minimap)
     MinimapPingFrame:SetPoint("TOP", Minimap, "TOP", 0, -10)
     FontString("name", MinimapPingFrame)
     local anim = AnimationGroup("anim",MinimapPingFrame)
-    anim:SetScript("OnFinished",function()
-        MinimapPingFrame:Hide()
-    end)
     Alpha("alpha",anim)
     MinimapPingFrame:Hide()
+
+    function anim:OnFinished()
+        MinimapPingFrame:Hide()
+    end
 
     Style[MinimapPingFrame] = {
         size                    = Size(100,20),
@@ -57,6 +59,7 @@ function OnEnable(self)
 end
 
 __SystemEvent__('MINIMAP_PING')
+__AsyncSingle__(true)
 function OnMinimapPing(unit)
     if not unit then return end
     if not MinimapPingFrame then return end
@@ -76,7 +79,7 @@ function OnMinimapPing(unit)
         end
     end
 
-    name = color:FormatText(name)
+    name = FormatText(color,name)
 
     MinimapPingFrame.name:SetText(name)
     MinimapPingFrame:SetWidth(MinimapPingFrame.name:GetStringWidth() +14)

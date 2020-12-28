@@ -14,7 +14,6 @@ function Reload()
 end
 
 -- 字符串染色
-__Static__()
 __Arguments__{
     Variable("text",NEString),
     Variable("r",ColorFloat),
@@ -22,13 +21,13 @@ __Arguments__{
     Variable("b",ColorFloat),
     Variable("a",ColorFloat,true,1)
 }
-function Color.ColorText(text,r,g,b,a)
+function ColorText(text,r,g,b,a)
     return Color(r,g,b,a)..text..Color.CLOSE
 end
 
-__Arguments__(NEString)
-function Color:FormatText(text)
-    return self..text..Color.CLOSE
+__Arguments__{Color,NEString}
+function FormatText(color,text)
+    return color..text..Color.CLOSE
 end
 
 -- 显示红字错误

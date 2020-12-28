@@ -72,6 +72,7 @@ function ChangeChatBarLocation(editbox)
 end
 
 -- 创建ChatBar按钮
+__Async__()
 function CreateChatBarButton(index)
     local type = CHAT_BAR_MESSAGE_TYPES[index]
     local button = Button("SpaUIChatBarButton"..type, ChatBar)
@@ -96,7 +97,7 @@ function CreateChatBarButton(index)
         local Text = FontString("Text",button,nil,"GameFontNormal")
         Style[Text] = {
             setAllPoints = true,
-            text = Color.ColorText(L["chat_bar_channel_"..strlower(type)],chatTypeInfo.r,chatTypeInfo.g,chatTypeInfo.b)
+            text = ColorText(L["chat_bar_channel_"..strlower(type)],chatTypeInfo.r,chatTypeInfo.g,chatTypeInfo.b)
         }
         function button:OnClick()
             ChatMenu_SetChatType(ChatFrame1,strupper(type))
@@ -111,7 +112,7 @@ function CreateChatBarButton(index)
         local Text = FontString("Text",button,nil,"GameFontNormal")
         Style[Text] = {
             setAllPoints = true,
-            text = Color.ColorText(L["chat_bar_channel_" .. (strlower(type))],r,g,b)
+            text = ColorText(L["chat_bar_channel_" .. (strlower(type))],r,g,b)
         }
 
         function button:OnClick(button)
@@ -167,6 +168,7 @@ function OnEditBoxStatusChange(editbox)
 end
 
 -- 生成表情按钮
+__Async__()
 function CreateChatEmoteButton()
     if not ChatBar then return end
     ChatEmoteButton = Button("SpaUIChatEmoteButton")

@@ -22,6 +22,7 @@ function OnEnable(self)
 end
 
 __SystemEvent__()
+__Async__()
 function DELETE_ITEM_CONFIRM()
     if StaticPopup1EditBox:IsShown() then
         StaticPopup1EditBox:Hide()
