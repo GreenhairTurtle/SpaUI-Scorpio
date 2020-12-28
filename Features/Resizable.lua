@@ -5,30 +5,33 @@ ResizableFrames = {
 }
 
 ResizableFramesNeedWait = {
+    
 }
 
 __Async__()
 function OnEnable(self)
-    for _,frame in ipairs(ResizableFrames) do
-        SetResizable(frame)
+    for frame,info in pairs(ResizableFrames) do
+        Style[_G[frame]] = info
+        ResizableFrames[frame] = nil
     end
 
-    for addon,frameName in pairs(ResizableFramesNeedWait) do
+    for addon,info in pairs(ResizableFramesNeedWait) do
         if IsAddOnLoaded(addon) then
-            SetResizable(frameName)
+            for k,v in pairs(info) do
+                Style[_G[k]] = v
+            end
+            ResizableFramesNeedWait[addon] = nil
         end
     end
 
-    while true do
-        local frameName = ResizableFramesNeedWait[NextEvent("ADDON_LOADED")]
-        if frameName then
-            SetResizable(_G[frameName])
+    while next(ResizableFramesNeedWait) do
+        local addon = NextEvent("ADDON_LOADED")
+        local info = ResizableFramesNeedWait[addon]
+        if info then
+            for k,v in pairs(info) do
+                Style[_G[k]] = v
+            end
+            ResizableFramesNeedWait[addon] = nil
         end
     end
-end
-
-function SetResizable(frame)
-    if not frame then return end
-    Resizer("Resizer", frame)
-    frame:SetResizable(true)
 end

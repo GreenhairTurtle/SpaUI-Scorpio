@@ -109,7 +109,7 @@ end
 function CreateEmoteTableFrame()
     EmoteTableFrame = Frame("SpaUIEmoteTableFrame", UIParent, "BasicFrameTemplateWithInset")
     
-    local Container = Frame("SpaUIEmoteTableFrameContainer", EmoteTableFrame)
+    local Container = Frame("Container", EmoteTableFrame)
     Container:SetPoint("TOPLEFT", EmoteTableFrame.LeftBorder, "TOPRIGHT")
     Container:SetPoint("BOTTOMRIGHT", EmoteTableFrame.RightBorder, "BOTTOMLEFT")
     EmoteTableFrame.TitleText:SetText(L["chat_bar_emote_table"])
