@@ -100,6 +100,11 @@ MovableFramesNeedWait = {
             movable             = true,
             Mover               = {}
         },
+        -- 8.0 指挥台
+        ["BFAMissionFrame"]     = {
+            movable             = true,
+            Mover               = {}
+        }
     }, 
     -- 名望
     ['Blizzard_CovenantRenown'] = {
@@ -175,7 +180,114 @@ MovableFramesNeedWait = {
             movable             = true,
             Mover               = {}
         }
-    }
+    },
+    -- 制作橙装
+    ['Blizzard_RuneforgeUI'] = {
+        ['RuneforgeFrame'] = {
+            movable             = true,
+            Mover               = {
+                height          = 56
+            }
+        }
+    },
+    -- 托加斯特难度选择
+    ['Blizzard_TorghastLevelPicker'] = {
+        ['TorghastLevelPickerFrame'] = {
+            movable             = true,
+            Mover               = {
+                height          = 96
+            }
+        }
+    },
+    -- 职业大厅，BFA科技
+    ['Blizzard_OrderHallUI'] = {
+        ['OrderHallTalentFrame'] = {
+            movable             = true,
+            Mover               = {}
+        }
+    },
+    -- 海岛
+    ['Blizzard_IslandsQueueUI'] = {
+        ['IslandsQueueFrame'] = {
+            movable             = true,
+            Mover               = {}
+        }
+    },
+    -- 拆解机
+    ['Blizzard_ScrappingMachineUI'] = {
+        ['ScrappingMachineFrame'] = {
+            movable             = true,
+            Mover               = {}
+        }
+    },
+    -- 训练师
+    ['Blizzard_TrainerUI'] = {
+        ['ClassTrainerFrame'] = {
+            movable             = true,
+            Mover               = {}
+        }
+    },
+    -- 艾泽拉斯之心
+    ['Blizzard_AzeriteEssenceUI'] = {
+        ['AzeriteEssenceUI'] = {
+            movable             = true,
+            Mover               = {}
+        }
+    },
+    -- 物品互动
+    ['Blizzard_ItemInteractionUI'] = {
+        ['ItemInteractionFrame'] = {
+            movable             = true,
+            Mover               = {}
+        }
+    },
+    -- 物品升级
+    ['Blizzard_ItemUpgradeUI'] = {
+        ['ItemUpgradeFrame'] = {
+            movable             = true,
+            Mover               = {}
+        }
+    },
+    -- 艾泽里特装备
+    ['Blizzard_AzeriteUI'] = {
+        ['AzeriteEmpoweredItemUI'] = {
+            movable             = true,
+            Mover               = {}
+        }
+    },
+    -- 艾泽里特重铸
+    ['Blizzard_AzeriteRespecUI'] = {
+        ['AzeriteRespecFrame'] = {
+            movable             = true,
+            Mover               = {}
+        }
+    },
+    -- 选择框
+    ['Blizzard_PlayerChoiceUI'] = {
+        ['PlayerChoiceFrame'] = {
+            movable             = true,
+            Mover               = {}
+        }
+    },
+    -- 虚空仓库
+    ['Blizzard_VoidStorageUI'] = {
+        ['VoidStorageFrame'] = {
+            movable             = true,
+            Mover               = {
+                location = {
+                    Anchor("TOPLEFT",0,0,"VoidStorageBorderFrameHeader","TOPLEFT"),
+                    Anchor("BOTTOMRIGHT",0,0,"VoidStorageBorderFrameHeader","BOTTOMRIGHT")
+                }
+            }
+        }
+    },
+    -- 同盟种族
+    ['Blizzard_AlliedRacesUI'] = {
+        ['AlliedRacesFrame'] = {
+            movable             = true,
+            Mover               = {}
+        }
+    },
 }
 
 __Async__()
