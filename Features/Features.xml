@@ -8,5 +8,6 @@
     <Script file="Features/EncounterJournalSavedInstances.lua"/>
     <Script file="Features/Align.lua"/>
     <Script file="Features/Movable.lua"/>
-    <Script file="Features/Resizable.lua"/>
+    <Script file="Features/Tooltips.lua"/>
+    <Script file="Features/TradeTabs.lua"/>
 </Ui>

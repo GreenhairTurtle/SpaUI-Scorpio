@@ -39,6 +39,11 @@ MovableFramesNeedWait = {
         ["CollectionsJournal"] = {
             movable             = true,
             Mover               = {}
+        },
+        -- 幻化
+        ["WardrobeFrame"] = {
+            movable             = true,
+            Mover               = {}
         }
     },
     -- 地下城手册 
@@ -72,6 +77,11 @@ MovableFramesNeedWait = {
     -- 宏命令
     ['Blizzard_MacroUI'] = {
         ["MacroFrame"] = {
+            movable             = true,
+            Mover               = {}
+        },
+        -- 新建宏
+        ["MacroPopupFrame"] = {
             movable             = true,
             Mover               = {}
         }
@@ -138,6 +148,34 @@ MovableFramesNeedWait = {
             Mover               = {}
         }
     }, 
+    -- 公会银行
+    ['Blizzard_GuildBankUI'] = {
+        ["GuildBankFrame"] = {
+            movable             = true,
+            Mover               = {
+                location        = {
+                    Anchor("TOP",0,0,"GuildBankEmblemFrame","TOP"),
+                    Anchor("BOTTOM",0,0,"GuildBankEmblemFrame","BOTTOM"),
+                    Anchor("LEFT",0,0,"GuildBankFrame","LEFT"),
+                    Anchor("RIGHT",0,0,"GuildBankFrame","RIGHT")
+                }
+            }
+        }
+    }, 
+    -- 圣所储备
+    ['Blizzard_CovenantSanctum'] = {
+        ["CovenantSanctumFrame"] = {
+            movable             = true,
+            Mover               = {}
+        }
+    },
+    -- 心能导流器
+    ['Blizzard_AnimaDiversionUI'] = {
+        ["AnimaDiversionFrame"] = {
+            movable             = true,
+            Mover               = {}
+        }
+    }
 }
 
 __Async__()
@@ -206,37 +244,42 @@ function SetMovableForDirectFrames()
         Mover               = {}
     }
     -- 商人面板
-    Style[MerchantFrame]= {
+    Style[MerchantFrame] = {
         movable             = true,
         Mover               = {}
     }
      -- 客服支持
-    Style[HelpFrame]= {
+    Style[HelpFrame] = {
         movable             = true,
         Mover               = {}
     }
     -- 系统设置
-    Style[VideoOptionsFrame]= {
+    Style[VideoOptionsFrame] = {
         movable             = true,
         Mover               = {}
     }
     -- 界面
-    Style[InterfaceOptionsFrame]= {
+    Style[InterfaceOptionsFrame] = {
         movable             = true,
         Mover               = {}
     }
     -- 插件
-    Style[AddonList]= {
+    Style[AddonList] = {
         movable             = true,
         Mover               = {}
     }
     -- 好友名单
-    Style[FriendsFrame]= {
+    Style[FriendsFrame] = {
         movable             = true,
         Mover               = {}
     }
     -- 聊天频道设置
-    Style[ChatConfigFrame]= {
+    Style[ChatConfigFrame] = {
+        movable             = true,
+        Mover               = {}
+    }
+    -- 试衣间
+    Style[DressUpFrame] = {
         movable             = true,
         Mover               = {}
     }
