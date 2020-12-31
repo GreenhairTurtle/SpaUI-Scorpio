@@ -288,6 +288,19 @@ MovableFramesNeedWait = {
             Mover               = {}
         }
     },
+    -- NPC对话框体
+    ['Blizzard_TalkingHeadUI'] = {
+        ['TalkingHeadFrame'] = {
+            clampedToScreen     = true,
+            movable             = true,
+            Mover               = {
+                location        = {
+                    Anchor("TOPLEFT"),
+                    Anchor("BOTTOMRIGHT")
+                }
+            }
+        }
+    }
 }
 
 __Async__()
