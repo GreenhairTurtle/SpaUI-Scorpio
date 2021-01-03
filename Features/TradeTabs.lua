@@ -4,7 +4,6 @@ import "SpaUI.Widget"
 
 local GetSpellCooldown,CastSpell,IsCurrentSpell = GetSpellCooldown,CastSpell,IsCurrentSpell
 local tinsert = tinsert
-local InCombatLockdown  = InCombatLockdown
 
 -- 需要去重的专业技能
 SkillLineNeedDistinct = {

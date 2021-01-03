@@ -5,6 +5,7 @@ L = _Locale
 
 function OnLoad(self)
     ShowMessage(L["addon_loaded_tip"]:format(GetAddOnMetadata(addonName,"version")))
+    _Config = SVManager("SpaUIConfigDB","SpaUIConfigDBChar")
 end
 
 -- 简化/reload
@@ -42,8 +43,7 @@ function ShowMessage(text)
     print(L["message_format"]:format(text))
 end
 
--- log
-__Arguments__{String}
-function Log(string)
-    print(L["debug_prefix"]..string)
+-- Log
+function Log(...)
+    print(L["debug_prefix"], ...)
 end

@@ -19,7 +19,8 @@ L["command_reload"] = "重载界面"
 -- Bindings
 L["toggle_raid_marker_frame"] = "打开/关闭世界标记窗口"
 -- Config
-L["config_addon_version"] = "|cFF00BFFF%s|r"
+L["config_panel_title"] = L['addon_name'].."配置面板"
+L["config_panel_show_after_combat"] = "配置面板将在战斗结束后显示"
 L["config_addon_author"] = "作者：|cFFADD8E6%s|r"
 L["config_addon_introduct"] = [[
 |cFF00FFFFS|r|cFFFFC0CBp|r|cFFFF6347a|rUI只对暴雪原生界面进行了功能增强，几乎没有任何"美化"，未来也不会考虑
@@ -30,6 +31,7 @@ L["config_debug"] = "调试模式"
 L["config_debug_tooltip"] = "作者用，勾选后会看见很多对用户没意义的信息，正常情况下你不应该看到该选项"
 L["config_debugmode_enable"] = "调试模式已启用，你可以输入命令\"/spa debugMode 0\"关闭"
 L["config_debugmode_disable"] = "调试模式已关闭，你可以输入命令\"/spa debugMode 1\"启用"
+
 -- AutoRepair
 L["auto_repair_guild_cost"] = "|cfff07100你本次修理消耗公会资金: %s|r"
 L["auto_repair_cost"] = "|cffead000修理花费: %s|r"
