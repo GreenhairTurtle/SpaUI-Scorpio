@@ -72,6 +72,11 @@ MovableFramesNeedWait = {
         ["KeyBindingFrame"] = {
             movable             = true,
             Mover               = {}
+        },
+        -- 快速绑定
+        ["QuickKeybindFrame"] = {
+            movable             = true,
+            Mover               = {}
         }
     }, 
     -- 宏命令

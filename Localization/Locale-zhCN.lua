@@ -8,7 +8,9 @@ L["addon_name"] = "|cFF00FFFFS|r|cFFFFC0CBp|r|cFFFF6347a|rUI"
 L["addon_loaded_tip"] = "|cFF00BFFF%s|r 已载入"
 L["debug_prefix"] = L["addon_name"].." Debug:"
 L["message_format"] = L["addon_name"]..":%s"
--- 命令
+L["minute_format"] = "%d分"
+L["second_format"] = "%d秒"
+-- command
 L["command_help"] = [[
 以下为常用的宏命令：
 |cFF00BFFF/rl|r 重载界面
@@ -153,3 +155,7 @@ L['ej_savedinstance_boss_killed'] = "|cFFFF0000已击杀|r"
 L['ej_savedinstance_boss_not_killed'] = "|cFF00FF00未击杀|r"
 -- Quest
 L["auto_quest_turnin_button_tooltip"] = "自动交接任务开关\n开启后按住Shift键可以暂时屏蔽"
+-- CooldownAnnouncer
+L["cooldown_announcer_spell_active"] = "%s已激活！"
+L["cooldown_announcer_spell_ready"] = "%s准备就绪！"
+L["cooldown_announcer_spell_not_ready"] = "%s还在冷却中，剩余%s"

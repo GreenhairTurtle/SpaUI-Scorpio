@@ -10,4 +10,5 @@
     <Script file="Features/Movable.lua"/>
     <Script file="Features/Tooltips.lua"/>
     <Script file="Features/TradeTabs.lua"/>
+    <Script file="Features/CooldownAnnouncer.lua"/>
 </Ui>
