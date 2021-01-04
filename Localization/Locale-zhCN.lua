@@ -159,3 +159,7 @@ L["auto_quest_turnin_button_tooltip"] = "自动交接任务开关\n开启后按�
 L["cooldown_announcer_spell_active"] = "%s已激活！"
 L["cooldown_announcer_spell_ready"] = "%s准备就绪！"
 L["cooldown_announcer_spell_not_ready"] = "%s还在冷却中，剩余%s"
+L["cooldown_announcer_item_wait_cooldown"] = "%s正在等待冷却"
+L["cooldown_announcer_item_ready"] = "%s准备就绪！"
+L["cooldown_announcer_item_not_ready"] = "%s还在冷却中，剩余%s！"
+L["cooldown_announcer_item_count"] = "剩余使用次数：%d"

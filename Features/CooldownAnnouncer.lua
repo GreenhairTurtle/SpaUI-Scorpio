@@ -5,12 +5,14 @@ L = _Locale
 local HasAction = HasAction
 local GetActionInfo = GetActionInfo
 local GetMacroSpell = GetMacroSpell
+local GetMacroItem = GetMacroItem
 local GetSpellLink = GetSpellLink
 local GetSpellCooldown = GetSpellCooldown
 local IsInGroup = IsInGroup
 local SendChatMessage = SendChatMessage
 local GetItemCount = GetItemCount
 local GetItemInfo = GetItemInfo
+local GetItemCooldown = GetItemCooldown
 
 SupportAnnouncerFrames = {
     ActionButton1,ActionButton2,ActionButton3,ActionButton4,ActionButton5,ActionButton6,
@@ -23,6 +25,7 @@ SupportAnnouncerFrames = {
     MultiBarRightButton7,MultiBarRightButton8,MultiBarRightButton9,MultiBarRightButton10,MultiBarRightButton11,MultiBarRightButton12,
     MultiBarLeftButton1,MultiBarLeftButton2,MultiBarLeftButton3,MultiBarLeftButton4,MultiBarLeftButton5,MultiBarLeftButton6,
     MultiBarLeftButton7,MultiBarLeftButton8,MultiBarLeftButton9,MultiBarLeftButton10,MultiBarLeftButton11,MultiBarLeftButton12,
+    ExtraActionButton1
 }
 
 Announcer = SecureFrame("SpaUICooldownAnnouncer")
@@ -38,25 +41,64 @@ function Announcer:AnnouncerCooldown(name)
     local action = button.action
     local actionType, id, subType = GetActionInfo(action)
     Log(actionType,id,subType)
-    if actionType == "spell" or actionType == "macro" then
-        local spellID = (actionType == "macro" and GetMacroSpell(id) or id)
-        if spellID then 
-            local link = GetSpellLink(spellID)
-            local start, duration, enabled = GetSpellCooldown(spellID)
-            if link then
-                if enabled == 0 then
-                    SendCooldownMessage(L['cooldown_announcer_spell_active']:format(link))
-                elseif start > 0 and duration > 0 then
-                    SendCooldownMessage(L['cooldown_announcer_spell_not_ready']:format(link, FormatCooldown(floor(duration-(GetTime()-start)+0.5))))
-                else
-                    SendCooldownMessage(L['cooldown_announcer_spell_ready']:format(link))
+    if actionType == "spell"then
+        pcall(AnnounceSpell,id)
+    elseif actionType == "item" then
+        pcall(AnnounceItem,id)
+    elseif actionType == "macro" then
+        local spellID = GetMacroSpell(id)
+        local _,itemLink = GetMacroItem(id)
+        if spellID then
+            pcall(AnnounceSpell,spellID)
+        elseif itemLink then
+            local itemString = string.match(itemLink, "item:([%-?%d:]+)")
+            if itemString then
+                local itemId = string.match(itemLink, "item:(%d*)")
+                if itemId and itemId ~= "" then
+                    itemId = tonumber(itemId)
+                    if itemId and itemId > 0 then pcall(AnnounceItem,itemId) end
                 end
             end
         end
-    elseif actionType == "item" then
-        -- todo
     end
     Delay(0.5)
+end
+
+-- 通报物品
+function AnnounceItem(itemId)
+    local _, link, _, _, _, _, _, _, _, _, _, classID = GetItemInfo(itemId)
+    local start, duration, enable = GetItemCooldown(itemId)
+    if enable == 0 then
+        SendCooldownMessage(L['cooldown_announcer_item_wait_cooldown']:format(link))
+    else
+        local message
+        if start > 0 and duration > 0 then
+            message = L['cooldown_announcer_item_not_ready']:format(link, FormatCooldown(floor(duration-(GetTime()-start)+0.5)))
+        else
+            message = L['cooldown_announcer_item_ready']:format(link)
+        end
+        -- 消耗品显示使用次数
+        if classID == LE_ITEM_CLASS_CONSUMABLE then
+            local count = GetItemCount(itemId,false,true)
+            message = message..L['cooldown_announcer_item_count']:format(count)
+        end
+        SendCooldownMessage(message)
+    end
+end
+
+-- 通报技能
+function AnnounceSpell(spellID)
+    local link = GetSpellLink(spellID)
+    local start, duration, enabled = GetSpellCooldown(spellID)
+    if link then
+        if enabled == 0 then
+            SendCooldownMessage(L['cooldown_announcer_spell_active']:format(link))
+        elseif start > 0 and duration > 0 then
+            SendCooldownMessage(L['cooldown_announcer_spell_not_ready']:format(link, FormatCooldown(floor(duration-(GetTime()-start)+0.5))))
+        else
+            SendCooldownMessage(L['cooldown_announcer_spell_ready']:format(link))
+        end
+    end
 end
 
 function FormatCooldown(second)
