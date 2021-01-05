@@ -40,12 +40,37 @@ function CreateConfigPanel()
     Log("Create ConfigPanel")
 
     ConfigPanel = Dialog("SpaUIConfigPanel")
+    CategoryList = FauxScrollFrame("CategoryList", ConfigPanel)
 
     Style[ConfigPanel] = {
-        size                = Size(858,660),
+        size                = Size(858, 660),
 
         Header              = {
             text            = L['config_panel_title']
+        },
+
+        Resizer             = {
+            visible         = false
+        },
+
+        CategoryList        = {
+            size            = Size(175, 569),
+            location        = {Anchor("TOPLEFT",22,-40)},
+            backdrop                = {
+                edgeFile            = [[Interface\Tooltips\UI-Tooltip-Border]],
+                edgeSize            = 16,
+                tileEdge            = true,
+                insets              = { left = 0, right = 0, top = 5, bottom = 5 }
+            },
+            backdropBorderColor     = ColorType(0.6, 0.6, 0.6, 0.6),
+            scrollBarHideable       = true,
+
+            ScrollBar               = {
+                location            = {
+                    Anchor("TOPRIGHT", -6, -24),
+                    Anchor("BOTTOMRIGHT", -6, 24)
+                },
+            },
         }
     }
 end
