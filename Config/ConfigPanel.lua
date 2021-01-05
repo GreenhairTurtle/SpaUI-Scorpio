@@ -40,7 +40,6 @@ function CreateConfigPanel()
     Log("Create ConfigPanel")
 
     ConfigPanel = Dialog("SpaUIConfigPanel")
-    ConfigPanel.Mover = Mover
 
     Style[ConfigPanel] = {
         size                = Size(858,660),
