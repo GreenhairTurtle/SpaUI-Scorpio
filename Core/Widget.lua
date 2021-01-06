@@ -2,6 +2,7 @@ Scorpio "SpaUI.Widget" ""
 
 namespace "SpaUI.Widget"
 
+-- TradeTabs.lua
 __Sealed__() __Template__(SecureCheckButton)
 class "TradeTab" {
     Border              = Texture,
@@ -66,3 +67,76 @@ Style.UpdateSkin("Default",{
         }
     }
 })
+
+-- ConfigPanel CheckButton
+__Sealed__()
+class "OptionsCheckButton" (function(_ENV)
+    inherit "CheckButton"
+
+    TooltipText         = String
+
+    local function OnEnter(self)
+        if self.TooltipText then
+            GameTooltip:SetOwner(self,"ANCHOR_RIGHT")
+            GameTooltip:AddLine(self.TooltipText)
+            GameTooltip:Show()
+        end
+    end
+
+    local function OnLeave(self)
+        GameTooltip:Hide()
+    end
+
+    local function OnClick(self)
+        if ( self:GetChecked() ) then
+            PlaySound(SOUNDKIT.IG_MAINMENU_OPTION_CHECKBOX_ON);
+        else
+            PlaySound(SOUNDKIT.IG_MAINMENU_OPTION_CHECKBOX_OFF);
+        end
+    end
+
+    __Template__{
+        Label               = FontString,
+    }
+    function __ctor(self)
+        self.OnEnter = self.OnEnter + OnEnter
+        self.OnLeave = self.OnLeave + OnLeave
+        self.OnClick = self.OnClick + OnClick
+    end
+end)
+
+Style.UpdateSkin("Default",{
+    [OptionsCheckButton] = {
+        size                    = Size(26, 26),
+        hitRectInsets           = Inset(0,-100,0,0),
+
+        NormalTexture           = {
+            file                = [[Interface\Buttons\UI-CheckBox-Up]],
+            setAllPoints        = true,
+        },
+        PushedTexture           = {
+            file                = [[Interface\Buttons\UI-CheckBox-Down]],
+            setAllPoints        = true,
+        },
+        HighlightTexture        = {
+            file                = [[Interface\Buttons\UI-CheckBox-Highlight]],
+            setAllPoints        = true,
+            alphamode           = "ADD",
+        },
+        CheckedTexture          = {
+            file                = [[Interface\Buttons\UI-CheckBox-Check]],
+            setAllPoints        = true,
+        },
+        DisabledCheckedTexture  = {
+            file                = [[Interface\Buttons\UI-CheckBox-Check-Disabled]],
+            setAllPoints        = true,
+        },
+        Label                   = {
+            fontObject          = GameFontHighlightLeft,
+            location            = { Anchor("LEFT", 2, 1, nil, "RIGHT") },
+        }
+    }
+})
+
+__Sealed__()
+class ""

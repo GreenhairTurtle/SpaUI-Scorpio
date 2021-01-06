@@ -1,5 +1,7 @@
+local addonName, _ = ...
 Scorpio "SpaUI.Localization.enUS" ""
 
+local version = GetAddOnMetadata(addonName,"version")
 local L = _Locale("zhCN",true)
 
 if not L then return end
@@ -11,16 +13,18 @@ L["message_format"] = L["addon_name"]..":%s"
 L["minute_format"] = "%d分"
 L["second_format"] = "%d秒"
 -- command
-L["command_help"] = [[
-以下为常用的宏命令：
+L["command_help"] = [[以下为常用的宏命令：
 |cFF00BFFF/rl|r 重载界面
-|cFF00BFFF/spa|r 打开此面板
+|cFF00BFFF/spa|r 打开/关闭配置面板
 |cFF00BFFF/spa align|r 显示或隐藏网格线
 ]]
-L["command_reload"] = "重载界面"
+L["command_error"] = "请输入正确的命令"
+L["command_debugmode_enable"] = "调试模式已打开"
+L["command_debugmode_disable"] = "调式模式已关闭"
 -- Bindings
 L["toggle_raid_marker_frame"] = "打开/关闭世界标记窗口"
 -- Config
+L["config_version"] = "Scorpio:|cFF00BFFF%s|r "..L["addon_name"]..":|cFF00BFFF%s|r"
 L["config_panel_title"] = L['addon_name'].."配置面板"
 L["config_panel_show_after_combat"] = "配置面板将在战斗结束后显示"
 L["config_addon_author"] = "作者：|cFFADD8E6%s|r"

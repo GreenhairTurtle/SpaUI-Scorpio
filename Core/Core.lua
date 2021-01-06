@@ -4,14 +4,25 @@ Scorpio "SpaUI" ""
 L = _Locale
 
 function OnLoad(self)
-    ShowMessage(L["addon_loaded_tip"]:format(GetAddOnMetadata(addonName,"version")))
+    ScorpioVersion = GetAddOnMetadata("Scorpio","version")
+    AddonVersion = GetAddOnMetadata(addonName,"version")
+    ShowMessage(L["addon_loaded_tip"]:format(AddonVersion))
     _Config = SVManager("SpaUIConfigDB","SpaUIConfigDBChar")
+    if _Config.DebugMode then
+        ShowMessage(L['command_debugmode_enable'])
+    end
 end
 
 -- 简化/reload
 __SlashCmd__ "rl"
 function Reload()
     ReloadUI()
+end
+
+__SlashCmd__ "spa" "help"
+__SlashCmd__ "spaui" "help"
+function CmdHelp()
+    ShowMessage(L["command_help"])
 end
 
 -- 字符串染色
@@ -45,5 +56,7 @@ end
 
 -- Log
 function Log(...)
-    print(L["debug_prefix"], ...)
+    if _Config and _Config.DebugMode then
+        print(L["debug_prefix"], ...)
+    end
 end
