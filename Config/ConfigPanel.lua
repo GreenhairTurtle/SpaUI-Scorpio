@@ -37,10 +37,10 @@ function ToggleDebugMode(info)
         info = strlower(info)
         if info == "0" or info == "off" or info == "disable" then
             _Config.DebugMode = false
-            ShowMessage(L['command_debugmode_disable'])
+            ShowMessage(L['config_debug_disable'])
         elseif info == "1" or info == "true" or info == "enable" then
             _Config.DebugMode = true
-            ShowMessage(L['command_debugmode_enable'])
+            ShowMessage(L['config_debug_enable'])
         else
             ShowMessage(L['command_error'])
         end
@@ -82,7 +82,6 @@ function CreateConfigPanel()
     OkayButton = UIPanelButton("OkayButton", ConfigPanel)
     -- 调试按钮
     DebugButton = OptionsCheckButton("DebugButton", ConfigPanel)
-    DebugButton.TooltipText = L['config_debug_tooltip']
 
     Style[ConfigPanel] = {
         size                = Size(858, 660),
@@ -156,7 +155,7 @@ function CreateConfigPanel()
         DebugButton    = {
             enabled         = false,
             checked         = _Config.DebugMode,
-            visible         = _Config.DebugMode,
+            visible         = _Config.DebugMode or false,
             location        = {Anchor("BOTTOMLEFT",0,0,"CategoryList","TOPLEFT")},
             Label           = {
                 text        = L['config_debug']

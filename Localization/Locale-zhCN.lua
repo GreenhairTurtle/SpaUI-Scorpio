@@ -19,8 +19,6 @@ L["command_help"] = [[以下为常用的宏命令：
 |cFF00BFFF/spa align|r 显示或隐藏网格线
 ]]
 L["command_error"] = "请输入正确的命令"
-L["command_debugmode_enable"] = "调试模式已打开"
-L["command_debugmode_disable"] = "调式模式已关闭"
 -- Bindings
 L["toggle_raid_marker_frame"] = "打开/关闭世界标记窗口"
 -- Config
@@ -34,9 +32,8 @@ L["config_addon_introduct"] = [[
 L["config_id_tip"] = "鼠标提示显示ID"
 L["config_id_tip_tooltip"] = "在鼠标提示内显示任务ID，法术ID，货币ID，NPCID等"
 L["config_debug"] = "调试模式"
-L["config_debug_tooltip"] = "作者用，勾选后会看见很多对用户没意义的信息，正常情况下你不应该看到该选项"
-L["config_debugmode_enable"] = "调试模式已启用，你可以输入命令\"/spa debugMode 0\"关闭"
-L["config_debugmode_disable"] = "调试模式已关闭，你可以输入命令\"/spa debugMode 1\"启用"
+L["config_debug_enable"] = "调试模式已启用，你可以输入命令\"/spa debug 0\"关闭"
+L["config_debug_disable"] = "调试模式已关闭，你可以输入命令\"/spa debug 1\"启用"
 
 -- AutoRepair
 L["auto_repair_guild_cost"] = "|cfff07100你本次修理消耗公会资金: %s|r"
@@ -82,9 +79,6 @@ L["chat_bar_channel_guild"] = "公"
 L["chat_bar_channel_world"] = "世"
 L["chat_bar_outside"] = "频道切换栏似乎在屏幕外面？"
 L["chat_bar_emote_table"] = "聊天表情"
-L["chat_bar_world_channel_tooltip_join"] = "点击加入大脚世界频道"
-L["chat_bar_world_channel_tooltip_leave"] = "右键点击离开大脚世界频道"
-L["chat_bar_world_channel_join_confirm"] = "确定加入\"大脚世界频道\"吗？"
 -- ChatEmote
 L["chat_emote_rt1"] = "{rt1}"
 L["chat_emote_rt2"] = "{rt2}"

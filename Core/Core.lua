@@ -9,7 +9,7 @@ function OnLoad(self)
     ShowMessage(L["addon_loaded_tip"]:format(AddonVersion))
     _Config = SVManager("SpaUIConfigDB","SpaUIConfigDBChar")
     if _Config.DebugMode then
-        ShowMessage(L['command_debugmode_enable'])
+        ShowMessage(L['config_debug_enable'])
     end
 end
 
