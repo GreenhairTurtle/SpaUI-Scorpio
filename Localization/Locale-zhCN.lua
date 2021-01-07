@@ -1,17 +1,17 @@
-local addonName, _ = ...
 Scorpio "SpaUI.Localization.enUS" ""
 
-local version = GetAddOnMetadata(addonName,"version")
 local L = _Locale("zhCN",true)
 
 if not L then return end
 
 L["addon_name"] = "|cFF00FFFFS|r|cFFFFC0CBp|r|cFFFF6347a|rUI"
-L["addon_loaded_tip"] = "|cFF00BFFF%s|r 已载入"
+L["addon_loaded_tip"] = "|cFF00BFFF%s|r 已载入，你可以输入|cFF00BFFF/spa help|r获取帮助"
 L["debug_prefix"] = L["addon_name"].." Debug:"
 L["message_format"] = L["addon_name"]..":%s"
 L["minute_format"] = "%d分"
 L["second_format"] = "%d秒"
+
+
 -- command
 L["command_help"] = [[以下为常用的宏命令：
 |cFF00BFFF/rl|r 重载界面
@@ -19,56 +19,81 @@ L["command_help"] = [[以下为常用的宏命令：
 |cFF00BFFF/spa align|r 显示或隐藏网格线
 ]]
 L["command_error"] = "请输入正确的命令"
+
+
 -- Bindings
 L["toggle_raid_marker_frame"] = "打开/关闭世界标记窗口"
+
+
 -- Config
 L["config_version"] = "Scorpio:|cFF00BFFF%s|r "..L["addon_name"]..":|cFF00BFFF%s|r"
 L["config_panel_title"] = L['addon_name'].."配置面板"
 L["config_panel_show_after_combat"] = "配置面板将在战斗结束后显示"
 L["config_addon_author"] = "作者：|cFFADD8E6%s|r"
-L["config_addon_introduct"] = [[
-|cFF00FFFFS|r|cFFFFC0CBp|r|cFFFF6347a|rUI只对暴雪原生界面进行了功能增强，几乎没有任何"美化"，未来也不会考虑
-    ]]
 L["config_id_tip"] = "鼠标提示显示ID"
 L["config_id_tip_tooltip"] = "在鼠标提示内显示任务ID，法术ID，货币ID，NPCID等"
 L["config_debug"] = "调试模式"
 L["config_debug_enable"] = "调试模式已启用，你可以输入命令\"/spa debug 0\"关闭"
 L["config_debug_disable"] = "调试模式已关闭，你可以输入命令\"/spa debug 1\"启用"
+-- Config Introduce
+L["config_addon_introduct"] = [[
+|cFF00FFFFS|r|cFFFFC0CBp|r|cFFFF6347a|rUI只对暴雪原生界面进行了功能增强，几乎没有任何"美化"，未来也不会考虑。
+你可以输入命令 |cFF00BFFF/spa help|r 获取帮助
+]]
+L["config_changelog_title"] = "更新日志："
 
 -- AutoRepair
 L["auto_repair_guild_cost"] = "|cfff07100你本次修理消耗公会资金: %s|r"
 L["auto_repair_cost"] = "|cffead000修理花费: %s|r"
 L["auto_repair_no_money"] = "你没钱，穷逼！"
+
+
 -- AutoSell
 L["auto_sell_detail"] = "%s卖出了%s"
 L["auto_sell_total"] = "共获得收入%s"
+
+
 -- Tooltip
 L["tooltip_spell_id"] = "法术ID："
 L["tooltip_npc_id"] = "NPCID："
 L["tooltip_currency_id"] = "货币ID："
 L["tooltip_task_id"] = "任务ID："
 L["tooltip_item_id"] = "物品ID："
+
+
 -- MarkPosition
 L["mp_button_text"] = "定位"
 L["mp_cannot_mark"] = "当前地图无法标记！"
 L["mp_button_tooltip"] = "左键显示输入框，右键取消位置标记"
+
+
 -- Reputation
 L["reputation_paragon"] = "巅峰x%d"
 L["reputation_paragon_no_history"] = "巅峰"
+
+
 -- MinimapPing
 L["minimap_ping_who_group"] = "(%d队)%s"
+
+
 -- FriendsList
 L["friends_list_area"] = "|cFF7FFF00%s|r"
+
+
 -- UnitFrames
 L["uf_spell_source_prefix"] = "法术来源："
 L["uf_buff_source_prefix"] = "增益来源："
 L["uf_debuff_source_prefix"] = "减益来源："
+
+
 -- KeystoneRewardLevel
 L["key_stone_reward_title"] = "史诗钥石奖励"
 L["key_stone_reward_title_difficulty"] = "层数"
 L["key_stone_reward_title_level"] = "奖励(低保)"
 L["key_stone_current_owned"] = "当前"
 L["key_stone_reward_tooltip"] = "显示史诗钥石奖励对照表"
+
+
 -- ChatBar
 L["chat_bar_channel_say"] = "说"
 L["chat_bar_channel_yell"] = "喊"
@@ -79,6 +104,8 @@ L["chat_bar_channel_guild"] = "公"
 L["chat_bar_channel_world"] = "世"
 L["chat_bar_outside"] = "频道切换栏似乎在屏幕外面？"
 L["chat_bar_emote_table"] = "聊天表情"
+
+
 -- ChatEmote
 L["chat_emote_rt1"] = "{rt1}"
 L["chat_emote_rt2"] = "{rt2}"
@@ -140,19 +167,29 @@ L["chat_emote_wretched"] = "{猥琐}"
 L["chat_emote_victory"] = "{胜利}"
 L["chat_emote_lei_feng"] = "{雷锋}"
 L["chat_emote_injustice"] = "{委屈}"
+
+
 -- ChatCopy
 L["chat_copy_dialog_title"] = "聊天复制"
+
+
 -- RaidMarkers
 L["raid_markers_clear_all"] = "清除全部"
 L["raid_markers_tooltip"] = "（左键放置，右键清除）"
 L["raid_markers_nopermission"] = "你不在队伍里或你不是团长（助理）！"
+
+
 -- EJ SavedInstances
 L["ej_loaded_fail"] = "地下城手册显示副本进度模块加载失败"
 L["ej_savedinstance_progress"] = "%d/%d"
 L['ej_savedinstance_boss_killed'] = "|cFFFF0000已击杀|r"
 L['ej_savedinstance_boss_not_killed'] = "|cFF00FF00未击杀|r"
+
+
 -- Quest
 L["auto_quest_turnin_button_tooltip"] = "自动交接任务开关\n开启后按住Shift键可以暂时屏蔽"
+
+
 -- CooldownAnnouncer
 L["cooldown_announcer_spell_active"] = "%s已激活！"
 L["cooldown_announcer_spell_ready"] = "%s准备就绪！"

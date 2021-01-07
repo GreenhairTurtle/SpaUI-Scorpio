@@ -138,5 +138,57 @@ Style.UpdateSkin("Default",{
     }
 })
 
-__Sealed__()
-class ""
+-- 更新日志
+__Sealed__() __Template__(Frame)
+class "ChangeLogItemFrame"{
+    ContentText                 = FontString,
+    TitleText                   = FontString,
+
+    Content                     = {
+        type                    = String,
+        set                     = function(self, text)
+            local contentText   = self:GetChild("ContentText")
+            contentText:SetText(text or "")
+            Next(function()
+                local titleText = self:GetChild("TitleText")
+                local textHeight = contentText:GetHeight() + titleText:GetHeight()
+                print("next content textHeight:"..textHeight.." title:"..(titleText:GetText() or "nil").." content:"..(contentText:GetText() or "nil"))
+                self:SetHeight(textHeight)
+            end)
+        end
+    },
+
+    Title                     = {
+        type                    = String,
+        set                     = function(self, text)
+            local titleText   = self:GetChild("TitleText")
+            titleText:SetText(text or "")
+            Next(function()
+                local contentText   = self:GetChild("ContentText")
+                local textHeight = contentText:GetHeight() + titleText:GetHeight()
+                print("next title textHeight:"..textHeight.." title:"..(titleText:GetText() or "nil").." content:"..(contentText:GetText() or "nil"))
+                self:SetHeight(textHeight)
+            end)
+        end
+    }
+}
+
+Style.UpdateSkin("Default",{
+    [ChangeLogItemFrame] = {
+        height                  = 80,
+        TitleText               = {
+            fontObject          = GameFontNormal,
+            location            = {
+                Anchor("TOPLEFT"),
+                Anchor("TOPRIGHT")
+            }
+        },
+        ContentText                 = {
+            fontObject          = GameFontWhite,
+            location            = {
+                Anchor("TOPLEFT", 0, -10, "TitleText", "BOTTOM"),
+                Anchor("RIGHT")
+            }
+        }
+    }
+})
