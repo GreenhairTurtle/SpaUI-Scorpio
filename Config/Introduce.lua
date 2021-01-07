@@ -5,26 +5,25 @@ L = _Locale
 __Async__()
 function OnEnable(self)
     CreateChangeLogContent()
-
     -- 介绍页
     IntroduceConainter = Frame("Introduce", ConfigContainer)
     FontString("IntroduceText", IntroduceConainter)
     FontString("ChangeLogTitle", IntroduceConainter)
     ChangeLogFrame = FauxScrollFrame("ChangeLog", IntroduceConainter)
 
-    local item1 = ChangeLogItemFrame("ChangeLogItem1", ChangeLogFrame.ScrollChild)
-    Style[item1].Title = "1111"
-    item1.Content = "3333\n44444444422121\n4r-00-qw-dqfqf"
-    -- Style[item1].Content = "3333\n44444444422121\n4r-00-qw-dqfqf"
-    item1:SetPoint("TOP",0,0)
-    item1:SetPoint("LEFT")
-    item1:SetPoint("RIGHT")
-    -- local item2 = ChangeLogItemFrame("ChangeLogItem2", ChangeLogFrame.ScrollChild)
-    -- item2:SetPoint("TOP",item1,"BOTTOM",0,-32)
-    -- item2:SetPoint("LEFT")
-    -- item2:SetPoint("RIGHT")
-    -- Style[item2].Title = "1111"
-    -- Style[item2].Content = "2222"
+    for index, changeLogItem in pairs(ChangeLogContent) do
+        local title = FontString("Title"..index, ChangeLogFrame.ScrollChild, "GameFontNormal")
+        local content = FontString("Content"..index, ChangeLogFrame.ScrollChild, nil, "GameFontWhite")
+        title:SetText(("%s %s"):format(changeLogItem.version, changeLogItem.date))
+        content:SetText(changeLogItem.content)
+        title:SetJustifyH("LEFT")
+        content:SetJustifyH("LEFT")
+        title:SetPoint("LEFT",ChangeLogFrame.ScrollChild,"LEFT")
+        title:SetPoint("TOP",index==1 and ChangeLogFrame.ScrollChild or ChangeLogFrame.ScrollChild:GetChild("Content"..(index-1)),"BOTTOM",0,index==1 and 0 or -20)
+        -- title:SetPoint("RIGHT",ChangeLogFrame.ScrollChild,"RIGHT")
+        content:SetPoint("TOPLEFT",title,"BOTTOMLEFT",24,-10)
+        -- content:SetPoint("RIGHT",ChangeLogFrame.ScrollChild,"RIGHT")
+    end
 
     Style[IntroduceConainter] = {
         setAllPoints            = true,
@@ -61,6 +60,13 @@ function OnEnable(self)
                     Anchor("BOTTOMRIGHT", -6, 24)
                 },
             },
+
+            -- ScrollChild             = {
+            --     location            = {
+            --         Anchor("TOPLEFT"),
+            --         Anchor("TOPRIGHT", -28, 0)
+            --     }
+            -- }
         }
     }
 end
@@ -68,13 +74,78 @@ end
 function CreateChangeLogContent()
     if ChangeLogContent then return end
     ChangeLogContent = {
-        ["Alpha-v1.1"]      = {
+        {
+            version         = "Alpha-v1.1",
             date            = "2020/10/21",
-            content         = [[
-                测试测试测试测试
-            ]]
+            content         = [[测试测试测试测试]]
         },
-        ["Alpha-v1.0"]      = {
+        {
+            version         = "Alpha-v1.1",
+            date            = "2020/10/21",
+            content         = [[测试测试测试测试]]
+        },
+        {
+            version         = "Alpha-v1.1",
+            date            = "2020/10/21",
+            content         = [[测试测试测试测试]]
+        },
+        {
+            version         = "Alpha-v1.1",
+            date            = "2020/10/21",
+            content         = [[测试测试测试测试]]
+        },
+        {
+            version         = "Alpha-v1.1",
+            date            = "2020/10/21",
+            content         = [[测试测试测试测试]]
+        },
+        {
+            version         = "Alpha-v1.1",
+            date            = "2020/10/21",
+            content         = [[测试测试测试测试]]
+        },
+        {
+            version         = "Alpha-v1.1",
+            date            = "2020/10/21",
+            content         = [[测试测试测试测试]]
+        },
+        {
+            version         = "Alpha-v1.1",
+            date            = "2020/10/21",
+            content         = [[测试测试测试测试]]
+        },
+        {
+            version         = "Alpha-v1.1",
+            date            = "2020/10/21",
+            content         = [[测试测试测试测试]]
+        },
+        {
+            version         = "Alpha-v1.1",
+            date            = "2020/10/21",
+            content         = [[测试测试测试测试]]
+        },
+        {
+            version         = "Alpha-v1.1",
+            date            = "2020/10/21",
+            content         = [[测试测试测试测试]]
+        },
+        {
+            version         = "Alpha-v1.1",
+            date            = "2020/10/21",
+            content         = [[测试测试测试测试]]
+        },
+        {
+            version         = "Alpha-v1.1",
+            date            = "2020/10/21",
+            content         = [[测试测试测试测试]]
+        },
+        {
+            version         = "Alpha-v1.1",
+            date            = "2020/10/21",
+            content         = [[测试测试测试测试]]
+        },
+        {
+            version         = "Alpha-v1.0",
             date            = "2020/10/21",
             content         = [[第一个版本]]
         }
