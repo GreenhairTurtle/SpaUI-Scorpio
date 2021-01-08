@@ -93,7 +93,7 @@ function AnnounceSpell(spellID)
     if link then
         if enabled == 0 then
             SendCooldownMessage(L['cooldown_announcer_spell_active']:format(link))
-        elseif start > 0 and duration > 0 then
+        elseif start > 0 and duration > 1.5 then
             SendCooldownMessage(L['cooldown_announcer_spell_not_ready']:format(link, FormatCooldown(floor(duration-(GetTime()-start)+0.5))))
         else
             SendCooldownMessage(L['cooldown_announcer_spell_ready']:format(link))

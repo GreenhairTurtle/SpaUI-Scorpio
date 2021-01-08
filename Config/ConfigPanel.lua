@@ -1,5 +1,5 @@
 Scorpio "SpaUI.Config" ""
-import "SpaUI.Widget"
+import "SpaUI.Widget.Config"
 
 L = _Locale
 local InCombatLockdown = InCombatLockdown
@@ -68,7 +68,7 @@ function CreateConfigPanel()
     Log("Create ConfigPanel")
 
     ConfigPanel = Dialog("SpaUIConfigPanel")
-    ConfigCategory = FauxScrollFrame("CategoryList", ConfigPanel)
+    CategoryPanel = FauxScrollFrame("CategoryList", ConfigPanel)
     ConfigContainer = Frame("Container", ConfigPanel)
     -- 版本号
     Version = FontString("Version", ConfigPanel)
@@ -82,6 +82,8 @@ function CreateConfigPanel()
     OkayButton = UIPanelButton("OkayButton", ConfigPanel)
     -- 调试按钮
     DebugButton = OptionsCheckButton("DebugButton", ConfigPanel)
+
+    RefreshCategorys()
 
     Style[ConfigPanel] = {
         size                = Size(858, 660),
@@ -164,6 +166,33 @@ function CreateConfigPanel()
     }
 end
 
-function OnDisable()
-    Log("ConfigPanel OnDisable")
+-- __Arguments__(ConfigCategory)
+function RegisterCategory(category)
+    if not CategoryList then
+        CategoryList = {}
+    end
+    tinsert(CategoryList, category)
+    RefreshCategorys()
+end
+
+__AsyncSingle__(true)
+function RefreshCategorys()
+    if not CategoryList or not CategoryPanel then return end
+    Delay(0.2)
+    Log("Refresh Config Categorys")
+
+    if not CategoryListButtons then
+        CategoryListButtons = {}
+    end
+    for index, category in ipairs(CategoryList) do
+        local button = CategoryListButtons[index]
+        if not button then
+            button = CategoryListButton("Category"..index, CategoryPanel.ScrollChild)
+            local top = index == 1
+            button:SetPoint("TOPLEFT",top and CategoryPanel.ScrollChild or CategoryPanel.ScrollChild:GetChild("Category"..(index-1)),top and "TOPLEFT" or "BOTTOMLEFT", 0, top and -8 or -5)
+            CategoryListButtons[index] = button
+        end
+        button:SetCategory(category)
+        button:Show()
+    end
 end

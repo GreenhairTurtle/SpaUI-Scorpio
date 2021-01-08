@@ -36,11 +36,13 @@ L["config_debug"] = "调试模式"
 L["config_debug_enable"] = "调试模式已启用，你可以输入命令\"/spa debug 0\"关闭"
 L["config_debug_disable"] = "调试模式已关闭，你可以输入命令\"/spa debug 1\"启用"
 -- Config Introduce
+L["config_category_introduce"] = "介绍"
 L["config_addon_introduct"] = [[
 |cFF00FFFFS|r|cFFFFC0CBp|r|cFFFF6347a|rUI只对暴雪原生界面进行了功能增强，几乎没有任何"美化"，未来也不会考虑。
 你可以输入命令 |cFF00BFFF/spa help|r 获取帮助
 ]]
 L["config_changelog_title"] = "更新日志："
+L['config_load_more'] = "查看更多"
 
 -- AutoRepair
 L["auto_repair_guild_cost"] = "|cfff07100你本次修理消耗公会资金: %s|r"
