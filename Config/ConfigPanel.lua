@@ -4,6 +4,28 @@ import "SpaUI.Widget.Config"
 L = _Locale
 local InCombatLockdown = InCombatLockdown
 
+
+CategoryList = {
+    -- 介绍
+    {
+        name = L['config_category_introduce'],
+        module = "Introduce",
+        enable = true
+    },
+    -- 聊天
+    {
+        name = L['config_category_chat'],
+        module = "Chat",
+        enable = true
+    },
+    -- 更新日志
+    {
+        name = L['config_category_changelog'],
+        module = "ChangeLog",
+        enable = true
+    },
+}
+
 function OnLoad()
     _Enabled = false
 end
@@ -77,6 +99,9 @@ function CreateConfigPanel()
     -- 取消
     -- 只有需要reload的选项这个按钮才有用，其它时候只是简单的关闭面板
     CancelButton = UIPanelButton("CancelButton", ConfigPanel)
+    CancelButton.OnClick = function(self)
+        ConfigPanel:Hide()
+    end
     -- 确定
     -- 只有需要reload的选项这个按钮才有用，其它时候只是简单的关闭面板
     OkayButton = UIPanelButton("OkayButton", ConfigPanel)
@@ -84,6 +109,7 @@ function CreateConfigPanel()
     DebugButton = OptionsCheckButton("DebugButton", ConfigPanel)
 
     RefreshCategorys()
+    SelectCategory(1)
 
     Style[ConfigPanel] = {
         size                = Size(858, 660),
@@ -93,6 +119,10 @@ function CreateConfigPanel()
         },
 
         Resizer             = {
+            visible         = false
+        },
+
+        CloseButton         = {
             visible         = false
         },
 
@@ -166,21 +196,18 @@ function CreateConfigPanel()
     }
 end
 
--- __Arguments__(ConfigCategory)
-function RegisterCategory(category)
-    if not CategoryList then
-        CategoryList = {}
+-- 进入战斗关闭面板
+__SystemEvent__()
+function PLAYER_REGEN_DISABLED()
+    if ConfigPanel and ConfigPanel:IsShown() then
+        ConfigPanel:Hide()
     end
-    tinsert(CategoryList, category)
-    RefreshCategorys()
 end
 
-__AsyncSingle__(true)
+-- 刷新类别
 function RefreshCategorys()
     if not CategoryList or not CategoryPanel then return end
-    Delay(0.2)
     Log("Refresh Config Categorys")
-
     if not CategoryListButtons then
         CategoryListButtons = {}
     end
@@ -190,9 +217,63 @@ function RefreshCategorys()
             button = CategoryListButton("Category"..index, CategoryPanel.ScrollChild)
             local top = index == 1
             button:SetPoint("TOPLEFT",top and CategoryPanel.ScrollChild or CategoryPanel.ScrollChild:GetChild("Category"..(index-1)),top and "TOPLEFT" or "BOTTOMLEFT", 0, top and -8 or -5)
+            button:InstantApplyStyle()
+            button.OnClick = OnCategoryButtonClick
             CategoryListButtons[index] = button
         end
         button:SetCategory(category)
         button:Show()
     end
+end
+
+-- 类别点击事件
+function OnCategoryButtonClick(self)
+    for _, button in ipairs(CategoryListButtons) do
+        local module = _Modules[button.category.module]
+        if button == self then
+            button:LockHighlight()
+            button:GetHighlightTexture():SetVertexColor(1, 1, 0)
+            module.Show()
+        else
+            button:UnlockHighlight()
+            button:GetHighlightTexture():SetVertexColor(.196, .388, .8)
+            module.Hide()
+        end
+    end
+end
+
+-- 选中类别
+function SelectCategory(index)
+    if not CategoryListButtons then return end
+    local button = CategoryListButtons[index]
+    if button then
+        OnCategoryButtonClick(button)
+    end
+end
+
+UnnecessaryFieldToDB = {
+    NeedReload = true,
+}
+
+-- 清除不合法及不需要的字段
+__Arguments__(RawTable)
+function ClearUnnecessaryFiledFromTable(table)
+    for field, value in pairs(table) do
+        if not UnnecessaryFieldToDB[field] then
+            local valueType = type(value)
+            if valueType == "table" then
+                ClearUnnecessaryFiledFromTable(value)
+            elseif valueType == "function" or valueType == "userdata" or valueType == "thread"  then
+                table[field] = nil
+            end
+        else
+            table[field] = nil
+        end
+    end
+end
+
+__Arguments__{NEString, RawTable}
+function SetDefaultToDB(key,table)
+    ClearUnnecessaryFiledFromTable(table)
+    _Config:SetDefault(key,table)
 end

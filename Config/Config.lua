@@ -6,8 +6,8 @@ namespace "SpaUI.Widget.Config"
 __Sealed__()
 class "OptionsCheckButton" (function(_ENV)
     inherit "CheckButton"
-
-    TooltipText         = String
+    
+    property "TooltipText" { type = String }
 
     local function OnEnter(self)
         if self.TooltipText then
@@ -30,7 +30,7 @@ class "OptionsCheckButton" (function(_ENV)
     end
 
     __Template__{
-        Label               = FontString,
+        Label               = UICheckButtonLabel,
     }
     function __ctor(self)
         self.OnEnter = self.OnEnter + OnEnter
@@ -42,7 +42,6 @@ end)
 Style.UpdateSkin("Default",{
     [OptionsCheckButton] = {
         size                    = Size(26, 26),
-        hitRectInsets           = Inset(0,-100,0,0),
 
         NormalTexture           = {
             file                = [[Interface\Buttons\UI-CheckBox-Up]],
@@ -67,31 +66,28 @@ Style.UpdateSkin("Default",{
         },
         Label                   = {
             fontObject          = GameFontHighlightLeft,
-            location            = { Anchor("LEFT", 2, 1, nil, "RIGHT") },
+            location            = { Anchor("LEFT", 2, 0, nil, "RIGHT") },
         }
     }
 })
-
--- ConfigPanel Category
-__Sealed__()
-struct "ConfigCategory" {
-    { name = "name", type = NEString, require = true },
-    { name = "module", type = NEString, require = true },
-    { name = "enable", type = Boolean, default = true },
-    { name = "update", type = Boolean }
-}
 
 -- CategoryList Button
 __Sealed__()
 class "CategoryListButton"(function(_ENV)
     inherit "CheckButton"
 
-    Category            = ConfigCategory
-
     function SetCategory(self,category)
-        Category = category
+        self.category = category
         self:SetText(category.name)
         self:SetEnabled(category.enable)
+    end
+
+    local function OnClick(self)
+        PlaySound(SOUNDKIT.IG_MAINMENU_OPTION_CHECKBOX_ON)
+    end
+
+    function __ctor(self)
+        self.OnClick = self.OnClick + OnClick
     end
 end)
 
@@ -104,15 +100,19 @@ Style.UpdateSkin("Default", {
         highlightTexture        = {
             file                = [[Interface\QuestFrame\UI-QuestLogTitleHighlight]],
             alphaMode           = "ADD",
+            vertexColor         = ColorType(.196, .388, .8),
             location            = {
                 Anchor("TOPLEFT", 0, 1),
                 Anchor("BOTTOMRIGHT", 0, 1)
             }
         },
         buttonText              = {
-            fontObject          = GameFontNormal,
             justifyH            = "LEFT",
             wordwrap            = false,
+            location            = {
+                Anchor("TOPLEFT", 10, 0),
+                Anchor("BOTTOMRIGHT", -10, 0)
+            }
         }
     }
 })

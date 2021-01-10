@@ -1,5 +1,7 @@
 <Ui xmlns="http://www.blizzard.com/wow/ui/"   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"   xsi:schemaLocation="http://www.blizzard.com/wow/ui/">
-    <Script file="Config/Config.lua"/>
-    <Script file="Config/ConfigPanel.lua"/>
-    <Script file="Config/Introduce.lua"/>
+    <Script file="Config.lua"/>
+    <Script file="ConfigPanel.lua"/>
+    <Script file="ChangeLog.lua"/>
+    <Script file="Introduce.lua"/>
+    <Script file="Chat.lua"/>
 </Ui>

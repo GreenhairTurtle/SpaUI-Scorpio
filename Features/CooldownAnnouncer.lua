@@ -133,6 +133,13 @@ local PreActionRun = [[
     end
 ]]
 
+local function AddAnnouncerTooltip(self)
+    GameTooltip:AddLine(" ")
+    GameTooltip:AddLine(L["cooldown_announcer_tooltip"],1,1,1,true)
+    GameTooltip:Show()
+end
+
 for _,frame in ipairs(SupportAnnouncerFrames) do
     Announcer:WrapScript(frame,"OnClick",PreActionRun)
+    hooksecurefunc(frame,"SetTooltip",AddAnnouncerTooltip)
 end

@@ -1,15 +1,15 @@
 <Ui xmlns="http://www.blizzard.com/wow/ui/"   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"   xsi:schemaLocation="http://www.blizzard.com/wow/ui/">
-    <Script file="Features/Features.lua"/>
-    <Script file="Features/AutoSell.lua"/>
-    <Script file="Features/AutoRepair.lua"/>
-    <Script file="Features/MinimapPing.lua"/>
-    <Script file="Features/CastBar.lua"/>
-    <Script file="Features/EasyDelete.lua"/>
-    <Script file="Features/KeystoneRewardLevel.lua"/>
-    <Script file="Features/EncounterJournalSavedInstances.lua"/>
-    <Script file="Features/Align.lua"/>
-    <Script file="Features/Movable.lua"/>
-    <Script file="Features/Tooltips.lua"/>
-    <Script file="Features/TradeTabs.lua"/>
-    <Script file="Features/CooldownAnnouncer.lua"/>
+    <Script file="Features.lua"/>
+    <Script file="AutoSell.lua"/>
+    <Script file="AutoRepair.lua"/>
+    <Script file="MinimapPing.lua"/>
+    <Script file="CastBar.lua"/>
+    <Script file="EasyDelete.lua"/>
+    <Script file="KeystoneRewardLevel.lua"/>
+    <Script file="EncounterJournalSavedInstances.lua"/>
+    <Script file="Align.lua"/>
+    <Script file="Movable.lua"/>
+    <Script file="Tooltips.lua"/>
+    <Script file="TradeTabs.lua"/>
+    <Script file="CooldownAnnouncer.lua"/>
 </Ui>

@@ -11,11 +11,11 @@ local GetCursorInfo = GetCursorInfo
 function OnEnable(self)
     -- create item link container
     EasyDeleteLink = FontString("SpaUIEasyDeleteLink", StaticPopup1)
-    EasyDeleteLink:Hide()
 
     Style[EasyDeleteLink] = {
         fontobject = GameFontHighlight,
-        location   = {Anchor("CENTER")}
+        location   = {Anchor("CENTER", 0, -5)},
+        visible    = false
     }
 
     StaticPopup1:HookScript('OnHide',function(self) EasyDeleteLink:Hide() end)

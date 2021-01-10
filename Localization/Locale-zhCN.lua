@@ -10,13 +10,13 @@ L["debug_prefix"] = L["addon_name"].." Debug:"
 L["message_format"] = L["addon_name"]..":%s"
 L["minute_format"] = "%d分"
 L["second_format"] = "%d秒"
-
+L["enable"] = "启用"
 
 -- command
-L["command_help"] = [[以下为常用的宏命令：
+L["command_help"] = [[以下为常用命令：
 |cFF00BFFF/rl|r 重载界面
 |cFF00BFFF/spa|r 打开/关闭配置面板
-|cFF00BFFF/spa align|r 显示或隐藏网格线
+|cFF00BFFF/spa align|r 显示/隐藏网格线
 ]]
 L["command_error"] = "请输入正确的命令"
 
@@ -35,20 +35,24 @@ L["config_id_tip_tooltip"] = "在鼠标提示内显示任务ID，法术ID，货�
 L["config_debug"] = "调试模式"
 L["config_debug_enable"] = "调试模式已启用，你可以输入命令\"/spa debug 0\"关闭"
 L["config_debug_disable"] = "调试模式已关闭，你可以输入命令\"/spa debug 1\"启用"
+L['config_load_more'] = "查看更多"
 -- Config Introduce
 L["config_category_introduce"] = "介绍"
 L["config_addon_introduct"] = [[
 |cFF00FFFFS|r|cFFFFC0CBp|r|cFFFF6347a|rUI只对暴雪原生界面进行了功能增强，几乎没有任何"美化"，未来也不会考虑。
 你可以输入命令 |cFF00BFFF/spa help|r 获取帮助
 ]]
-L["config_changelog_title"] = "更新日志："
-L['config_load_more'] = "查看更多"
+-- Config ChangeLog
+L["config_category_changelog"] = "更新日志"
+-- Config Chat
+L["config_category_chat"] = "聊天"
+L["config_chat_bar_title"] = "聊天栏"
+L["config_chat_bar_tooltip"] = "启用/禁用聊天栏"
 
 -- AutoRepair
 L["auto_repair_guild_cost"] = "|cfff07100你本次修理消耗公会资金: %s|r"
 L["auto_repair_cost"] = "|cffead000修理花费: %s|r"
 L["auto_repair_no_money"] = "你没钱，穷逼！"
-
 
 -- AutoSell
 L["auto_sell_detail"] = "%s卖出了%s"

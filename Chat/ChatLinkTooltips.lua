@@ -20,7 +20,7 @@ function OnEnable()
         local frame = _G["ChatFrame" .. i]
         if frame ~= COMBATLOG then
             frame:HookScript("OnHyperLinkEnter",ShowTooltip)
-            frame:HookScript("OnHyperLinkLeave",function(self)           
+            frame:HookScript("OnHyperLinkLeave",function(self)         
                 GameTooltip:Hide()
             end)
         end

@@ -34,7 +34,7 @@ function OnEnable(self)
         while NextEvent('ADDON_LOADED') ~= 'Blizzard_EncounterJournal' do end
     end
     if not EncounterJournal then
-        Log(L['ej_loaded_fail'])
+        ShowMessage(L['ej_loaded_fail'])
         return
     end
     OnEncounterJournalShow(EncounterJournal)
@@ -50,8 +50,9 @@ function OnEncounterJournalShow(self)
     local SpaUISavedInstances = self.SpaUISavedInstances
     local savedInstancesNum = GetNumSavedInstances()
     for i=1,savedInstancesNum do
-        local name,_,_,difficultyID,locked,_,_,isRaid,_,difficultyName,numEncounters,encounterProgress = GetSavedInstanceInfo(i)
-        if locked then
+        local name,_,_,difficultyID,locked,extended,_,isRaid,_,difficultyName,numEncounters,encounterProgress = GetSavedInstanceInfo(i)
+        -- 显然只显示锁定或延长的进度
+        if locked or extended then
             local savedInstance = {}
             savedInstance.isRaid = isRaid
             savedInstance.numEncounters = numEncounters
@@ -120,26 +121,18 @@ function ShowOrHideSavedInstanceForInstanceButton(button,savedInstances)
                     -- 创建frame并设置难度图标
                     local savedInstanceFrame = Frame(button:GetName().."SavedInstanceFrameDifficulty"..difficultyID,button)
                     savedInstanceFrame:SetSize(65,24)
-                    Texture("Icon",savedInstanceFrame)
-                    FontString("Text",savedInstanceFrame)
-                    EncounterJournal_SetFlagIcon(savedInstanceFrame.Icon,iconIndex)
-
-                    function savedInstanceFrame:OnLeave()
+                    savedInstanceFrame.OnLeave = function()
                         GameTooltip:Hide()
                     end
-                    
-                    Style[savedInstanceFrame] = {
-                        Icon = {
-                            file              = [[Interface\EncounterJournal\UI-EJ-Icons]],
-                            size              = Size(30,30),
-                            location          = {Anchor("LEFT", 0, 0, nil, "LEFT")}
-                        },
-                        Text                  = {
-                            fontobject        = GameFontWhite,
-                            justifyH          = "LEFT",
-                            location          = {Anchor("LEFT", 0, 0, "Icon", "RIGHT")}
-                        }
-                    } 
+                    local icon = Texture("Icon",savedInstanceFrame)
+                    icon:SetTexture[[Interface\EncounterJournal\UI-EJ-Icons]]
+                    icon:SetSize(30,30)
+                    icon:SetPoint("LEFT")
+                    local text = FontString("Text",savedInstanceFrame,nil,"GameFontWhite")
+                    text:SetJustifyH("LEFT")
+                    text:SetPoint("LEFT",icon,"RIGHT")
+
+                    EncounterJournal_SetFlagIcon(savedInstanceFrame.Icon,iconIndex)
                     button.savedInstanceFrames[difficultyID] = savedInstanceFrame
                 end
             end

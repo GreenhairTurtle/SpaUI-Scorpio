@@ -8,17 +8,4 @@
 ## SavedVariables: SpaUIConfigDB
 ## SavedVariablesPerCharacter: SpaUIConfigDBChar
 
-#locales
-Localization/Locale-zhCN.lua
-
-#Core
-Core/Core.xml
-
-#Features
-Features/Features.xml
-
-#Chat
-Chat/Chat.xml
-
-#Config
-Config/Config.xml
+SpaUI.xml
