@@ -6,13 +6,7 @@ L = _Locale
 DefaultConfig = {
     -- 聊天栏
     ChatBar                     = {
-        Enable                  = true,
-        NeedReload              = function(self)
-            return self.TempValue ~= Enable
-        end,
-        OnValueChange           = function(self, value)
-            self.TempValue      = value
-        end
+        Enable                  = true
     },          
     -- 聊天切换
     ChatTab                     = {
@@ -21,18 +15,27 @@ DefaultConfig = {
     -- 聊天表情
     ChatEmoji                   = {
         Enable                  = true,
-        NeedReload              = true,
 
         ChatBubble              = {
             Enable              = true,
-            NeedReload          = true
         }
     },
     -- 聊天链接显示鼠标提示
     ChatLinkTooltips            = {
-        Enable                  = true,
-        NeedReload              = false
+        Enable                  = true
     }
+}
+
+ConfigBehaivors = {
+    -- 聊天栏
+    ChatBar                     = {
+        NeedReload              = function(self)
+            return self.TempValue ~= nil and self.TempValue ~= DB.ChatBar.Enable
+        end,
+        OnValueChange           = function(self, value)
+            self.TempValue      = value
+        end
+    },
 }
 
 function OnLoad(self)
@@ -51,6 +54,7 @@ function Hide()
     ChatContainer:Hide()
 end
 
+-- 不太希望这个三个方法放在父模组内，尽管可以这样,使用起来也方便
 -- 是否需要重载界面
 function NeedReload()
     if ConfigItems then
@@ -76,6 +80,8 @@ function AddReloadWatchList(parent)
         AddReloadWatchList(child)
     end
 end
+----------  end  -----------
+----------------------------
 
 function OnEnable(self)
     ChatContainer = Frame("ChatContainer", ConfigContainer)
@@ -100,6 +106,7 @@ function OnEnable(self)
 
         ChatBarEnableButton             = {
             checked                     = DB.ChatBar.Enable,
+            configBehavior              = ConfigBehaivors.ChatBar,
             tooltipText                 = L["config_chat_bar_tooltip"],
             location                    = {
                 Anchor("TOPLEFT", -3, -5, "ChatBarTitle", "BOTTOMLEFT")

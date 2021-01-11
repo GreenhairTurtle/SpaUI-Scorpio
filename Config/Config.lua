@@ -6,7 +6,7 @@ __Sealed__()
 interface "ConfigItem" (function(self)
     -- 值变化回调
     __Abstract__()
-    function OnValueChange(value) end
+    function OnValueChange(self,...) end
 
     -- 是否需要重载
     __Abstract__()
@@ -20,7 +20,7 @@ class "OptionsCheckButton" (function(_ENV)
     extend "ConfigItem"
     
     property "TooltipText" { type = String }
-    property "configItem" { type = Any }
+    property "configBehavior" { type = RawTable }
 
     local function OnEnter(self)
         if self.TooltipText then
@@ -41,9 +41,17 @@ class "OptionsCheckButton" (function(_ENV)
         else
             PlaySound(SOUNDKIT.IG_MAINMENU_OPTION_CHECKBOX_OFF);
         end
-        if self.configItem then
-            self.configItem:Change()
+        OnValueChange(self,checked)
+    end
+
+    function OnValueChange(self,...)
+        if self.configBehavior and self.configBehavior.OnValueChange then
+            self.configBehavior:OnValueChange(...)
         end
+    end
+
+    function NeedReload(self)
+        return self.configBehavior and self.configBehavior.NeedReload and self.configBehavior:NeedReload()
     end
 
     function __ctor(self)

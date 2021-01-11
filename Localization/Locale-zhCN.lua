@@ -37,6 +37,7 @@ L["config_debug"] = "调试模式"
 L["config_debug_enable"] = "调试模式已启用，你可以输入命令\"/spa debug 0\"关闭"
 L["config_debug_disable"] = "调试模式已关闭，你可以输入命令\"/spa debug 1\"启用"
 L['config_load_more'] = "查看更多"
+L["config_reload_confirm"] = "保存更改需要重载界面"
 -- Config Introduce
 L["config_category_introduce"] = "介绍"
 L["config_addon_introduct"] = [[

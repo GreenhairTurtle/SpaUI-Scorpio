@@ -1,6 +1,5 @@
 -- 参考了NDUI
 Scorpio "SpaUI.Features.TradeTabs" ""
-import "SpaUI.Widget.Features"
 
 local GetSpellCooldown,CastSpell,IsCurrentSpell = GetSpellCooldown,CastSpell,IsCurrentSpell
 local tinsert = tinsert

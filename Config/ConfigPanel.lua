@@ -1,5 +1,4 @@
 Scorpio "SpaUI.Config" ""
-import "SpaUI.Widget.Config"
 
 L = _Locale
 local InCombatLockdown = InCombatLockdown
@@ -72,6 +71,20 @@ function ToggleConfigPanel()
     _Enabled = true
 end
 
+function Show()
+    if ConfigPanel then
+        ConfigPanel:Show()
+    end
+end
+
+-- 进入战斗关闭面板
+__SystemEvent__("PLAYER_REGEN_DISABLED")
+function Hide()
+    if ConfigPanel then
+        ConfigPanel:Hide()
+    end
+end
+
 -- 切换调试模式
 __SlashCmd__ "spaui" "debug"
 __SlashCmd__ "spa" "debug"
@@ -128,6 +141,7 @@ function CreateConfigPanel()
     -- 确定
     -- 只有需要reload的选项这个按钮才有用，其它时候只是简单的关闭面板
     OkayButton = UIPanelButton("OkayButton", ConfigPanel)
+    OkayButton.OnClick = OnConfirm
     -- 调试按钮
     DebugButton = OptionsCheckButton("DebugButton", ConfigPanel)
 
@@ -219,14 +233,6 @@ function CreateConfigPanel()
     }
 end
 
--- 进入战斗关闭面板
-__SystemEvent__()
-function PLAYER_REGEN_DISABLED()
-    if ConfigPanel and ConfigPanel:IsShown() then
-        ConfigPanel:Hide()
-    end
-end
-
 -- 刷新类别
 function RefreshCategorys()
     if not CategoryList or not CategoryPanel then return end
@@ -274,27 +280,23 @@ function SelectCategory(index)
     end
 end
 
--- 需要保存的字段
-NecessaryFieldToDB = {
-    Enable              = true
-}
-
--- 清除不合法及不需要的字段
-__Arguments__(RawTable)
-function ClearUnnecessaryFiledFromTable(table)
-    for field, value in pairs(table) do
-        if not NecessaryFieldToDB[field] then
-            if type(value) == "table" then
-                ClearUnnecessaryFiledFromTable(value)
-            else
-                table[field] = nil
-            end
+-- 点击确定
+function OnConfirm(self)
+    for _, category in ipairs(CategoryList) do
+        local module = _Modules[category.module]
+        if module.NeedReload and module.NeedReload() then
+            Confirm(L["config_reload_confirm"],function(result)
+                if result then
+                    ReloadUI()
+                end
+            end)
+            return
         end
     end
+    Hide()
 end
 
 __Arguments__{NEString, RawTable}
 function SetDefaultToConfigDB(key,table)
-    ClearUnnecessaryFiledFromTable(table)
     _Config:SetDefault(key,table)
 end
