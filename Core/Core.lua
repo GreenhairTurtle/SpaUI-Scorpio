@@ -19,8 +19,8 @@ function Reload()
     ReloadUI()
 end
 
-__SlashCmd__ "spa" "help"
-__SlashCmd__ "spaui" "help"
+__SlashCmd__ "spa"
+__SlashCmd__ "spaui"
 function CmdHelp()
     ShowMessage(L["command_help"])
 end

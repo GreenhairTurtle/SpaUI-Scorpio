@@ -5,17 +5,18 @@ local L = _Locale("zhCN",true)
 if not L then return end
 
 L["addon_name"] = "|cFF00FFFFS|r|cFFFFC0CBp|r|cFFFF6347a|rUI"
-L["addon_loaded_tip"] = "|cFF00BFFF%s|r 已载入，你可以输入|cFF00BFFF/spa help|r获取帮助"
+L["addon_loaded_tip"] = "|cFF00BFFF%s|r 已载入，你可以输入|cFF00BFFF/spa|r获取帮助"
 L["debug_prefix"] = L["addon_name"].." Debug:"
 L["message_format"] = L["addon_name"]..":%s"
 L["minute_format"] = "%d分"
 L["second_format"] = "%d秒"
 L["enable"] = "启用"
+L["combat_error"] = "你正在战斗中"
 
 -- command
 L["command_help"] = [[以下为常用命令：
 |cFF00BFFF/rl|r 重载界面
-|cFF00BFFF/spa|r 打开/关闭配置面板
+|cFF00BFFF/spa config|r 打开/关闭配置面板
 |cFF00BFFF/spa align|r 显示/隐藏网格线
 ]]
 L["command_error"] = "请输入正确的命令"

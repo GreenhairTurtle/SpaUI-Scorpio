@@ -2,18 +2,23 @@ Scorpio "SpaUI.Config.Chat" ""
 
 L = _Locale
 
+-- 默认配置
 DefaultConfig = {
     -- 聊天栏
     ChatBar                     = {
         Enable                  = true,
-        NeedReload              = true,
+        NeedReload              = function(self)
+            return self.TempValue ~= Enable
+        end,
+        OnValueChange           = function(self, value)
+            self.TempValue      = value
+        end
     },          
-    -- 聊天切换    
+    -- 聊天切换
     ChatTab                     = {
-        Enable                  = true,
-        NeedReload              = false
+        Enable                  = true
     },          
-    -- 聊天表情     
+    -- 聊天表情
     ChatEmoji                   = {
         Enable                  = true,
         NeedReload              = true,
@@ -32,8 +37,8 @@ DefaultConfig = {
 
 function OnLoad(self)
     _Enabled = false
-    SetDefaultToDB(_Name, DefaultConfig)
-    Config = _Config[_Name]
+    SetDefaultToConfigDB(_Name, DefaultConfig)
+    DB = _Config[_Name]
 end
 
 function Show()
@@ -46,11 +51,39 @@ function Hide()
     ChatContainer:Hide()
 end
 
+-- 是否需要重载界面
+function NeedReload()
+    if ConfigItems then
+        for _, configItem in ipairs(ConfigItems) do
+            if configItem:NeedReload() then return true end
+        end
+    end
+end
+
+-- 添加变更后需要重载的配置项
+function AddReloadWatch(item)
+    if not ConfigItems then ConfigItems = {} end
+    if Interface.ValidateValue(ConfigItem, item) then
+        tinsert(ConfigItems, item)
+    end
+end
+
+-- 添加变更后需要重载的配置项列表
+__Arguments__(UIObject)
+function AddReloadWatchList(parent)
+    for _, child in parent:GetChilds() do
+        AddReloadWatch(child)
+        AddReloadWatchList(child)
+    end
+end
+
 function OnEnable(self)
     ChatContainer = Frame("ChatContainer", ConfigContainer)
     -- 聊天栏
     ChatBarTitle = FontString("ChatBarTitle", ChatContainer, nil, "GameFontNormal")
     ChatBarEnableButton = OptionsCheckButton("ChatBarEnableButton", ChatContainer)
+
+    AddReloadWatchList(ChatContainer)
 
     Style[ChatContainer] = {
         location                        = {
@@ -66,7 +99,7 @@ function OnEnable(self)
         },
 
         ChatBarEnableButton             = {
-            checked                     = Config.ChatBar.Enable,
+            checked                     = DB.ChatBar.Enable,
             tooltipText                 = L["config_chat_bar_tooltip"],
             location                    = {
                 Anchor("TOPLEFT", -3, -5, "ChatBarTitle", "BOTTOMLEFT")
@@ -76,4 +109,6 @@ function OnEnable(self)
             }
         }
     }
+
+
 end

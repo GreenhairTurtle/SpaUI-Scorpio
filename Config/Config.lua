@@ -2,12 +2,25 @@ Scorpio "SpaUI.Config" ""
 
 namespace "SpaUI.Widget.Config"
 
+__Sealed__()
+interface "ConfigItem" (function(self)
+    -- 值变化回调
+    __Abstract__()
+    function OnValueChange(value) end
+
+    -- 是否需要重载
+    __Abstract__()
+    function NeedReload() end
+end)
+
 -- ConfigPanel CheckButton
 __Sealed__()
 class "OptionsCheckButton" (function(_ENV)
     inherit "CheckButton"
+    extend "ConfigItem"
     
     property "TooltipText" { type = String }
+    property "configItem" { type = Any }
 
     local function OnEnter(self)
         if self.TooltipText then
@@ -22,16 +35,17 @@ class "OptionsCheckButton" (function(_ENV)
     end
 
     local function OnClick(self)
-        if self:GetChecked() then
+        local checked = self:GetChecked()
+        if checked then
             PlaySound(SOUNDKIT.IG_MAINMENU_OPTION_CHECKBOX_ON);
         else
             PlaySound(SOUNDKIT.IG_MAINMENU_OPTION_CHECKBOX_OFF);
         end
+        if self.configItem then
+            self.configItem:Change()
+        end
     end
 
-    __Template__{
-        Label               = UICheckButtonLabel,
-    }
     function __ctor(self)
         self.OnEnter = self.OnEnter + OnEnter
         self.OnLeave = self.OnLeave + OnLeave

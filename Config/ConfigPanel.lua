@@ -28,17 +28,40 @@ CategoryList = {
 
 function OnLoad()
     _Enabled = false
+    hooksecurefunc("GameMenuFrame_UpdateVisibleButtons", InjectConfigButtonToGameMenu)
+end
+
+-- 游戏菜单注入Config按钮
+__Async__()
+function InjectConfigButtonToGameMenu()
+    if not SpaUIConfigButton then
+        SpaUIConfigButton = Button("SpaUIConfigButton", GameMenuFrame, "GameMenuButtonTemplate")
+        local _, relativeTo, _, _, offY = GameMenuButtonStore:GetPoint()
+        SpaUIConfigButton:SetText(L["addon_name"])
+        SpaUIConfigButton:SetPoint("TOP", relativeTo, "BOTTOM", 0, offY)
+        SpaUIConfigButton.OnClick = OnGameMenuConfigButtonClick
+        GameMenuButtonStore:ClearAllPoints()
+        GameMenuButtonStore:SetPoint("TOP", SpaUIConfigButton, "BOTTOM", 0, offY)
+    end
+    GameMenuFrame:SetHeight(GameMenuFrame:GetHeight() + SpaUIConfigButton:GetHeight() + 1)
+end
+
+function OnGameMenuConfigButtonClick(self)
+    PlaySound(SOUNDKIT.IG_MAINMENU_OPTION)
+    ToggleConfigPanel()
+    if InCombatLockdown() then ShowUIError(L["combat_error"]) end
 end
 
 -- 开启/关闭面板
-__SlashCmd__ "spa"
-__SlashCmd__ "spaui"
+__SlashCmd__ "spa" "config"
+__SlashCmd__ "spaui" "config"
 __AsyncSingle__()
 function ToggleConfigPanel()
     if InCombatLockdown() then
        ShowMessage(L['config_panel_show_after_combat'])
     end
     NoCombat()
+    HideUIPanel(GameMenuFrame)
     if ConfigPanel then
         if ConfigPanel:IsShown() then
             ConfigPanel:Hide()
@@ -251,29 +274,27 @@ function SelectCategory(index)
     end
 end
 
-UnnecessaryFieldToDB = {
-    NeedReload = true,
+-- 需要保存的字段
+NecessaryFieldToDB = {
+    Enable              = true
 }
 
 -- 清除不合法及不需要的字段
 __Arguments__(RawTable)
 function ClearUnnecessaryFiledFromTable(table)
     for field, value in pairs(table) do
-        if not UnnecessaryFieldToDB[field] then
-            local valueType = type(value)
-            if valueType == "table" then
+        if not NecessaryFieldToDB[field] then
+            if type(value) == "table" then
                 ClearUnnecessaryFiledFromTable(value)
-            elseif valueType == "function" or valueType == "userdata" or valueType == "thread"  then
+            else
                 table[field] = nil
             end
-        else
-            table[field] = nil
         end
     end
 end
 
 __Arguments__{NEString, RawTable}
-function SetDefaultToDB(key,table)
+function SetDefaultToConfigDB(key,table)
     ClearUnnecessaryFiledFromTable(table)
     _Config:SetDefault(key,table)
 end
