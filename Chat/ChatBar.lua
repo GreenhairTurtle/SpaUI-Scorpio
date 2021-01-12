@@ -24,21 +24,22 @@ local ChatMenu_SetChatType = ChatMenu_SetChatType
 local RandomRoll = RandomRoll
 local ChatFrame_OpenChat = ChatFrame_OpenChat
 
+function OnLoad(self)
+    _Enabled = _Config.Chat.ChatBar.Enable
+end
+
 function OnEnable(self)
-    -- 创建聊天条和表情按钮
+    -- 创建聊天条
     CreateChatBar()
-    CreateChatEmoteButton()
 end
 
 -- 创建ChatBar
 function CreateChatBar()
     if not ChatFrame1EditBox then return end
     ChatBar = Frame("SpaUIChatBar")
-    Style[ChatBar] = {
-            size = Size(#CHAT_BAR_MESSAGE_TYPES * (CHAT_BAR_BUTTON_SIZE + CHAT_BAR_BUTTON_MARGIN), CHAT_BAR_BUTTON_SIZE),
-            frameStrata = ChatFrame1:GetFrameStrata(),
-    }
-
+    ChatBar:SetSize(#CHAT_BAR_MESSAGE_TYPES * (CHAT_BAR_BUTTON_SIZE + CHAT_BAR_BUTTON_MARGIN), CHAT_BAR_BUTTON_SIZE)
+    ChatBar:SetFrameStrata(ChatFrame1:GetFrameStrata())
+    
     ChangeChatBarLocation(ChatFrame1EditBox)
 
     for i = 1, #CHAT_BAR_MESSAGE_TYPES do CreateChatBarButton(i) end
@@ -77,11 +78,9 @@ function CreateChatBarButton(index)
     local type = CHAT_BAR_MESSAGE_TYPES[index]
     local button = Button("SpaUIChatBarButton"..type, ChatBar)
     -- 默认样式
-    Style[button] = {
-        size = Size(CHAT_BAR_BUTTON_SIZE,CHAT_BAR_BUTTON_SIZE),
-        alpha = ALPHA_LEAVE,
-        location = {Anchor("LEFT",(index-1)*(CHAT_BAR_BUTTON_MARGIN + CHAT_BAR_BUTTON_SIZE),0,nil,"LEFT")},
-    }
+    button:SetSize(CHAT_BAR_BUTTON_SIZE,CHAT_BAR_BUTTON_SIZE)
+    button:SetAlpha(ALPHA_LEAVE)
+    button:SetLocation{Anchor("LEFT",(index-1)*(CHAT_BAR_BUTTON_MARGIN + CHAT_BAR_BUTTON_SIZE),0,nil,"LEFT")}
 
     --淡入淡出
     function button:OnEnter()
@@ -94,11 +93,9 @@ function CreateChatBarButton(index)
     local chatTypeInfo = ChatTypeInfo[strupper(type)]
     if chatTypeInfo then
         -- 更改按钮颜色 设置点击事件
-        local Text = FontString("Text",button,nil,"GameFontNormal")
-        Style[Text] = {
-            setAllPoints = true,
-            text = ColorText(L["chat_bar_channel_"..strlower(type)],chatTypeInfo.r,chatTypeInfo.g,chatTypeInfo.b)
-        }
+        local text = FontString("Text",button,nil,"GameFontNormal")
+        text:SetAllPoints(true)
+        text:SetText(ColorText(L["chat_bar_channel_"..strlower(type)],chatTypeInfo.r,chatTypeInfo.g,chatTypeInfo.b))
         function button:OnClick()
             ChatMenu_SetChatType(ChatFrame1,strupper(type))
         end
@@ -109,32 +106,20 @@ function CreateChatBarButton(index)
         local g = info and info.g or CHANNEL_WORLD_DEFAULT_COLOR_G
         local b = info and info.b or CHANNEL_WORLD_DEFAULT_COLOR_B
         -- 世界频道按钮
-        local Text = FontString("Text",button,nil,"GameFontNormal")
-        Style[Text] = {
-            setAllPoints = true,
-            text = ColorText(L["chat_bar_channel_" .. (strlower(type))],r,g,b)
-        }
-
+        local text = FontString("Text",button,nil,"GameFontNormal")
+        text:SetAllPoints(true)
+        text:SetText(ColorText(L["chat_bar_channel_" .. (strlower(type))],r,g,b))
+        
         function button:OnClick(button)
             OnWorldChannelButtonClick(self,button)
         end
     elseif type == "Roll" then
     --     -- roll点
-        Style[button] = {
-            location = {Anchor("LEFT",(index-1)*(CHAT_BAR_BUTTON_MARGIN + CHAT_BAR_BUTTON_SIZE)+3,0,nil,"LEFT")},
-            normalTexture = {
-                file = [[Interface\Addons\SpaUI\Media\roll]],
-                setAllPoints = true
-            },
-            highlightTexture = {
-                file = [[Interface\Addons\SpaUI\Media\roll_highlight]],
-                setAllPoints = true
-            },
-            pushedTexture = {
-                file = [[Interface\Addons\SpaUI\Media\roll_pressed]],
-                setAllPoints = true
-            }
-        }
+        button:SetLocation{Anchor("LEFT",(index-1)*(CHAT_BAR_BUTTON_MARGIN + CHAT_BAR_BUTTON_SIZE)+3,0,nil,"LEFT")}
+        button:SetNormalTexture[[Interface\Addons\SpaUI\Media\roll]]
+        button:SetHighlightTexture[[Interface\Addons\SpaUI\Media\roll_highlight]]
+        button:SetPushedTexture[[Interface\Addons\SpaUI\Media\roll_pressed]]
+        
         function button:OnClick()
             RandomRoll(1,100)
         end
@@ -164,41 +149,5 @@ function OnEditBoxStatusChange(editbox)
     else
         if editbox:GetText():len() <= 0 then ChatBar:Show() end
         FireSystemEvent("SPAUI_CLOSE_EMOTE_FRAME")
-    end
-end
-
--- 生成表情按钮
-__Async__()
-function CreateChatEmoteButton()
-    if not ChatBar then return end
-    ChatEmoteButton = Button("SpaUIChatEmoteButton")
-    Style[ChatEmoteButton] = {
-        size = Size(CHAT_BAR_BUTTON_SIZE,CHAT_BAR_BUTTON_SIZE),
-        location = {Anchor("RIGHT",-CHAT_BAR_BUTTON_MARGIN,0,ChatBar:GetName(),"LEFT")},
-        alpha = ALPHA_LEAVE,
-        normalTexture = {
-            file = [[Interface\Addons\SpaUI\Chat\emojis\greet]],
-            setAllPoints = true
-        }
-    }
-    
-    function ChatEmoteButton:OnEnter()
-        self:SetAlpha(ALPHA_ENTER)     
-    end
-
-    function ChatEmoteButton:OnLeave()
-        self:SetAlpha(ALPHA_LEAVE)     
-    end
-    
-    function ChatEmoteButton:OnMouseUp()
-        self:SetScale(SCALE_UP)
-    end
-
-    function ChatEmoteButton:OnMouseDown()
-        self:SetScale(SCALE_PRESS)
-    end
-
-    function ChatEmoteButton:OnClick()
-        FireSystemEvent("SPAUI_TOGGLE_EMOTE_FRAME",Anchors{Anchor("BOTTOMLEFT",3,3,self:GetName(),"TOPRIGHT")})
     end
 end

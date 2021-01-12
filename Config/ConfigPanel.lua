@@ -135,13 +135,11 @@ function CreateConfigPanel()
     -- 取消
     -- 只有需要reload的选项这个按钮才有用，其它时候只是简单的关闭面板
     CancelButton = UIPanelButton("CancelButton", ConfigPanel)
-    CancelButton.OnClick = function(self)
-        ConfigPanel:Hide()
-    end
+    CancelButton.OnClick = OnCancelButtonClick
     -- 确定
     -- 只有需要reload的选项这个按钮才有用，其它时候只是简单的关闭面板
     OkayButton = UIPanelButton("OkayButton", ConfigPanel)
-    OkayButton.OnClick = OnConfirm
+    OkayButton.OnClick = OnConfirmButtonClick
     -- 调试按钮
     DebugButton = OptionsCheckButton("DebugButton", ConfigPanel)
 
@@ -281,22 +279,64 @@ function SelectCategory(index)
 end
 
 -- 点击确定
-function OnConfirm(self)
+__AsyncSingle__()
+function OnConfirmButtonClick(self)
     for _, category in ipairs(CategoryList) do
         local module = _Modules[category.module]
         if module.NeedReload and module.NeedReload() then
-            Confirm(L["config_reload_confirm"],function(result)
-                if result then
-                    ReloadUI()
-                end
-            end)
+            local result = Confirm(L["config_reload_confirm"])
+            if result then OnConfirm() end
             return
         end
     end
     Hide()
 end
 
+-- 点击取消
+__AsyncSingle__()
+function OnCancelButtonClick(self)
+    for _, category in ipairs(CategoryList) do
+        local module = _Modules[category.module]
+        if module.NeedReload and module.NeedReload() then
+            local result = Confirm(L["config_cancel_confirm"])
+            if result then Hide() end
+            return
+        end
+    end
+    Hide()
+end
+
+-- 确定
+function OnConfirm()
+    for _, category in ipairs(CategoryList) do
+        local module = _Modules[category.module]
+        if module.OnSaveConfig then
+            module.OnSaveConfig()
+        end
+    end
+    ReloadUI()
+end
+
+-- 从ConfigBehaviors里复制默认值
+__Arguments__{RawTable, RawTable/nil, String/nil}
+function CopyDefaultFromConfigBehaviors(src, des, parentKey)
+    des = des or {}
+    for field, value in pairs(src) do
+        if type(value) == "table" then
+            if field ~= "Default" then
+                if parentKey then 
+                    des[parentKey] = des[parentKey] or {}
+                end
+                CopyDefaultFromConfigBehaviors(value, des[parentKey] or des, field)
+            else
+                if parentKey then des[parentKey] = value end
+            end
+        end
+    end
+    return des
+end
+
 __Arguments__{NEString, RawTable}
 function SetDefaultToConfigDB(key,table)
-    _Config:SetDefault(key,table)
+    _Config:SetDefault(key,CopyDefaultFromConfigBehaviors(table))
 end

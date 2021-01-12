@@ -10,7 +10,15 @@ interface "ConfigItem" (function(self)
 
     -- 是否需要重载
     __Abstract__()
-    function NeedReload() end
+    function NeedReload(self) end
+
+    -- 确认回调
+    __Abstract__()
+    function OnSaveConfig(self) end
+
+    -- 恢复
+    __Abstract__()
+    function Restore(self) end
 end)
 
 -- ConfigPanel CheckButton
@@ -20,7 +28,14 @@ class "OptionsCheckButton" (function(_ENV)
     extend "ConfigItem"
     
     property "TooltipText" { type = String }
-    property "configBehavior" { type = RawTable }
+    property "configBehavior" {
+        type                    = RawTable,
+        handler                 = function(self, behavior)
+            if behavior and behavior.GetValue then
+                self:SetChecked(behavior:GetValue())
+            end
+        end
+    }
 
     local function OnEnter(self)
         if self.TooltipText then
@@ -52,6 +67,18 @@ class "OptionsCheckButton" (function(_ENV)
 
     function NeedReload(self)
         return self.configBehavior and self.configBehavior.NeedReload and self.configBehavior:NeedReload()
+    end
+
+    function OnSaveConfig(self)
+        if self.configBehavior and self.configBehavior.OnSaveConfig then
+            self.configBehavior:OnSaveConfig()
+        end
+    end
+
+    function OnRestore(self)
+        if self.configBehavior and self.configBehavior.GetValue then
+            self:SetChecked(self.configBehavior.GetValue)
+        end
     end
 
     function __ctor(self)
@@ -136,5 +163,15 @@ Style.UpdateSkin("Default", {
                 Anchor("BOTTOMRIGHT", -10, 0)
             }
         }
+    }
+})
+
+__Sealed__() __Template__(Texture)
+class "OptionsLine" {}
+
+Style.UpdateSkin("Default", {
+    [OptionsLine] = {
+        height                  = 1,
+        color                   = ColorType(1, 1, 1, 0.2)
     }
 })

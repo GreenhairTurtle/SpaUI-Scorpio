@@ -1,4 +1,4 @@
-Scorpio "SpaUI.Localization.enUS" ""
+Scorpio "SpaUI.Localization.zhCN" ""
 
 local L = _Locale("zhCN",true)
 
@@ -38,6 +38,7 @@ L["config_debug_enable"] = "调试模式已启用，你可以输入命令\"/spa 
 L["config_debug_disable"] = "调试模式已关闭，你可以输入命令\"/spa debug 1\"启用"
 L['config_load_more'] = "查看更多"
 L["config_reload_confirm"] = "保存更改需要重载界面"
+L["config_cancel_confirm"] = "部分更改还未保存，确定放弃？"
 -- Config Introduce
 L["config_category_introduce"] = "介绍"
 L["config_addon_introduct"] = [[
@@ -48,8 +49,13 @@ L["config_addon_introduct"] = [[
 L["config_category_changelog"] = "更新日志"
 -- Config Chat
 L["config_category_chat"] = "聊天"
-L["config_chat_bar_title"] = "聊天栏"
+L["config_chat_enhanced"] = "聊天增强"
+L["config_chat_bar"] = "聊天栏"
 L["config_chat_bar_tooltip"] = "启用/禁用聊天栏"
+L["config_chat_emote"] = "聊天表情"
+L["config_chat_emote_tooltip"] = "启用/禁用聊天表情"
+L["config_chat_linktip"] = "聊天链接鼠标提示"
+L["config_chat_linktip_tooltip"] = "启用/禁用聊天链接鼠标悬浮提示"
 
 -- AutoRepair
 L["auto_repair_guild_cost"] = "|cfff07100你本次修理消耗公会资金: %s|r"

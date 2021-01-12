@@ -2,7 +2,7 @@
 Scorpio "SpaUI.Chat.ChatLinkTooltips" ""
 
 function ShowTooltip(frame, link)
-    if link then
+    if _Config.Chat.ChatLinkTooltips.Enable and link then
         local type = strsplit(":", link)
         if type == "item" or type == "spell" or type == "enchant" or type ==
             "quest" or type == "talent" or type == "glyph" or type == "unit" or

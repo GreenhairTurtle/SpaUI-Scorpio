@@ -1,46 +1,62 @@
 Scorpio "SpaUI.Config.Chat" ""
 
 L = _Locale
-
--- 默认配置
-DefaultConfig = {
-    -- 聊天栏
-    ChatBar                     = {
-        Enable                  = true
-    },          
-    -- 聊天切换
-    ChatTab                     = {
-        Enable                  = true
-    },          
-    -- 聊天表情
-    ChatEmoji                   = {
-        Enable                  = true,
-
-        ChatBubble              = {
-            Enable              = true,
-        }
-    },
-    -- 聊天链接显示鼠标提示
-    ChatLinkTooltips            = {
-        Enable                  = true
-    }
-}
-
 ConfigBehaivors = {
     -- 聊天栏
-    ChatBar                     = {
-        NeedReload              = function(self)
+    ChatBar                                 = {
+        Default                             = {
+            Enable                          = true
+        },
+        NeedReload                          = function(self)
             return self.TempValue ~= nil and self.TempValue ~= DB.ChatBar.Enable
         end,
-        OnValueChange           = function(self, value)
-            self.TempValue      = value
-        end
+        OnValueChange                       = function(self, value)
+            self.TempValue = value
+            ChatEmoteEnableButton:SetEnabled(value)
+        end,
+        OnSaveConfig                        = function(self)
+            DB.ChatBar.Enable   = self.TempValue
+        end,
+        GetValue                            = function(self)
+            return DB.ChatBar.Enable
+        end,
+
+        -- 聊天表情
+        ChatEmote                           = {
+            Default                         = {
+                Enable                      = true
+            },      
+            NeedReload                      = function(self)
+                return self.TempValue ~= nil and self.TempValue ~= DB.ChatBar.ChatEmote.Enable
+            end,
+            OnValueChange                   = function(self, value)
+                self.TempValue      = value
+            end,
+            OnSaveConfig                    = function(self)
+                DB.ChatBar.ChatEmote.Enable   = self.TempValue
+            end,
+            GetValue                        = function(self)
+                return DB.ChatBar.ChatEmote.Enable
+            end
+        }
     },
+    -- 聊天链接悬浮提示
+    ChatLinkTooltips                        = {
+        Default                             = {
+            Enable                          = true
+        },
+        OnValueChange                       = function(self, value)
+            DB.ChatLinkTooltips.Enable = value
+        end,
+        GetValue                            = function(self)
+            return DB.ChatLinkTooltips.Enable
+        end
+    }       
 }
 
 function OnLoad(self)
     _Enabled = false
-    SetDefaultToConfigDB(_Name, DefaultConfig)
+    SetDefaultToConfigDB(_Name, ConfigBehaivors)
     DB = _Config[_Name]
 end
 
@@ -54,7 +70,15 @@ function Hide()
     ChatContainer:Hide()
 end
 
+function OnSaveConfig()
+    if not ConfigItems then return end
+    for _, configItem in ipairs(ConfigItems) do
+        configItem:OnSaveConfig()
+    end
+end
+
 -- 不太希望这个三个方法放在父模组内，尽管可以这样,使用起来也方便
+
 -- 是否需要重载界面
 function NeedReload()
     if ConfigItems then
@@ -86,8 +110,10 @@ end
 function OnEnable(self)
     ChatContainer = Frame("ChatContainer", ConfigContainer)
     -- 聊天栏
-    ChatBarTitle = FontString("ChatBarTitle", ChatContainer, nil, "GameFontNormal")
-    ChatBarEnableButton = OptionsCheckButton("ChatBarEnableButton", ChatContainer)
+    FontString("ChatTitle", ChatContainer, nil, "GameFontNormal")
+    OptionsCheckButton("ChatBarEnableButton", ChatContainer)
+    ChatEmoteEnableButton = OptionsCheckButton("ChatEmoteEnableButton", ChatContainer)
+    OptionsCheckButton("ChatLinkTooltipEnableButton", ChatContainer)
 
     AddReloadWatchList(ChatContainer)
 
@@ -97,22 +123,44 @@ function OnEnable(self)
             Anchor("BOTTOMRIGHT", -15, 15)
         },
 
-        ChatBarTitle                    = {
+        ChatTitle                    = {
             location                    = {
                 Anchor("TOPLEFT")
             },
-            text                        = L["config_chat_bar_title"]
+            text                        = L["config_chat_enhanced"]
         },
 
         ChatBarEnableButton             = {
-            checked                     = DB.ChatBar.Enable,
             configBehavior              = ConfigBehaivors.ChatBar,
             tooltipText                 = L["config_chat_bar_tooltip"],
             location                    = {
-                Anchor("TOPLEFT", -3, -5, "ChatBarTitle", "BOTTOMLEFT")
+                Anchor("TOPLEFT", -3, -5, "ChatTitle", "BOTTOMLEFT")
             },
             Label                       = {
-                text                    = L["enable"]
+                text                    = L["config_chat_bar"]
+            }
+        },
+
+        ChatEmoteEnableButton           = {
+            configBehavior              = ConfigBehaivors.ChatBar.ChatEmote,
+            enabled                     = DB.ChatBar.Enable,
+            tooltipText                 = L["config_chat_emote_tooltip"],
+            location                    = {
+                Anchor("TOPLEFT", 3, -3, "ChatBarEnableButton", "BOTTOMLEFT")
+            },
+            Label                       = {
+                text                    = L["config_chat_emote"]
+            }
+        },
+
+        ChatLinkTooltipEnableButton     = {
+            configBehavior              = ConfigBehaivors.ChatLinkTooltips,
+            tooltipText                 = L["config_chat_linktip_tooltip"],
+            location                    = {
+                Anchor("TOPLEFT", 0, -3, "ChatEmoteEnableButton", "BOTTOMLEFT")
+            },
+            Label                       = {
+                text                    = L["config_chat_linktip"]
             }
         }
     }

@@ -1,5 +1,5 @@
 -- 聊天表情 修改自SimpleChat
-Scorpio "SpaUI.Chat.ChatEmote" ""
+Scorpio "SpaUI.Chat.ChatBar.ChatEmote" ""
 
 L = _Locale
 
@@ -78,6 +78,16 @@ EMOTES = {
     {L["chat_emote_injustice"],[=[Interface\Addons\SpaUI\Chat\emojis\Wronged]=]}
 }
 
+function OnLoad(self)
+    _Enabled = _Config.Chat.ChatBar.ChatEmote.Enable
+end
+
+function OnEnable(self)
+    RegisterEmoteChanel()
+    OnChatBubblesSettingChanged()
+    CreateChatEmoteButton()
+end
+
 -- 表情解析规则
 EMOTE_RULE = format("\124T%%s:%d\124t", max(floor(select(2, SELECTED_CHAT_FRAME:GetFont())),EMOTE_SIZE))
 
@@ -95,6 +105,31 @@ function ChatEmoteFilter(self, event, msg, ...)
     return false, msg, ...
 end
 
+-- 注册需要解析表情的频道
+function RegisterEmoteChanel()
+    ChatFrame_AddMessageEventFilter("CHAT_MSG_CHANNEL", ChatEmoteFilter) -- 公共频道
+    ChatFrame_AddMessageEventFilter("CHAT_MSG_SAY", ChatEmoteFilter) -- 说
+    ChatFrame_AddMessageEventFilter("CHAT_MSG_YELL", ChatEmoteFilter) -- 大喊
+    ChatFrame_AddMessageEventFilter("CHAT_MSG_RAID", ChatEmoteFilter) -- 团队
+    ChatFrame_AddMessageEventFilter("CHAT_MSG_RAID_LEADER", ChatEmoteFilter) -- 团队领袖
+    ChatFrame_AddMessageEventFilter("CHAT_MSG_PARTY", ChatEmoteFilter) -- 队伍
+    ChatFrame_AddMessageEventFilter("CHAT_MSG_PARTY_LEADER", ChatEmoteFilter) -- 队伍领袖
+    ChatFrame_AddMessageEventFilter("CHAT_MSG_GUILD", ChatEmoteFilter) -- 公会
+    ChatFrame_AddMessageEventFilter("CHAT_MSG_AFK", ChatEmoteFilter) -- AFK玩家自动回复
+    ChatFrame_AddMessageEventFilter("CHAT_MSG_DND", ChatEmoteFilter) -- 切勿打扰自动回复
+    
+    -- 副本和副本领袖
+    ChatFrame_AddMessageEventFilter("CHAT_MSG_INSTANCE_CHAT", ChatEmoteFilter)
+    ChatFrame_AddMessageEventFilter("CHAT_MSG_INSTANCE_CHAT_LEADER", ChatEmoteFilter)
+    -- 解析战网私聊
+    ChatFrame_AddMessageEventFilter("CHAT_MSG_WHISPER", ChatEmoteFilter)
+    ChatFrame_AddMessageEventFilter("CHAT_MSG_WHISPER_INFORM", ChatEmoteFilter)
+    ChatFrame_AddMessageEventFilter("CHAT_MSG_BN_WHISPER", ChatEmoteFilter)
+    ChatFrame_AddMessageEventFilter("CHAT_MSG_BN_WHISPER_INFORM", ChatEmoteFilter)
+    -- 解析社区聊天内容
+    ChatFrame_AddMessageEventFilter("CHAT_MSG_COMMUNITIES_CHANNEL", ChatEmoteFilter)
+end
+
 function OnEmoteClick(button, clickType)
     if (clickType == "LeftButton") then
         local ChatFrameEditBox = ChatEdit_ChooseBoxForSend()
@@ -106,6 +141,7 @@ function OnEmoteClick(button, clickType)
     ToggleEmoteTable()
 end
 
+-- 创建表情面板
 function CreateEmoteTableFrame()
     EmoteTableFrame = Frame("SpaUIEmoteTableFrame", UIParent, "BasicFrameTemplateWithInset")
     
@@ -123,22 +159,13 @@ function CreateEmoteTableFrame()
 
         icon = Button(format("SpaUIEmoteIcon%d", i),Container)
         icon.text = text
-        Style[icon] = {
-            size = Size(EMOTE_SIZE,EMOTE_SIZE),
-            location = {
-                Anchor("LEFT", col * (EMOTE_SIZE + EMOTE_SIZE_MARGIN), 0, Container:GetName(true), "LEFT"),
-                Anchor("TOP", 0, -row * (EMOTE_SIZE + EMOTE_SIZE_MARGIN), Container:GetName(true), "TOP")
-            },
-            normalTexture = {
-                file = texture,
-                setAllPoints = true
-            },
-            highlightTexture = {
-                file = [[Interface\Buttons\UI-Common-MouseHilight]],
-                alphaMode = "ADD",
-                setAllPoints = true
-            }
+        icon:SetSize(EMOTE_SIZE, EMOTE_SIZE)
+        icon:SetLocation{
+            Anchor("LEFT", col * (EMOTE_SIZE + EMOTE_SIZE_MARGIN), 0, Container:GetName(true), "LEFT"),
+            Anchor("TOP", 0, -row * (EMOTE_SIZE + EMOTE_SIZE_MARGIN), Container:GetName(true), "TOP")
         }
+        icon:SetNormalTexture(texture)
+        icon:SetHighlightTexture([[Interface\Buttons\UI-Common-MouseHilight]],"ADD")
         function icon:OnEnter()
             GameTooltip:SetOwner(self, "ANCHOR_RIGHT")
             GameTooltip:AddLine(self.text)
@@ -158,37 +185,45 @@ function CreateEmoteTableFrame()
             OnEmoteClick(self, button)
         end
     end
-
-    Style[EmoteTableFrame] = {
-        size = Size((EMOTE_SIZE + EMOTE_SIZE_MARGIN) * EMOTE_RAW_SIZE + 20, (row + 1) * (EMOTE_SIZE + EMOTE_SIZE_MARGIN) + 35),
-        frameStrata = "DIALOG"
-    }
-
+    EmoteTableFrame:SetSize((EMOTE_SIZE + EMOTE_SIZE_MARGIN) * EMOTE_RAW_SIZE + 20, (row + 1) * (EMOTE_SIZE + EMOTE_SIZE_MARGIN) + 35)
+    EmoteTableFrame:SetFrameStrata("DIALOG")
     EmoteTableFrame:Hide()
 end
 
--- 注册需要解析表情的频道
-ChatFrame_AddMessageEventFilter("CHAT_MSG_CHANNEL", ChatEmoteFilter) -- 公共频道
-ChatFrame_AddMessageEventFilter("CHAT_MSG_SAY", ChatEmoteFilter) -- 说
-ChatFrame_AddMessageEventFilter("CHAT_MSG_YELL", ChatEmoteFilter) -- 大喊
-ChatFrame_AddMessageEventFilter("CHAT_MSG_RAID", ChatEmoteFilter) -- 团队
-ChatFrame_AddMessageEventFilter("CHAT_MSG_RAID_LEADER", ChatEmoteFilter) -- 团队领袖
-ChatFrame_AddMessageEventFilter("CHAT_MSG_PARTY", ChatEmoteFilter) -- 队伍
-ChatFrame_AddMessageEventFilter("CHAT_MSG_PARTY_LEADER", ChatEmoteFilter) -- 队伍领袖
-ChatFrame_AddMessageEventFilter("CHAT_MSG_GUILD", ChatEmoteFilter) -- 公会
-ChatFrame_AddMessageEventFilter("CHAT_MSG_AFK", ChatEmoteFilter) -- AFK玩家自动回复
-ChatFrame_AddMessageEventFilter("CHAT_MSG_DND", ChatEmoteFilter) -- 切勿打扰自动回复
+-- 生成表情按钮
+__Async__()
+function CreateChatEmoteButton()
+    ChatEmoteButton = Button("SpaUIChatEmoteButton")
+    Style[ChatEmoteButton] = {
+        size = Size(CHAT_BAR_BUTTON_SIZE,CHAT_BAR_BUTTON_SIZE),
+        location = {Anchor("RIGHT", -CHAT_BAR_BUTTON_MARGIN, 0, ChatBar:GetName() ,"LEFT")},
+        alpha = ALPHA_LEAVE,
+        normalTexture = {
+            file = [[Interface\Addons\SpaUI\Chat\emojis\greet]],
+            setAllPoints = true
+        }
+    }
+    
+    function ChatEmoteButton:OnEnter()
+        self:SetAlpha(ALPHA_ENTER)     
+    end
 
--- 副本和副本领袖
-ChatFrame_AddMessageEventFilter("CHAT_MSG_INSTANCE_CHAT", ChatEmoteFilter)
-ChatFrame_AddMessageEventFilter("CHAT_MSG_INSTANCE_CHAT_LEADER", ChatEmoteFilter)
--- 解析战网私聊
-ChatFrame_AddMessageEventFilter("CHAT_MSG_WHISPER", ChatEmoteFilter)
-ChatFrame_AddMessageEventFilter("CHAT_MSG_WHISPER_INFORM", ChatEmoteFilter)
-ChatFrame_AddMessageEventFilter("CHAT_MSG_BN_WHISPER", ChatEmoteFilter)
-ChatFrame_AddMessageEventFilter("CHAT_MSG_BN_WHISPER_INFORM", ChatEmoteFilter)
--- 解析社区聊天内容
-ChatFrame_AddMessageEventFilter("CHAT_MSG_COMMUNITIES_CHANNEL", ChatEmoteFilter)
+    function ChatEmoteButton:OnLeave()
+        self:SetAlpha(ALPHA_LEAVE)     
+    end
+    
+    function ChatEmoteButton:OnMouseUp()
+        self:SetScale(SCALE_UP)
+    end
+
+    function ChatEmoteButton:OnMouseDown()
+        self:SetScale(SCALE_PRESS)
+    end
+
+    function ChatEmoteButton:OnClick()
+        FireSystemEvent("SPAUI_TOGGLE_EMOTE_FRAME",Anchors{Anchor("BOTTOMLEFT",3,3,self:GetName(),"TOPRIGHT")})
+    end
+end
 
 ----------------
 --  聊天气泡   --
@@ -264,14 +299,10 @@ function OnChatBubblesSettingChanged()
     end
 end
 
-function OnEnable(self)
-    OnChatBubblesSettingChanged()
-end
-
 -- 关闭表情面板
 __SystemEvent__("SPAUI_CLOSE_EMOTE_FRAME")
 function CloseEmoteTable()
-    if not EmoteTableFrame then return end
+    if not _Enabled or not EmoteTableFrame then return end
     EmoteTableFrame:Hide()
 end
 
@@ -280,6 +311,7 @@ __SystemEvent__("SPAUI_TOGGLE_EMOTE_FRAME")
 __Arguments__{Variable.Optional(Archors, nil)}
 __AsyncSingle__(true)
 function ToggleEmoteTable(location)
+    if not _Enabled then return end
     if not EmoteTableFrame then
         CreateEmoteTableFrame()
     end
