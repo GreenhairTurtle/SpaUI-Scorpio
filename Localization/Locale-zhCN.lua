@@ -47,6 +47,8 @@ L["config_addon_introduct"] = [[
 ]]
 -- Config ChangeLog
 L["config_category_changelog"] = "更新日志"
+-- Config Features
+L["config_category_features"] = "综合"
 -- Config Chat
 L["config_category_chat"] = "聊天"
 L["config_chat_enhanced"] = "聊天增强"
@@ -55,7 +57,9 @@ L["config_chat_bar_tooltip"] = "启用/禁用聊天栏"
 L["config_chat_emote"] = "聊天表情"
 L["config_chat_emote_tooltip"] = "启用/禁用聊天表情"
 L["config_chat_linktip"] = "聊天链接鼠标提示"
-L["config_chat_linktip_tooltip"] = "启用/禁用聊天链接鼠标悬浮提示"
+L["config_chat_linktip_tooltip"] = "启用/禁用聊天链接悬浮鼠标提示"
+L["config_chat_tab"] = "快捷切换频道"
+L["config_chat_tab_tooltip"] = "启用/禁用Tab快速切换频道"
 
 -- AutoRepair
 L["auto_repair_guild_cost"] = "|cfff07100你本次修理消耗公会资金: %s|r"

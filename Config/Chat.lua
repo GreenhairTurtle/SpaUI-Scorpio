@@ -51,6 +51,18 @@ ConfigBehaivors = {
         GetValue                            = function(self)
             return DB.ChatLinkTooltips.Enable
         end
+    },
+    -- Tab切换频道
+    ChatTab                                 = {
+        Default                             = {
+            Enable                          = true
+        },
+        OnValueChange                       = function (self, value)
+            DB.ChatTab.Enable = value
+        end,
+        GetValue                            = function (self)
+            return DB.ChatTab.Enable
+        end
     }       
 }
 
@@ -70,14 +82,15 @@ function Hide()
     ChatContainer:Hide()
 end
 
+
+-- 不太希望这几个函数放在父模组内，尽管可以这样,使用起来也方便
+-- 保存配置
 function OnSaveConfig()
     if not ConfigItems then return end
     for _, configItem in ipairs(ConfigItems) do
         configItem:OnSaveConfig()
     end
 end
-
--- 不太希望这个三个方法放在父模组内，尽管可以这样,使用起来也方便
 
 -- 是否需要重载界面
 function NeedReload()
@@ -99,8 +112,8 @@ end
 -- 添加变更后需要重载的配置项列表
 __Arguments__(UIObject)
 function AddReloadWatchList(parent)
+    AddReloadWatch(parent)
     for _, child in parent:GetChilds() do
-        AddReloadWatch(child)
         AddReloadWatchList(child)
     end
 end
@@ -110,10 +123,11 @@ end
 function OnEnable(self)
     ChatContainer = Frame("ChatContainer", ConfigContainer)
     -- 聊天栏
-    FontString("ChatTitle", ChatContainer, nil, "GameFontNormal")
+    FontString("ChatTitle", ChatContainer, nil)
     OptionsCheckButton("ChatBarEnableButton", ChatContainer)
     ChatEmoteEnableButton = OptionsCheckButton("ChatEmoteEnableButton", ChatContainer)
     OptionsCheckButton("ChatLinkTooltipEnableButton", ChatContainer)
+    OptionsCheckButton("ChatTab", ChatContainer)
 
     AddReloadWatchList(ChatContainer)
 
@@ -127,7 +141,8 @@ function OnEnable(self)
             location                    = {
                 Anchor("TOPLEFT")
             },
-            text                        = L["config_chat_enhanced"]
+            text                        = L["config_chat_enhanced"],
+            fontObject                  = GameFontNormal
         },
 
         ChatBarEnableButton             = {
@@ -146,10 +161,11 @@ function OnEnable(self)
             enabled                     = DB.ChatBar.Enable,
             tooltipText                 = L["config_chat_emote_tooltip"],
             location                    = {
-                Anchor("TOPLEFT", 3, -3, "ChatBarEnableButton", "BOTTOMLEFT")
+                Anchor("TOPLEFT", 15, -3, "ChatBarEnableButton", "BOTTOMLEFT")
             },
             Label                       = {
-                text                    = L["config_chat_emote"]
+                text                    = L["config_chat_emote"],
+                fontObject              = GameFontNormal
             }
         },
 
@@ -157,13 +173,23 @@ function OnEnable(self)
             configBehavior              = ConfigBehaivors.ChatLinkTooltips,
             tooltipText                 = L["config_chat_linktip_tooltip"],
             location                    = {
-                Anchor("TOPLEFT", 0, -3, "ChatEmoteEnableButton", "BOTTOMLEFT")
+                Anchor("LEFT", 0, 0, "ChatBarEnableButton", "LEFT"),
+                Anchor("TOP", 0, -3, "ChatEmoteEnableButton", "BOTTOM")
             },
             Label                       = {
                 text                    = L["config_chat_linktip"]
             }
+        },
+
+        ChatTab                         = {
+            configBehavior              = ConfigBehaivors.ChatTab,
+            tooltipText                 = L["config_chat_tab_tooltip"],
+            location                    = {
+                Anchor("TOPLEFT", 0, -3, "ChatLinkTooltipEnableButton", "BOTTOMLEFT")
+            },
+            Label                       = {
+                text                    = L["config_chat_tab"]
+            }
         }
     }
-
-
 end

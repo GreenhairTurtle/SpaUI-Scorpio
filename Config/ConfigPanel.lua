@@ -11,6 +11,12 @@ CategoryList = {
         module = "Introduce",
         enable = true
     },
+    -- 综合
+    {
+        name = L['config_category_features'],
+        module = "Features",
+        enable = true
+    },
     -- 聊天
     {
         name = L['config_category_chat'],
@@ -234,7 +240,6 @@ end
 -- 刷新类别
 function RefreshCategorys()
     if not CategoryList or not CategoryPanel then return end
-    Log("Refresh Config Categorys")
     if not CategoryListButtons then
         CategoryListButtons = {}
     end
