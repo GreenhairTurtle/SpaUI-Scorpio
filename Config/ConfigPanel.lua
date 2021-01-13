@@ -69,9 +69,9 @@ function ToggleConfigPanel()
     HideUIPanel(GameMenuFrame)
     if ConfigPanel then
         if ConfigPanel:IsShown() then
-            ConfigPanel:Hide()
+            Hide()
         else
-            ConfigPanel:Show()
+            Show()
         end
     end
     _Enabled = true
@@ -80,6 +80,13 @@ end
 function Show()
     if ConfigPanel then
         ConfigPanel:Show()
+        -- 还原状态
+        for _, category in ipairs(CategoryList) do
+            local module = _Modules[category.module]
+            if module.OnRestore then
+                module.OnRestore()
+            end
+        end
     end
 end
 
@@ -138,6 +145,7 @@ function CreateConfigPanel()
     Version = FontString("Version", ConfigPanel)
     -- 默认设置
     DefaultButton = UIPanelButton("DefaultButton", ConfigPanel)
+    DefaultButton.OnClick = OnDefaultButtonClick
     -- 取消
     -- 只有需要reload的选项这个按钮才有用，其它时候只是简单的关闭面板
     CancelButton = UIPanelButton("CancelButton", ConfigPanel)
@@ -248,7 +256,9 @@ function RefreshCategorys()
         if not button then
             button = CategoryListButton("Category"..index, CategoryPanel.ScrollChild)
             local top = index == 1
-            button:SetPoint("TOPLEFT",top and CategoryPanel.ScrollChild or CategoryPanel.ScrollChild:GetChild("Category"..(index-1)),top and "TOPLEFT" or "BOTTOMLEFT", 0, top and -8 or -5)
+            local relativeTo = top and CategoryPanel.ScrollChild or CategoryPanel.ScrollChild:GetChild("Category"..(index-1))
+            local yOffset = top and -8 or -5
+            button:SetPoint("TOPLEFT", relativeTo,top and "TOPLEFT" or "BOTTOMLEFT", 0, yOffset)
             button:InstantApplyStyle()
             button.OnClick = OnCategoryButtonClick
             CategoryListButtons[index] = button
@@ -320,6 +330,18 @@ function OnConfirm()
         end
     end
     ReloadUI()
+end
+
+-- 点击默认设置
+__AsyncSingle__()
+function OnDefaultButtonClick(self)
+    local result = Confirm(L["config_default_confirm"])
+    if result then
+        _Config:Reset()
+        _Config.Char:Reset()
+        _Config.Char.Spec:ResetAll()
+        ReloadUI() 
+    end
 end
 
 -- 从ConfigBehaviors里复制默认值

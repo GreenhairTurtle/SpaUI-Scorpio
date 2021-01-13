@@ -15,10 +15,14 @@ ConfigBehaivors = {
             ChatEmoteEnableButton:SetEnabled(value)
         end,
         OnSaveConfig                        = function(self)
-            DB.ChatBar.Enable   = self.TempValue
+            DB.ChatBar.Enable  = self.TempValue
         end,
         GetValue                            = function(self)
             return DB.ChatBar.Enable
+        end,
+        OnRestore                           = function(self)
+            self.TempValue = nil
+            ChatEmoteEnableButton:SetEnabled(self:GetValue())
         end,
 
         -- 聊天表情
@@ -37,9 +41,13 @@ ConfigBehaivors = {
             end,
             GetValue                        = function(self)
                 return DB.ChatBar.ChatEmote.Enable
-            end
+            end,
+            OnRestore                           = function(self)
+                self.TempValue = nil
+            end,
         }
     },
+
     -- 聊天链接悬浮提示
     ChatLinkTooltips                        = {
         Default                             = {
@@ -52,6 +60,7 @@ ConfigBehaivors = {
             return DB.ChatLinkTooltips.Enable
         end
     },
+    
     -- Tab切换频道
     ChatTab                                 = {
         Default                             = {
@@ -90,6 +99,14 @@ function OnSaveConfig()
     if not ConfigItems then return end
     for _, configItem in ipairs(ConfigItems) do
         configItem:OnSaveConfig()
+    end
+end
+
+-- 还原状态
+function OnRestore()
+    if not ConfigItems then return end
+    for _, configItem in ipairs(ConfigItems) do
+        configItem:OnRestore()
     end
 end
 

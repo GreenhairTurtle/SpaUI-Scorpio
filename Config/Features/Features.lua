@@ -31,6 +31,14 @@ function OnSaveConfig()
     end
 end
 
+-- 还原状态
+function OnRestore()
+    if not ConfigItems then return end
+    for _, configItem in ipairs(ConfigItems) do
+        configItem:OnRestore()
+    end
+end
+
 -- 是否需要重载界面
 function NeedReload()
     if ConfigItems then

@@ -39,6 +39,7 @@ L["config_debug_disable"] = "调试模式已关闭，你可以输入命令\"/spa
 L['config_load_more'] = "查看更多"
 L["config_reload_confirm"] = "保存更改需要重载界面"
 L["config_cancel_confirm"] = "部分更改还未保存，确定放弃？"
+L["config_default_confirm"] = "确定重置所有配置么？"
 -- Config Introduce
 L["config_category_introduce"] = "介绍"
 L["config_addon_introduct"] = [[
@@ -49,6 +50,7 @@ L["config_addon_introduct"] = [[
 L["config_category_changelog"] = "更新日志"
 -- Config Features
 L["config_category_features"] = "综合"
+L["config_category_features_auto_sell_repair"] = "自动修理/出售"
 -- Config Chat
 L["config_category_chat"] = "聊天"
 L["config_chat_enhanced"] = "聊天增强"

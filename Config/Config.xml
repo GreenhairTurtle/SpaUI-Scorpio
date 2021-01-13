@@ -4,5 +4,6 @@
     <Script file="ChangeLog.lua"/>
     <Script file="Introduce.lua"/>
     <Script file="Chat.lua"/>
-    <Script file="Features.lua"/>
+
+    <Include file="Features\Features.xml"/>
 </Ui>

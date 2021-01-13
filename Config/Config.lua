@@ -76,8 +76,13 @@ class "OptionsCheckButton" (function(_ENV)
     end
 
     function OnRestore(self)
-        if self.configBehavior and self.configBehavior.GetValue then
-            self:SetChecked(self.configBehavior.GetValue)
+        if self.configBehavior then
+            if self.configBehavior.GetValue then
+                self:SetChecked(self.configBehavior.GetValue)
+            end
+            if self.configBehavior.OnRestore then
+                self.configBehavior:OnRestore()
+            end
         end
     end
 
@@ -135,6 +140,9 @@ class "CategoryListButton"(function(_ENV)
         PlaySound(SOUNDKIT.IG_MAINMENU_OPTION_CHECKBOX_ON)
     end
 
+    __Template__{
+        Toggle  =   Button
+    }
     function __ctor(self)
         self.OnClick = self.OnClick + OnClick
     end
@@ -161,6 +169,26 @@ Style.UpdateSkin("Default", {
             location            = {
                 Anchor("TOPLEFT", 10, 0),
                 Anchor("BOTTOMRIGHT", -10, 0)
+            }
+        },
+
+        Toggle                  = {
+            size                = Size(14, 14),
+            location            = {
+                Anchor("TOPRIGHT", -6, -1)
+            },
+            normalTexture       = {
+                file            = [[Interface\Buttons\UI-MinusButton-UP]],
+                setAllPoints    = true
+            },
+            pushedTexture       = {
+                file            = [[Interface\Buttons\UI-MinusButton-DOWN]],
+                setAllPoints    = true
+            },
+            highlightTexture       = {
+                file            = [[Interface\Buttons\UI-PlusButton-Hilight]],
+                setAllPoints    = true,
+                alphaMode       = "ADD",
             }
         }
     }
