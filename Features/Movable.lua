@@ -305,7 +305,14 @@ MovableFramesNeedWait = {
                 }
             }
         }
-    }
+    },
+    -- 观察
+    ['Blizzard_InspectUI'] = {
+        ['InspectFrame'] = {
+            movable             = true,
+            Mover               = {}
+        }
+    },
 }
 
 __Async__()
