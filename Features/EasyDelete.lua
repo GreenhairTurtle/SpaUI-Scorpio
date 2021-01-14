@@ -8,6 +8,10 @@ Scorpio "SpaUI.Features.EasyDelete" ""
 
 local GetCursorInfo = GetCursorInfo
 
+function OnLoad(self)
+    _Enabled = _Config.Features.EasyDelete.Enable
+end
+
 function OnEnable(self)
     -- create item link container
     EasyDeleteLink = FontString("SpaUIEasyDeleteLink", StaticPopup1)

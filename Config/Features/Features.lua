@@ -2,22 +2,53 @@ Scorpio "SpaUI.Config.Features" ""
 
 L = _Locale
 
+ConfigBehaivors = {
+    EasyDelete                          = {
+        Default                         = {
+            Enable                      = true
+        },
+        NeedReload                      = function(self)
+            return self.TempValue ~= nil and self.TempValue ~= DB.EasyDelete.Enable
+        end,
+        OnValueChange                       = function(self, value)
+            self.TempValue = value
+        end,
+        OnSaveConfig                        = function(self)
+            DB.EasyDelete.Enable  = self.TempValue
+        end,
+        GetValue                            = function(self)
+            return DB.EasyDelete.Enable
+        end,
+        OnRestore                           = function(self)
+            self.TempValue = nil
+        end,
+    }
+}
+
 function OnLoad(self)
     _Enabled = false
+    SetDefaultToConfigDB(_Name, ConfigBehaivors)
+    DB = _Config[_Name]
 end
 
-function Show()
-    
+function Show(childModule)
+    if not FeaturesContainer then 
+        _Enabled = true
+    end
+    if childModule then
+        _Modules[childModule].Show()
+        FeaturesContainer:Hide()
+    else
+        FeaturesContainer:Show()
+    end
 end
 
-function Hide()
-    
-end
-
-function OnSaveConfig()
-    if not ConfigItems then return end
-    for _, configItem in ipairs(ConfigItems) do
-        configItem:OnSaveConfig()
+function Hide(childModule)
+    if childModule then
+        _Modules[childModule]:Hide()
+    else
+        if not FeaturesContainer then return end
+        FeaturesContainer:Hide()
     end
 end
 
@@ -66,3 +97,37 @@ function AddReloadWatchList(parent)
 end
 ----------  end  -----------
 ----------------------------
+
+function OnEnable(self)
+    FeaturesContainer = Frame("FeaturesContainer", ConfigContainer)
+    FeaturesTitle = FontString("FeaturesTitle", FeaturesContainer)
+    OptionsCheckButton("EasyDeleteEnableButton", FeaturesContainer)
+    
+    AddReloadWatchList(FeaturesContainer)
+
+    Style[FeaturesContainer] = {
+        location                        = {
+            Anchor("TOPLEFT", 15, -15),
+            Anchor("BOTTOMRIGHT", -15, 15)
+        },
+
+        FeaturesTitle                   = {
+            location                    = {
+                Anchor("TOPLEFT")
+            },
+            text                        = L["config_category_features_title"],
+            fontObject                  = GameFontNormalLarge
+        },
+
+        EasyDeleteEnableButton          = {
+            configBehavior              = ConfigBehaivors.EasyDelete,
+            tooltipText                 = L["config_category_features_easy_delete_tooltip"],
+            location                    = {
+                Anchor("TOPLEFT", -3, -5, "FeaturesTitle", "BOTTOMLEFT")
+            },
+            Label                       = {
+                text                    = L["config_category_features_esay_delete"]
+            }
+        }
+    }
+end

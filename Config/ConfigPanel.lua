@@ -3,31 +3,32 @@ Scorpio "SpaUI.Config" ""
 L = _Locale
 local InCombatLockdown = InCombatLockdown
 
-
 CategoryList = {
     -- 介绍
     {
         name = L['config_category_introduce'],
-        module = "Introduce",
-        enable = true
+        module = "Introduce"
     },
     -- 综合
     {
         name = L['config_category_features'],
         module = "Features",
-        enable = true
+        hasChildren = true
+    },
+    {
+        name = L['config_category_features_auto_sell_repair'],
+        module = "AutoSell_Repair",
+        parent = "Features"
     },
     -- 聊天
     {
         name = L['config_category_chat'],
-        module = "Chat",
-        enable = true
+        module = "Chat"
     },
     -- 更新日志
     {
         name = L['config_category_changelog'],
-        module = "ChangeLog",
-        enable = true
+        module = "ChangeLog"
     },
 }
 
@@ -82,7 +83,7 @@ function Show()
         ConfigPanel:Show()
         -- 还原状态
         for _, category in ipairs(CategoryList) do
-            local module = _Modules[category.module]
+            local module = GetModuleByCategory(category)
             if module.OnRestore then
                 module.OnRestore()
             end
@@ -132,6 +133,20 @@ function OnEnable()
     end
 end
 
+-- 创建类别
+local function CreateCategorys()
+    if not CategoryList or not CategoryPanel then return end
+    CategoryListButtons = {}
+    for index, category in ipairs(CategoryList) do
+        local button = CategoryListButton("Category"..index, CategoryPanel.ScrollChild)
+        button.OnClick = OnCategoryButtonClick
+        button.OnCollpasedChanged = OnCategoryToggleSub
+        button:SetCategory(category)
+        CategoryListButtons[index] = button
+    end
+    RefreshCategorys()
+end
+
 -- 创建配置面板
 __NoCombat__()
 function CreateConfigPanel()
@@ -157,7 +172,7 @@ function CreateConfigPanel()
     -- 调试按钮
     DebugButton = OptionsCheckButton("DebugButton", ConfigPanel)
 
-    RefreshCategorys()
+    CreateCategorys()
     SelectCategory(1)
 
     Style[ConfigPanel] = {
@@ -247,39 +262,69 @@ end
 
 -- 刷新类别
 function RefreshCategorys()
-    if not CategoryList or not CategoryPanel then return end
-    if not CategoryListButtons then
-        CategoryListButtons = {}
-    end
-    for index, category in ipairs(CategoryList) do
-        local button = CategoryListButtons[index]
-        if not button then
-            button = CategoryListButton("Category"..index, CategoryPanel.ScrollChild)
-            local top = index == 1
-            local relativeTo = top and CategoryPanel.ScrollChild or CategoryPanel.ScrollChild:GetChild("Category"..(index-1))
-            local yOffset = top and -8 or -5
-            button:SetPoint("TOPLEFT", relativeTo,top and "TOPLEFT" or "BOTTOMLEFT", 0, yOffset)
-            button:InstantApplyStyle()
-            button.OnClick = OnCategoryButtonClick
-            CategoryListButtons[index] = button
+    local container = CategoryPanel.ScrollChild
+    for index, button in ipairs(CategoryListButtons) do
+        local idx = index
+        local relativeTo
+        while idx > 0 and (not relativeTo or not relativeTo:IsShown())do
+            relativeTo = CategoryListButtons[idx -1]
+            idx = idx -1
         end
-        button:SetCategory(category)
-        button:Show()
+        if not relativeTo then
+            relativeTo = container
+        end
+        local top = index == 1
+        local yOffset = top and -8 or -5
+        button:SetPoint("TOPLEFT", relativeTo, top and "TOPLEFT" or "BOTTOMLEFT", 0, yOffset)
+        index = index + 1
     end
+end
+
+-- 获取类别对应的模组
+function GetModuleByCategory(category)
+    local module = nil
+    if category.parent then
+        module = _Modules[category.parent]._Modules[category.module]
+    else
+        module = _Modules[category.module]
+    end
+    return module
+end
+
+-- 展开子类型
+function OnCategoryToggleSub(self, collapsed)
+    local parent = self.category.module
+    for _, button in ipairs(CategoryListButtons) do
+        if button.category.parent == parent then
+            if collapsed then
+                button:Hide()
+            else
+                button:Show()
+            end
+        end
+    end
+    RefreshCategorys()
 end
 
 -- 类别点击事件
 function OnCategoryButtonClick(self)
     for _, button in ipairs(CategoryListButtons) do
-        local module = _Modules[button.category.module]
+        local category = button.category
+        local module,childModule
+        if category.parent then
+            module = _Modules[category.parent]
+            childModule = category.module
+        else
+            module = _Modules[category.module]
+        end
         if button == self then
             button:LockHighlight()
             button:GetHighlightTexture():SetVertexColor(1, 1, 0)
-            module.Show()
+            module.Show(childModule)
         else
             button:UnlockHighlight()
             button:GetHighlightTexture():SetVertexColor(.196, .388, .8)
-            module.Hide()
+            module.Hide(childModule)
         end
     end
 end
@@ -297,7 +342,7 @@ end
 __AsyncSingle__()
 function OnConfirmButtonClick(self)
     for _, category in ipairs(CategoryList) do
-        local module = _Modules[category.module]
+        local module = GetModuleByCategory(category)
         if module.NeedReload and module.NeedReload() then
             local result = Confirm(L["config_reload_confirm"])
             if result then OnConfirm() end
@@ -311,7 +356,7 @@ end
 __AsyncSingle__()
 function OnCancelButtonClick(self)
     for _, category in ipairs(CategoryList) do
-        local module = _Modules[category.module]
+        local module = GetModuleByCategory(category)
         if module.NeedReload and module.NeedReload() then
             local result = Confirm(L["config_cancel_confirm"])
             if result then Hide() end
@@ -324,7 +369,7 @@ end
 -- 确定
 function OnConfirm()
     for _, category in ipairs(CategoryList) do
-        local module = _Modules[category.module]
+        local module = GetModuleByCategory(category)
         if module.OnSaveConfig then
             module.OnSaveConfig()
         end

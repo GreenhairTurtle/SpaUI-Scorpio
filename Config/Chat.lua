@@ -160,7 +160,7 @@ function OnEnable(self)
                 Anchor("TOPLEFT")
             },
             text                        = L["config_chat_enhanced"],
-            fontObject                  = GameFontNormal
+            fontObject                  = GameFontNormalLarge
         },
 
         ChatBarEnableButton             = {

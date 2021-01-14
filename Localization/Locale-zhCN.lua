@@ -50,7 +50,12 @@ L["config_addon_introduct"] = [[
 L["config_category_changelog"] = "更新日志"
 -- Config Features
 L["config_category_features"] = "综合"
+L["config_category_features_title"] = "杂项"
+L["config_category_features_esay_delete"] = "快速删除"
+L["config_category_features_easy_delete_tooltip"] = "删除物品时自动填写DELETE"
+-- Config AutoSell&RepairAllItems
 L["config_category_features_auto_sell_repair"] = "自动修理/出售"
+L["config_features_auto_repair"] = "自动修理"
 -- Config Chat
 L["config_category_chat"] = "聊天"
 L["config_chat_enhanced"] = "聊天增强"

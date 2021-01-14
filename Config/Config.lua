@@ -28,7 +28,7 @@ class "OptionsCheckButton" (function(_ENV)
     extend "ConfigItem"
     
     property "TooltipText" { type = String }
-    property "configBehavior" {
+    property "ConfigBehavior" {
         type                    = RawTable,
         handler                 = function(self, behavior)
             if behavior and behavior.GetValue then
@@ -60,28 +60,28 @@ class "OptionsCheckButton" (function(_ENV)
     end
 
     function OnValueChange(self,...)
-        if self.configBehavior and self.configBehavior.OnValueChange then
-            self.configBehavior:OnValueChange(...)
+        if self.ConfigBehavior and self.ConfigBehavior.OnValueChange then
+            self.ConfigBehavior:OnValueChange(...)
         end
     end
 
     function NeedReload(self)
-        return self.configBehavior and self.configBehavior.NeedReload and self.configBehavior:NeedReload()
+        return self.ConfigBehavior and self.ConfigBehavior.NeedReload and self.ConfigBehavior:NeedReload()
     end
 
     function OnSaveConfig(self)
-        if self.configBehavior and self.configBehavior.OnSaveConfig then
-            self.configBehavior:OnSaveConfig()
+        if self.ConfigBehavior and self.ConfigBehavior.OnSaveConfig then
+            self.ConfigBehavior:OnSaveConfig()
         end
     end
 
     function OnRestore(self)
-        if self.configBehavior then
-            if self.configBehavior.GetValue then
-                self:SetChecked(self.configBehavior.GetValue)
+        if self.ConfigBehavior then
+            if self.ConfigBehavior.GetValue then
+                self:SetChecked(self.ConfigBehavior.GetValue)
             end
-            if self.configBehavior.OnRestore then
-                self.configBehavior:OnRestore()
+            if self.ConfigBehavior.OnRestore then
+                self.ConfigBehavior:OnRestore()
             end
         end
     end
@@ -130,14 +130,55 @@ __Sealed__()
 class "CategoryListButton"(function(_ENV)
     inherit "CheckButton"
 
+    event "OnCollpasedChanged"
+
+    local function ToggleChild(self, collapsed)
+        local toggle = self:GetChild("Toggle")
+        if collapsed then
+			toggle:SetNormalTexture("Interface\\Buttons\\UI-PlusButton-UP");
+			toggle:SetPushedTexture("Interface\\Buttons\\UI-PlusButton-DOWN");
+        else
+			toggle:SetNormalTexture("Interface\\Buttons\\UI-MinusButton-UP");
+			toggle:SetPushedTexture("Interface\\Buttons\\UI-MinusButton-DOWN");
+        end
+        OnCollpasedChanged(self, collapsed)
+    end
+
+    property "Collapsed" {
+        type        = Boolean,
+        default     = true,
+        handler     = ToggleChild
+    }
+
     function SetCategory(self,category)
         self.category = category
         self:SetText(category.name)
-        self:SetEnabled(category.enable)
+        local toggle = self:GetChild("Toggle")
+        if category.parent then
+            self:SetNormalFontObject(GameFontHighlightSmall);
+            self:SetHighlightFontObject(GameFontHighlightSmall);
+            self:GetFontString():SetPoint("LEFT", 16, 2)
+            toggle:Hide()
+            self:Hide()
+        else
+            self:SetNormalFontObject(GameFontNormal);
+            self:SetHighlightFontObject(GameFontHighlight);
+            self:GetFontString():SetPoint("LEFT", 8, 2)
+            self:Show()
+            if category.hasChildren then
+                toggle:Show()
+            end
+        end
     end
 
     local function OnClick(self)
         PlaySound(SOUNDKIT.IG_MAINMENU_OPTION_CHECKBOX_ON)
+    end
+
+    local function OnToggleClick(self)
+        PlaySound(SOUNDKIT.IG_MAINMENU_OPTION_CHECKBOX_ON);
+        local parent = self:GetParent()
+        parent.Collapsed = not parent.Collapsed
     end
 
     __Template__{
@@ -145,15 +186,15 @@ class "CategoryListButton"(function(_ENV)
     }
     function __ctor(self)
         self.OnClick = self.OnClick + OnClick
+        local toggle = self:GetChild("Toggle")
+        toggle.OnClick = toggle.OnClick + OnToggleClick
+        self:InstantApplyStyle()
     end
 end)
 
 Style.UpdateSkin("Default", {
     [CategoryListButton] = {
         size                    = Size(175, 18),
-        highlightFont           = GameFontHighlight,
-        normalFont              = GameFontNormal,
-        disabledFont            = GameFontDisable,
         highlightTexture        = {
             file                = [[Interface\QuestFrame\UI-QuestLogTitleHighlight]],
             alphaMode           = "ADD",
@@ -165,11 +206,7 @@ Style.UpdateSkin("Default", {
         },
         buttonText              = {
             justifyH            = "LEFT",
-            wordwrap            = false,
-            location            = {
-                Anchor("TOPLEFT", 10, 0),
-                Anchor("BOTTOMRIGHT", -10, 0)
-            }
+            wordwrap            = false
         },
 
         Toggle                  = {
@@ -177,18 +214,19 @@ Style.UpdateSkin("Default", {
             location            = {
                 Anchor("TOPRIGHT", -6, -1)
             },
+            visible             = false,
             normalTexture       = {
-                file            = [[Interface\Buttons\UI-MinusButton-UP]],
-                setAllPoints    = true
+                setAllPoints    = true,
+                file            = [[Interface\Buttons\UI-PlusButton-UP]]
             },
             pushedTexture       = {
-                file            = [[Interface\Buttons\UI-MinusButton-DOWN]],
-                setAllPoints    = true
-            },
-            highlightTexture       = {
-                file            = [[Interface\Buttons\UI-PlusButton-Hilight]],
                 setAllPoints    = true,
-                alphaMode       = "ADD",
+                file            = [[Interface\Buttons\UI-PlusButton-DOWN]]
+            },
+            highlightTexture    = {
+                setAllPoints    = true,
+                file            = [[Interface\Buttons\UI-PlusButton-Hilight]],
+                alphaMode       = "ADD"
             }
         }
     }
