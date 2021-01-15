@@ -177,7 +177,7 @@ function SetTradeTab(index)
         tab:SetAttribute("spell",name)
     end
 
-    tab.Cd:Clear()
+    tab.Cooldown:Clear()
     tab.Cover:Hide()
     tab:Show()
     tab:SetChecked(false)
@@ -203,7 +203,7 @@ function UpdateTradeTabs()
         end
         local start,duration = GetSpellCooldown(spellID)
         if start and duration and duration > 1.5 then
-            tab.Cd:SetCooldown(start,duration)
+            tab.Cooldown:SetCooldown(start,duration)
             tab:SetChecked(false)
         end
     end

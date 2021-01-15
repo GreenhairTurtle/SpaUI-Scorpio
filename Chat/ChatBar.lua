@@ -33,6 +33,16 @@ function OnEnable(self)
     CreateChatBar()
 end
 
+-- 状态变更
+local function OnEditBoxStatusChange(editbox)
+    if editbox:HasFocus() then
+        ChatBar:Hide()
+    else
+        if editbox:GetText():len() <= 0 then ChatBar:Show() end
+        FireSystemEvent("SPAUI_CLOSE_EMOTE_FRAME")
+    end
+end
+
 -- 创建ChatBar
 function CreateChatBar()
     if not ChatFrame1EditBox then return end
@@ -139,15 +149,5 @@ function OnWorldChannelButtonClick(button,key)
         editbox:SetAttribute("chatType", "CHANNEL")
         editbox:SetAttribute("channelTarget", channelTarget)
         ChatEdit_UpdateHeader(editbox)
-    end
-end
-
--- 状态变更
-function OnEditBoxStatusChange(editbox)
-    if editbox:HasFocus() then
-        ChatBar:Hide()
-    else
-        if editbox:GetText():len() <= 0 then ChatBar:Show() end
-        FireSystemEvent("SPAUI_CLOSE_EMOTE_FRAME")
     end
 end

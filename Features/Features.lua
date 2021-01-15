@@ -8,7 +8,7 @@ class "TradeTab" {
     Border              = Texture,
     Icon                = Texture,
     Cover               = Frame,
-    Cd                  = Cooldown
+    Cooldown            = Cooldown
 }
 
 Style.UpdateSkin("Default",{
@@ -48,22 +48,6 @@ Style.UpdateSkin("Default",{
         Cover               = {
             setAllPoints    = true,
             enableMouse     = true
-        },
-
-        Cd                  = {
-            setAllPoints        = true,
-            swipeColor          = ColorType(0, 0, 0),
-            swipeTexture        = {
-                file            = "",
-                color           = ColorType(1, 1, 1, 0.8)
-            },
-            edgeTexture         = {
-                file            = [[Interface\Cooldown\edge]]
-            },
-            blingTexture        = {
-                file            = [[Interface\Cooldown\star4]],
-                color           = ColorType(0.3, 0.6, 1, 0.8)
-            }
         }
     }
 })

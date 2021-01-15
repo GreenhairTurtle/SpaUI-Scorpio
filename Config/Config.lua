@@ -3,22 +3,45 @@ Scorpio "SpaUI.Config" ""
 namespace "SpaUI.Widget.Config"
 
 __Sealed__()
-interface "ConfigItem" (function(self)
-    -- 值变化回调
+interface "ConfigItem" (function(_ENV)
+
     __Abstract__()
-    function OnValueChange(self,...) end
+    property "ConfigBehavior"
+
+    -- 值变化回调
+    function OnValueChange(self,...)
+        if self.ConfigBehavior and self.ConfigBehavior.OnValueChange then
+            self.ConfigBehavior:OnValueChange(...)
+        end
+    end
 
     -- 是否需要重载
-    __Abstract__()
-    function NeedReload(self) end
+    function NeedReload(self)
+        return self.ConfigBehavior and self.ConfigBehavior.NeedReload and self.ConfigBehavior:NeedReload()
+    end
 
-    -- 确认回调
-    __Abstract__()
-    function OnSaveConfig(self) end
+    -- 保存配置回调
+    function OnSaveConfig(self)
+        if self.ConfigBehavior and self.ConfigBehavior.OnSaveConfig then
+            self.ConfigBehavior:OnSaveConfig()
+        end
+    end
 
-    -- 恢复
+    -- 重置
+    function Restore(self)
+        if self.ConfigBehavior then
+            if self.ConfigBehavior.GetValue then
+                self:OnRestore(self.ConfigBehavior.GetValue())
+            end
+            if self.ConfigBehavior.OnRestore then
+                self.ConfigBehavior:OnRestore()
+            end
+        end
+    end
+
+    -- 重置回调
     __Abstract__()
-    function Restore(self) end
+    function OnRestore(self, ...) end
 end)
 
 -- ConfigPanel CheckButton
@@ -56,34 +79,11 @@ class "OptionsCheckButton" (function(_ENV)
         else
             PlaySound(SOUNDKIT.IG_MAINMENU_OPTION_CHECKBOX_OFF);
         end
-        OnValueChange(self,checked)
+        self:OnValueChange(checked)
     end
 
-    function OnValueChange(self,...)
-        if self.ConfigBehavior and self.ConfigBehavior.OnValueChange then
-            self.ConfigBehavior:OnValueChange(...)
-        end
-    end
-
-    function NeedReload(self)
-        return self.ConfigBehavior and self.ConfigBehavior.NeedReload and self.ConfigBehavior:NeedReload()
-    end
-
-    function OnSaveConfig(self)
-        if self.ConfigBehavior and self.ConfigBehavior.OnSaveConfig then
-            self.ConfigBehavior:OnSaveConfig()
-        end
-    end
-
-    function OnRestore(self)
-        if self.ConfigBehavior then
-            if self.ConfigBehavior.GetValue then
-                self:SetChecked(self.ConfigBehavior.GetValue)
-            end
-            if self.ConfigBehavior.OnRestore then
-                self.ConfigBehavior:OnRestore()
-            end
-        end
+    function OnRestore(self, value)
+        self:SetChecked(value)
     end
 
     function __ctor(self)
@@ -232,6 +232,7 @@ Style.UpdateSkin("Default", {
     }
 })
 
+-- Line
 __Sealed__() __Template__(Texture)
 class "OptionsLine" {}
 
@@ -241,3 +242,88 @@ Style.UpdateSkin("Default", {
         color                   = ColorType(1, 1, 1, 0.2)
     }
 })
+
+-- ConfigPanel DropDownMenu
+__Sealed__()
+class "OptionsDropDownMenu" (function(_ENV)
+    inherit "Frame"
+    extend "ConfigItem"
+
+    -- DropDownMenu GetValue至少需要返回两个参数
+    -- return arg1:value
+    -- return arg2:text
+    property "ConfigBehavior" {
+        type                    = RawTable,
+        handler                 = function(self, behavior)
+            CloseDropDownMenus()
+            if behavior and behavior.GetValue then
+                local _, text = behavior:GetValue()
+                self:SetText(text)
+            end
+        end
+    }
+
+    property "DropDownInfos" {
+        type                    = RawTable,
+        handler                 = function(self, infos)
+            self:SetEnabled(infos and #infos > 0)
+        end
+    }
+
+    local function OnItemSelect(button, arg1, arg2, checked)
+        print(arg1,arg2,checked)
+        if button and button:GetParent() and button:GetParent().dropdown then
+            local self = button:GetParent().dropdown
+            SetText(self,arg2)
+            self:OnValueChange(arg1, arg2, checked)
+        end
+    end
+
+    -- 判断是否选中的条件为arg1是否与ConfigBehavior返回的第一个参数相等
+    -- 如果arg1为nil，则会取value，继而取text
+    local function DropDownInitialize(self, level, menuList)
+        local infos = (( level or 1 ) == 1 ) and self.DropDownInfos or menuList
+        if not infos or #infos <= 0 then return end
+        local value = self.ConfigBehavior and self.ConfigBehavior.TempValue
+        for _, info in ipairs(infos) do
+            info.value = info.value or info.text
+            info.arg1 = info.arg1 or info.value or info.text
+            info.arg2 = info.arg2 or info.text
+            info.checked = (value ~= nil) and (info.arg1 == value)
+            info.hasArrow = info.menuList and #info.menuList > 0
+            info.func = OnItemSelect
+            UIDropDownMenu_AddButton(info, level)
+        end
+    end
+
+    function SetText(self, text)
+        UIDropDownMenu_SetText(self, text)
+    end
+
+    function OnRestore(self, _, text)
+        self:SetText(text)
+    end
+
+    function SetWidth(self, width)
+        UIDropDownMenu_SetWidth(self, width)
+    end
+
+    function SetEnabled(self, enable)
+        if enable then
+            UIDropDownMenu_EnableDropDown(self)
+        else
+            UIDropDownMenu_DisableDropDown(self)
+        end
+    end
+
+    function __ctor(self)
+        -- 锚点对齐框体.
+        self:SetEnabled(false)
+        UIDropDownMenu_SetAnchor(self, 14, 22)
+        UIDropDownMenu_Initialize(self, DropDownInitialize)
+    end
+
+    function __new(_,_,parent,...)
+        return CreateFrame("Frame", nil, parent, "UIDropDownMenuTemplate")
+    end
+end)

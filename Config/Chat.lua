@@ -37,12 +37,12 @@ ConfigBehaivors = {
                 self.TempValue      = value
             end,
             OnSaveConfig                    = function(self)
-                DB.ChatBar.ChatEmote.Enable   = self.TempValue
+                DB.ChatBar.ChatEmote.Enable = self.TempValue
             end,
             GetValue                        = function(self)
                 return DB.ChatBar.ChatEmote.Enable
             end,
-            OnRestore                           = function(self)
+            OnRestore                       = function(self)
                 self.TempValue = nil
             end,
         }
@@ -106,7 +106,7 @@ end
 function OnRestore()
     if not ConfigItems then return end
     for _, configItem in ipairs(ConfigItems) do
-        configItem:OnRestore()
+        configItem:Restore()
     end
 end
 
@@ -203,7 +203,7 @@ function OnEnable(self)
             configBehavior              = ConfigBehaivors.ChatTab,
             tooltipText                 = L["config_chat_tab_tooltip"],
             location                    = {
-                Anchor("TOPLEFT", 0, -3, "ChatLinkTooltipEnableButton", "BOTTOMLEFT")
+                Anchor("TOPLEFT", -10, -3, "ChatLinkTooltipEnableButton", "BOTTOMLEFT")
             },
             Label                       = {
                 text                    = L["config_chat_tab"]
