@@ -59,7 +59,6 @@ function OnEnable(self)
 end
 
 __SystemEvent__('MINIMAP_PING')
-__AsyncSingle__(true)
 function OnMinimapPing(unit)
     if not unit then return end
     if not MinimapPingFrame then return end

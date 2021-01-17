@@ -11,7 +11,7 @@ interface "ConfigItem" (function(_ENV)
     -- 值变化回调
     function OnValueChange(self,...)
         if self.ConfigBehavior and self.ConfigBehavior.OnValueChange then
-            self.ConfigBehavior:OnValueChange(...)
+            return self.ConfigBehavior:OnValueChange(...)
         end
     end
 
@@ -23,7 +23,7 @@ interface "ConfigItem" (function(_ENV)
     -- 保存配置回调
     function OnSaveConfig(self)
         if self.ConfigBehavior and self.ConfigBehavior.OnSaveConfig then
-            self.ConfigBehavior:OnSaveConfig()
+            return self.ConfigBehavior:OnSaveConfig()
         end
     end
 
@@ -31,10 +31,10 @@ interface "ConfigItem" (function(_ENV)
     function Restore(self)
         if self.ConfigBehavior then
             if self.ConfigBehavior.GetValue then
-                self:OnRestore(self.ConfigBehavior.GetValue())
+                return self:OnRestore(self.ConfigBehavior.GetValue())
             end
             if self.ConfigBehavior.OnRestore then
-                self.ConfigBehavior:OnRestore()
+                return self.ConfigBehavior:OnRestore()
             end
         end
     end
@@ -271,12 +271,42 @@ class "OptionsDropDownMenu" (function(_ENV)
     }
 
     local function OnItemSelect(button, arg1, arg2, checked)
-        print(arg1,arg2,checked)
         if button and button:GetParent() and button:GetParent().dropdown then
             local self = button:GetParent().dropdown
-            SetText(self,arg2)
-            self:OnValueChange(arg1, arg2, checked)
+            -- 如果返回true，则改变当前文本
+            local result = self:OnValueChange(arg1, arg2, checked)
+            if result == true then
+                SetText(self,arg2)
+            end
         end
+        CloseDropDownMenus()
+    end
+
+    local function SetupInfo(info, value)
+        info.value = info.value or info.text
+        info.arg1 = info.arg1 or info.value or info.text
+        info.arg2 = info.arg2 or info.text
+        info.func = OnItemSelect
+        info.tooltipTitle = (not info.tooltipTitle and info.tooltipText) and info.text or nil
+        info.tooltipOnButton = (info.tooltipText or info.tooltipTitle) and true or false
+        info.hasArrow = info.menuList and #info.menuList > 0
+        info.checked = IsInfoChecked(info, value)
+    end
+
+    function IsInfoChecked(info, value)
+        if value == nil then return false end
+        if info.arg1 == value then return true end
+        if info.menuList and #info.menuList > 0 then
+            for _, childInfo in ipairs(info.menuList) do
+                SetupInfo(childInfo)
+                if childInfo.hasArrow then
+                    return IsInfoChecked(childInfo, value)
+                else
+                    return childInfo.arg1 == value
+                end
+            end
+        end
+        return false
     end
 
     -- 判断是否选中的条件为arg1是否与ConfigBehavior返回的第一个参数相等
@@ -284,14 +314,9 @@ class "OptionsDropDownMenu" (function(_ENV)
     local function DropDownInitialize(self, level, menuList)
         local infos = (( level or 1 ) == 1 ) and self.DropDownInfos or menuList
         if not infos or #infos <= 0 then return end
-        local value = self.ConfigBehavior and self.ConfigBehavior.TempValue
+        local value = self.ConfigBehavior and self.ConfigBehavior.TempValue or (self.ConfigBehavior.GetValue and self.ConfigBehavior:GetValue())
         for _, info in ipairs(infos) do
-            info.value = info.value or info.text
-            info.arg1 = info.arg1 or info.value or info.text
-            info.arg2 = info.arg2 or info.text
-            info.checked = (value ~= nil) and (info.arg1 == value)
-            info.hasArrow = info.menuList and #info.menuList > 0
-            info.func = OnItemSelect
+            SetupInfo(info, value)
             UIDropDownMenu_AddButton(info, level)
         end
     end
@@ -304,9 +329,12 @@ class "OptionsDropDownMenu" (function(_ENV)
         self:SetText(text)
     end
 
-    function SetWidth(self, width)
-        UIDropDownMenu_SetWidth(self, width)
-    end
+    property "DropDownMenuWidth" {
+        type                = Number,
+        handler             = function(self, width)
+            UIDropDownMenu_SetWidth(self, width)
+        end
+    }
 
     function SetEnabled(self, enable)
         if enable then
@@ -321,9 +349,24 @@ class "OptionsDropDownMenu" (function(_ENV)
         self:SetEnabled(false)
         UIDropDownMenu_SetAnchor(self, 14, 22)
         UIDropDownMenu_Initialize(self, DropDownInitialize)
+        UIDropDownMenu_JustifyText(self,"LEFT")
     end
 
     function __new(_,_,parent,...)
         return CreateFrame("Frame", nil, parent, "UIDropDownMenuTemplate")
     end
 end)
+
+-- 角色配置指示器
+__Sealed__() 
+__ChildProperty__(OptionsDropDownMenu, "CharIndicator")
+__ChildProperty__(OptionsCheckButton, "CharIndicator")
+class "CharOptionsIndicator" {Texture}
+
+Style.UpdateSkin("Default", {
+    [CharOptionsIndicator] = {
+        file                        = [[Interface\Addons\SpaUI\Media\char_indicator]],
+        setAllPoints                = true,
+        size                        = Size(22, 22)
+    }
+})

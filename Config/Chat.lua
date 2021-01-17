@@ -203,7 +203,7 @@ function OnEnable(self)
             configBehavior              = ConfigBehaivors.ChatTab,
             tooltipText                 = L["config_chat_tab_tooltip"],
             location                    = {
-                Anchor("TOPLEFT", -10, -3, "ChatLinkTooltipEnableButton", "BOTTOMLEFT")
+                Anchor("TOPLEFT", 0, -3, "ChatLinkTooltipEnableButton", "BOTTOMLEFT")
             },
             Label                       = {
                 text                    = L["config_chat_tab"]

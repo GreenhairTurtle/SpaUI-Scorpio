@@ -134,9 +134,13 @@ local PreActionRun = [[
 ]]
 
 local function AddAnnouncerTooltip(self)
-    GameTooltip:AddLine(" ")
-    GameTooltip:AddLine(L["cooldown_announcer_tooltip"],1,1,1,true)
-    GameTooltip:Show()
+    if not self.action or not HasAction(self.action) then return end
+    local actionType = GetActionInfo(self.action)
+    if actionType == "item" or actionType == "macro" or actionType == "spell" then
+        GameTooltip:AddLine(" ")
+        GameTooltip:AddLine(L["cooldown_announcer_tooltip"],1,1,1,true)
+        GameTooltip:Show()
+    end
 end
 
 for _,frame in ipairs(SupportAnnouncerFrames) do

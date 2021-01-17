@@ -157,7 +157,7 @@ function CreateConfigPanel()
     CategoryPanel = FauxScrollFrame("CategoryList", ConfigPanel)
     ConfigContainer = Frame("Container", ConfigPanel)
     -- 版本号
-    Version = FontString("Version", ConfigPanel)
+    FontString("Version", ConfigPanel)
     -- 默认设置
     DefaultButton = UIPanelButton("DefaultButton", ConfigPanel)
     DefaultButton.OnClick = OnDefaultButtonClick
@@ -171,91 +171,99 @@ function CreateConfigPanel()
     OkayButton.OnClick = OnConfirmButtonClick
     -- 调试按钮
     DebugButton = OptionsCheckButton("DebugButton", ConfigPanel)
+    -- 角色配置文本
+    FontString("CharIndicatorText", ConfigPanel)
 
     CreateCategorys()
     SelectCategory(1)
 
     Style[ConfigPanel] = {
-        size                = Size(858, 660),
+        size                            = Size(858, 660),
 
-        Header              = {
-            text            = L['config_panel_title']
+        Header                          = {
+            text                        = L['config_panel_title']
         },
 
-        Resizer             = {
-            visible         = false
+        Resizer                         = {
+            visible                     = false
         },
 
-        CloseButton         = {
-            visible         = false
+        CloseButton                     = {
+            visible                     = false
         },
 
-        Version             = {
-            text            = L['config_version']:format(ScorpioVersion,AddonVersion),
-            location        = {
+        Version                         = {
+            text                        = L['config_version']:format(ScorpioVersion,AddonVersion),
+            location                    = {
                 Anchor("BOTTOMRIGHT", -10, 0, "Container", "TOPRIGHT")
             }
         },
 
-        CategoryList        = {
-            size            = Size(175, 569),
-            location        = {Anchor("TOPLEFT",22,-40)},
-            backdrop                = {
-                edgeFile            = [[Interface\Tooltips\UI-Tooltip-Border]],
-                edgeSize            = 16,
-                tileEdge            = true
+        CategoryList                    = {
+            size                        = Size(175, 569),
+            location                    = {Anchor("TOPLEFT",22,-40)},
+            backdrop                    = {
+                edgeFile                = [[Interface\Tooltips\UI-Tooltip-Border]],
+                edgeSize                = 16,
+                tileEdge                = true
             },
-            backdropBorderColor     = ColorType(0.6, 0.6, 0.6, 0.6),
-            scrollBarHideable       = true,
+            backdropBorderColor         = ColorType(0.6, 0.6, 0.6, 0.6),
+            scrollBarHideable           = true,
 
-            ScrollBar               = {
-                location            = {
+            ScrollBar                   = {
+                location                = {
                     Anchor("TOPRIGHT", -6, -24),
                     Anchor("BOTTOMRIGHT", -6, 24)
                 },
             },
         },
 
-        Container           = {
-            backdrop                = {
-                edgeFile            = [[Interface\Tooltips\UI-Tooltip-Border]],
-                edgeSize            = 16,
-                tileEdge            = true
-            },
-            backdropBorderColor     = ColorType(0.6, 0.6, 0.6),
-            location        = {
+        Container                       = {
+            backdrop                    = {
+                edgeFile                = [[Interface\Tooltips\UI-Tooltip-Border]],
+                edgeSize                = 16,
+                tileEdge                = true
+            },  
+            backdropBorderColor         = ColorType(0.6, 0.6, 0.6),
+            location                    = {
                 Anchor("TOPLEFT",16,0,"CategoryList","TOPRIGHT"),
                 Anchor("BOTTOMLEFT",16,1,"CategoryList","BOTTOMRIGHT"),
                 Anchor("RIGHT",-22,0)
             }
         },
 
-        DefaultButton       = {
-            size            = Size(96,22),
-            text            = DEFAULTS,
-            location        = {Anchor("BOTTOMLEFT",22,16)}
+        DefaultButton                   = {
+            size                        = Size(96,22),
+            text                        = DEFAULTS,
+            location                    = {Anchor("BOTTOMLEFT",22,16)}
+        },          
+
+        CancelButton                    = {
+            size                        = Size(96,22),
+            text                        = CANCEL,
+            location                    = {Anchor("BOTTOMRIGHT",-22,16)}
+        },          
+
+        OkayButton                      = {
+            size                        = Size(96,22),
+            text                        = OKAY,
+            location                    = {Anchor("BOTTOMRIGHT",0,0,"CancelButton","BOTTOMLEFT")}
         },
 
-        CancelButton        = {
-            size            = Size(96,22),
-            text            = CANCEL,
-            location        = {Anchor("BOTTOMRIGHT",-22,16)}
-        },
-
-        OkayButton          = {
-            size            = Size(96,22),
-            text            = OKAY,
-            location        = {Anchor("BOTTOMRIGHT",0,0,"CancelButton","BOTTOMLEFT")}
-        },
-
-        DebugButton    = {
-            enabled         = false,
-            checked         = _Config.DebugMode,
-            visible         = _Config.DebugMode or false,
-            location        = {Anchor("BOTTOMLEFT",0,0,"CategoryList","TOPLEFT")},
-            Label           = {
-                text        = L['config_debug']
+        DebugButton                     = {
+            enabled                     = false,
+            checked                     = _Config.DebugMode,
+            visible                     = _Config.DebugMode or false,
+            location                    = {Anchor("LEFT", 0, 0, "DefaultButton", "RIGHT")},
+            Label                       = {
+                text                    = L['config_debug']
             }
+        },
+
+        CharIndicatorText               = {
+            text                        = L["config_char"],
+            fontObject                  = GameFontHighlightSmall,
+            location                    = {Anchor("BOTTOMLEFT",0,0,"CategoryList","TOPLEFT")}
         }
     }
 end
@@ -411,4 +419,9 @@ end
 __Arguments__{NEString, RawTable}
 function SetDefaultToConfigDB(key,table)
     _Config:SetDefault(key,CopyDefaultFromConfigBehaviors(table))
+end
+
+__Arguments__{NEString, RawTable}
+function SetDefaultToCharConfigDB(key,table)
+    _Config.Char:SetDefault(key,CopyDefaultFromConfigBehaviors(table))
 end

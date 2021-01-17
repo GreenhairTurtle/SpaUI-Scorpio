@@ -1,3 +1,7 @@
 Sites:https://www.iconfont.cn
 
 Thanks Ethric's Texture,from https://wago.io/okQgj8zoy/5
+
+char_indicator.tga 
+- Author:xu yu jie/user-role
+- From:https://www.iconfont.cn

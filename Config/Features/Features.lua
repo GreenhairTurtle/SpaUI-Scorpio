@@ -1,5 +1,6 @@
 Scorpio "SpaUI.Config.Features" ""
 
+namespace "SpaUI.Widget.Config.Features"
 L = _Locale
 
 ConfigBehaivors = {
@@ -27,8 +28,21 @@ ConfigBehaivors = {
 
 function OnLoad(self)
     _Enabled = false
-    SetDefaultToConfigDB(_Name, ConfigBehaivors)
+    _Parent.SetDefaultToConfigDB(_Name, ConfigBehaivors)
     DB = _Config[_Name]
+end
+
+__Arguments__{NEString, RawTable}
+function SetDefaultToConfigDB(childName,table)
+    ConfigBehaivors[childName] = table
+    _Parent.SetDefaultToConfigDB(_Name, ConfigBehaivors)
+end
+
+__Arguments__{NEString, RawTable}
+function SetDefaultToCharConfigDB(childName,table)
+    CharConfigBehaivors = CharConfigBehaivors or {}
+    CharConfigBehaivors[childName] = table
+    _Parent.SetDefaultToCharConfigDB(_Name,CharConfigBehaivors)
 end
 
 function Show(childModule)

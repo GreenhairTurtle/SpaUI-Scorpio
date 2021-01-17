@@ -255,47 +255,51 @@ function ReplaceChatBubbleEmote()
     end
 end
 
--- 聊天气泡消息接收监听
+-- 启用/禁用气泡消息接收监听
 __AsyncSingle__(true)
-function OnChatBubblesMsgReceived()
-    -- 最多重试5次
-    local count = 5
-    repeat
-        Delay(0.1)
-        local chatBubbles = GetAllChatBubbles()
-        local frame, text, after
-        for _, v in pairs(chatBubbles) do
-            frame = v:GetChildren()
-            if (frame and frame.String) then
-                text = frame.String:GetText()
-                after = text:gsub("%{.-%}", DefaultReplaceEmote)
-                if (after ~= text) then
-                    return frame.String:SetText(after)
+function ChatBubblesMsgEnabled(enable, events)
+    while enable do
+        Wait(unpack(events))
+        --最多重试5次
+        local count = 5
+        repeat
+            Delay(0.1)
+            local chatBubbles = GetAllChatBubbles()
+            local frame, text, after
+            for _, v in pairs(chatBubbles) do
+                frame = v:GetChildren()
+                if (frame and frame.String) then
+                    text = frame.String:GetText()
+                    after = text:gsub("%{.-%}", DefaultReplaceEmote)
+                    if (after ~= text) then
+                        return frame.String:SetText(after)
+                    end
                 end
             end
-        end
-        if #chatBubbles > 0 then
-            break
-        end
-        count = count -1
-    until count < 0
+            if #chatBubbles > 0 then
+                break
+            end
+            count = count -1
+        until count < 0
+    end
 end
 
 -- 监听聊天气泡设置变更
 __SecureHook__(_G,"InterfaceOptionsDisplayPanelChatBubblesDropDown_SetValue")
-__Async__()
 function OnChatBubblesSettingChanged()
     local chatBubbles = GetCVarBool("chatBubbles")
     local chatBubblesParty = GetCVarBool("chatBubblesParty")
-    if chatBubbles then
-        _M:RegisterEvent('CHAT_MSG_SAY',OnChatBubblesMsgReceived)
+    if chatBubbles or chatBubblesParty then
+        local events = {}
+        if chatBubbles then
+            tinsert(events, "CHAT_MSG_SAY")
+        end
+        if chatBubblesParty then
+            tinsert(events, "CHAT_MSG_PARTY")
+        end
+        ChatBubblesMsgEnabled(true,events)
     else
-        _M:UnregisterEvent('CHAT_MSG_SAY')
-    end
-    if chatBubblesParty then
-        _M:RegisterEvent('CHAT_MSG_PARTY',OnChatBubblesMsgReceived)
-    else
-        _M:UnregisterEvent('CHAT_MSG_PARTY')
+        ChatBubblesMsgEnabled(false)
     end
 end
 
@@ -309,7 +313,7 @@ end
 -- 打开/关闭表情面板
 __SystemEvent__("SPAUI_TOGGLE_EMOTE_FRAME")
 __Arguments__{Variable.Optional(Archors, nil)}
-__AsyncSingle__(true)
+__AsyncSingle__()
 function ToggleEmoteTable(location)
     if not _Enabled then return end
     if not EmoteTableFrame then

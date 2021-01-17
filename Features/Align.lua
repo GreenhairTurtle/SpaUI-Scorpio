@@ -1,3 +1,4 @@
+-- 来源为NGA论坛
 Scorpio "SpaUI.Features.Align" ""
 
 __SlashCmd__ "spa" "align"
