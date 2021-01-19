@@ -1,15 +1,26 @@
+-- 来源NGA论坛
 Scorpio "SpaUI.Features.AutoSell" ""
 
 --售卖间隔，防止频繁点击商人后打印无效的售卖信息引起误导
 SELL_INTERVAL = 1
 L = _Locale
 
-__SystemEvent__() __AsyncSingle__()
+local GetContainerNumSlots = GetContainerNumSlots
+local GetContainerItemLink = GetContainerItemLink
+local GetItemInfo =GetItemInfo
+local GetContainerItemInfo = GetContainerItemInfo
+local UseContainerItem = UseContainerItem
+local PickupMerchantItem = PickupMerchantItem
+local GetCoinTextureString = GetCoinTextureString
+
+__SystemEvent__()
+__AsyncSingle__()
 function MERCHANT_SHOW()
     local total = 0
     for container = 0, 4 do
         local slotNum = GetContainerNumSlots(container)
         for slot = 1, slotNum do
+            Continue()
             local link = GetContainerItemLink(container, slot)
             -- item quality == 0 (poor) 
             if link and select(3, GetItemInfo(link)) == 0 then

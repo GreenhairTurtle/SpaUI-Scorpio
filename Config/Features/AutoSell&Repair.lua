@@ -48,6 +48,17 @@ CharConfigBehaivors = {
             DBChar.AutoRepair.Strategy = arg1.Strategy
             return true
         end,
+    },
+    AutoSell                        = {
+        Default                     = {
+            Enable                  = true
+        },
+        GetValue                    = function(self)
+            return DBChar.AutoSell.Enable
+        end,
+        OnValueChange               = function(self, value)
+            DBChar.AutoSell.Enable = value
+        end
     }
 }
 
@@ -74,6 +85,7 @@ function OnEnable(self)
     FontString("AutoRepairStrategy", AutoSell_RepairContainer)
     OptionsLine("Line1", AutoSell_RepairContainer)
     FontString("AutoSellTitle", AutoSell_RepairContainer)
+    OptionsCheckButton("AutoSellJunkEnableButton", AutoSell_RepairContainer)
 
     Style[AutoSell_RepairContainer] = {
         location                        = {
@@ -141,6 +153,17 @@ function OnEnable(self)
             },
             text                        = L["config_features_auto_sell"],
             fontObject                  = GameFontNormalLarge
+        },
+
+        AutoSellJunkEnableButton        = {
+            configBehavior              = CharConfigBehaivors.AutoSell,
+            location                    = {
+                Anchor("TOPLEFT", -3, -5, "AutoSellTitle", "BOTTOMLEFT")
+            },
+
+            Label                       = {
+                text                    = L["config_features_auto_sell_junk"]
+            }
         }
     }
 end

@@ -31,7 +31,8 @@ L["config_version"] = "Scorpio:|cFF00BFFF%s|r "..L["addon_name"]..":|cFF00BFFF%s
 L["config_panel_title"] = L['addon_name'].."配置面板"
 L["config_panel_show_after_combat"] = "配置面板将在战斗结束后显示"
 L["config_addon_author"] = "作者：|cFFADD8E6%s|r"
-L["config_char"] = "|TInterface\\Addons\\SpaUI\\Media\\char_indicator:18|t表示角色配置"
+L["config_char_indicator"] = "|TInterface\\Addons\\SpaUI\\Media\\char_indicator:18|t"
+L["config_char"] = L["config_char_indicator"].."表示角色配置"
 L["config_id_tip"] = "鼠标提示显示ID"
 L["config_id_tip_tooltip"] = "在鼠标提示内显示任务ID，法术ID，货币ID，NPCID等"
 L["config_debug"] = "调试模式"
@@ -65,6 +66,7 @@ L["config_features_auto_repair_strategy_auto_tooltip"] = "直接使用角色金�
 L["config_features_auto_repair_strategy_none"] = "从不"
 L["config_features_auto_repair_strategy_none_tooltip"] = "不启用自动修理"
 L["config_features_auto_sell"] = "自动出售"
+L["config_features_auto_sell_junk"] = L["config_char_indicator"].."自动出售垃圾"
 -- Config Chat
 L["config_category_chat"] = "聊天"
 L["config_chat_enhanced"] = "聊天增强"
