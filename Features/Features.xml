@@ -12,4 +12,5 @@
     <Script file="Tooltips.lua"/>
     <Script file="TradeTabs.lua"/>
     <Script file="CooldownAnnouncer.lua"/>
+    <Script file="GuildBankSort.lua"/>
 </Ui>

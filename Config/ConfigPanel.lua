@@ -2,6 +2,7 @@ Scorpio "SpaUI.Config" ""
 
 L = _Locale
 local InCombatLockdown = InCombatLockdown
+local FirstModule
 
 CategoryList = {
     -- 介绍
@@ -15,6 +16,7 @@ CategoryList = {
         module = "Features",
         hasChildren = true
     },
+    -- 综合-自动修理&出售
     {
         name = L['config_category_features_auto_sell_repair'],
         module = "AutoSell_Repair",
@@ -78,6 +80,14 @@ function ToggleConfigPanel()
     _Enabled = true
 end
 
+-- 显示更新日志
+__SlashCmd__ "spa" "news"
+__SlashCmd__ "spaui" "news"
+function ShowChangeLog()
+    FirstModule = "ChangeLog"
+    ToggleConfigPanel()
+end
+
 function Show()
     if ConfigPanel then
         ConfigPanel:Show()
@@ -88,6 +98,7 @@ function Show()
                 module.OnRestore()
             end
         end
+        SelectCategory(FirstModule)
     end
 end
 
@@ -175,7 +186,7 @@ function CreateConfigPanel()
     FontString("CharIndicatorText", ConfigPanel)
 
     CreateCategorys()
-    SelectCategory(1)
+    SelectCategory(FirstModule)
 
     Style[ConfigPanel] = {
         size                            = Size(858, 660),
@@ -338,12 +349,19 @@ function OnCategoryButtonClick(self)
 end
 
 -- 选中类别
-function SelectCategory(index)
+function SelectCategory(module)
     if not CategoryListButtons then return end
-    local button = CategoryListButtons[index]
-    if button then
-        OnCategoryButtonClick(button)
+    module = module or "Introduce"
+    local selectedButton
+    for _, button in ipairs(CategoryListButtons) do
+        if button.category.module == module then
+            selectedButton = button
+        end
     end
+    if not selectedButton then
+        selectedButton = CategoryListButtons[1]
+    end
+    OnCategoryButtonClick(selectedButton)
 end
 
 -- 点击确定
