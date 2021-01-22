@@ -12,5 +12,9 @@
     <Script file="Tooltips.lua"/>
     <Script file="TradeTabs.lua"/>
     <Script file="CooldownAnnouncer.lua"/>
+<<<<<<< HEAD
     <Script file="GuildBankSort.lua"/>
+=======
+    <Script file="RaidFrameMarker.lua"/>
+>>>>>>> 4f8f1cb986ca82badd01cb8a42153f45fb24cb29
 </Ui>
