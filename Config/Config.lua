@@ -51,6 +51,7 @@ class "OptionsCheckButton" (function(_ENV)
     extend "ConfigItem"
     
     property "TooltipText" { type = String }
+    
     property "ConfigBehavior" {
         type                    = RawTable,
         handler                 = function(self, behavior)

@@ -236,3 +236,12 @@ L["cooldown_announcer_item_ready"] = "%s准备就绪！"
 L["cooldown_announcer_item_not_ready"] = "%s还在冷却中，剩余%s！"
 L["cooldown_announcer_item_count"] = "剩余使用次数：%d"
 L["cooldown_announcer_tooltip"] = "ALT+鼠标左键通报技能冷却信息"
+
+-- GuildBank Sort
+L["guild_bank_sort_button_tooltip"] = "鼠标左键点击整理\n右键点击打开物品转移对话框"
+L["guild_bank_merge_items"] = "正在合并物品 %d/%d"
+L["guild_bank_move_items"] = "正在移动物品 %d/%d"
+L["guild_bank_cannot_withdraw"] = "你的提取额度不足！"
+L["guild_bank_transfer_dialog_title"] = "公会银行物品转移"
+L["guild_bank_transfer_src_title"] = "转移来源"
+L["guild_bank_transfer_des_title"] = "转移目的地"
