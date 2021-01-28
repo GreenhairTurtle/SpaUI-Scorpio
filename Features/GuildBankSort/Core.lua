@@ -79,8 +79,7 @@ function OnSortButtonClick(self, button)
 end
 
 -- 显示进度条
-__Arguments__{NEString/nil}
-function ShowLoading(progressText)
+function ShowLoading(value, maxValue, prefix)
     if not MaskLayer then
         MaskLayer = Frame("MaskerLayer", GuildBankFrame)
         MaskLayer:SetPoint("TOPLEFT",GuildBankFrame.LeftBorder, "TOPLEFT", 0, 8)
@@ -92,12 +91,42 @@ function ShowLoading(progressText)
         BankFrameMask:SetPoint("TOPLEFT")
         BankFrameMask:SetPoint("BOTTOMRIGHT", GuildBankFrame, "BOTTOMRIGHT")
         BankFrameMask:SetColorTexture(0, 0, 0, 0.3)
-        local ProgressText = FontString("ProgressText", MaskLayer)
-        ProgressText:SetPoint("LEFT", GuildBankFrameTab4, "RIGHT", 16)
-        ProgressText:SetText(progressText)
+        local ProgressBar = StatusBar("ProgressBar", MaskLayer)
+        ProgressBar:SetFrameStrata("HIGH")
+        local BarBackground = Texture("Background", ProgressBar, "BACKGROUND")
+        BarBackground:SetAllPoints(true)
+        BarBackground:SetColorTexture(0, 0, 0, 0.5)
+        local BarBorder = Texture("Border", ProgressBar, "ARTWORK")
+        BarBorder:SetTexture[[Interface\CastingBar\UI-CastingBar-Border]]
+        BarBorder:SetSize(256, 64)
+        BarBorder:SetPoint("TOP", 0, 28)
+        local BarSpark = Texture("Spark", ProgressBar, "OVERLAY")
+        BarSpark:SetTexture[[Interface\CastingBar\UI-CastingBar-Spark]]
+        BarSpark:SetBlendMode("ADD")
+        BarSpark:SetSize(32, 32)
+        local Text = FontString("Text", ProgressBar, "ARTWORK", "GameFontHighlightSmall")
+        Text:SetHeight(16)
+        Text:SetPoint("TOP", 0, 5)
+        ProgressBar:SetStatusBarTexture[[Interface\TargetingFrame\UI-StatusBar]]
+        ProgressBar:SetStatusBarColor(1, 0.7, 0)
+        ProgressBar:SetSize(195, 13)
+        ProgressBar:SetPoint("LEFT", GuildBankFrameTab4, "RIGHT", 16, -3)
     else
-        MaskLayer:GetChild("ProgressText"):SetText(progressText)
         MaskLayer:Show()
+    end
+
+    local ProgressBar = MaskLayer:GetChild("ProgressBar")
+    if value and maxValue and prefix then
+        ProgressBar:Show()
+        ProgressBar:SetMinMaxValues(0, maxValue)
+        ProgressBar:SetValue(value)
+        local Text = ProgressBar:GetChild("Text")
+        Text:SetText(prefix:format(value, maxValue))
+        local Spark = ProgressBar:GetChild("Spark")
+        local sparkPosition = ( value / maxValue ) * ProgressBar:GetWidth()
+        Spark:SetPoint("CENTER", ProgressBar, "LEFT", sparkPosition, 2)
+    else
+        ProgressBar:Hide()
     end
 end
 
@@ -105,11 +134,6 @@ end
 function HideLoading()
     if not MaskLayer then return end
     MaskLayer:Hide()
-end
-
--- 显示配置弹窗
-function ShowOptionDialog()
-    ShowLoading()
 end
 
 -- 获取公会银行格子信息

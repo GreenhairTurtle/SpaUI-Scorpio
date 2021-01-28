@@ -312,7 +312,7 @@ MovableFramesNeedWait = {
             movable             = true,
             Mover               = {}
         }
-    },
+    }
 }
 
 __Async__()
@@ -417,6 +417,10 @@ function SetMovableForDirectFrames()
     }
     -- 试衣间
     Style[DressUpFrame] = {
+        movable             = true,
+        Mover               = {}
+    }
+    Style[TaxiFrame] = {
         movable             = true,
         Mover               = {}
     }

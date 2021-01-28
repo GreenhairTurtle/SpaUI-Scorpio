@@ -104,18 +104,18 @@ function CreateMergeItemMovingPath(tab, slotInfos, itemInfo, start, paths)
 end
 
 -- 应用移动路径
-function ApplyPaths(paths, type)
-    local typeString
-    if type == "merge" then
-        typeString = L["guild_bank_merge_items"]
-    elseif type == "move" then
-        typeString = L["guild_bank_move_items"]
+function ApplyPaths(paths, action)
+    local description
+    if action == "merge" then
+        description = L["guild_bank_merge_items"]
+    elseif action == "move" then
+        description = L["guild_bank_move_items"]
     end
 
     local count = #paths
     for index, path in ipairs(paths) do
         if not GuildBankFrame:IsShown() then break end
-        ShowLoading(typeString:format(index,count))
+        ShowLoading(index, count, description)
         PickupGuildBankItem(path.srcTab, path.srcSlot)
         PickupGuildBankItem(path.desTab, path.desSlot)
         if CursorHasItem() then

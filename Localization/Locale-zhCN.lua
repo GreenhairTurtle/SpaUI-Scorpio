@@ -14,14 +14,18 @@ L["enable"] = "启用"
 L["combat_error"] = "你正在战斗中"
 
 -- command
-L["command_help"] = [[以下为常用命令：
+L["cmd_help"] = [[以下为常用命令：
 |cFF00BFFF/rl|r 重载界面
 |cFF00BFFF/spa news|r 显示更新日志
 |cFF00BFFF/spa config|r 打开/关闭配置面板
 |cFF00BFFF/spa align|r 显示/隐藏网格线
 ]]
-L["command_error"] = "请输入正确的命令"
+L["cmd_error"] = "请输入正确的命令"
 
+L["cmd_debug"] = "打开/关闭调试模式 0：关闭 1：打开"
+L["cmd_news"] = "显示更新日志"
+L["cmd_config"] = "打开/关闭配置面板"
+L["cmd_align"] = "显示/隐藏网格线"
 
 -- Bindings
 L["toggle_raid_marker_frame"] = "打开/关闭世界标记窗口"
@@ -239,9 +243,7 @@ L["cooldown_announcer_tooltip"] = "ALT+鼠标左键通报技能冷却信息"
 
 -- GuildBank Sort
 L["guild_bank_sort_button_tooltip"] = "鼠标左键点击整理\n右键点击打开物品转移对话框"
-L["guild_bank_merge_items"] = "正在合并物品 %d/%d"
-L["guild_bank_move_items"] = "正在移动物品 %d/%d"
+L["guild_bank_merge_items"] = "正在合并物品(%d/%d)"
+L["guild_bank_move_items"] = "正在移动物品(%d/%d)"
 L["guild_bank_cannot_withdraw"] = "你的提取额度不足！"
 L["guild_bank_transfer_dialog_title"] = "公会银行物品转移"
-L["guild_bank_transfer_src_title"] = "转移来源"
-L["guild_bank_transfer_des_title"] = "转移目的地"

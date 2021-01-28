@@ -61,8 +61,7 @@ function OnGameMenuConfigButtonClick(self)
 end
 
 -- 开启/关闭面板
-__SlashCmd__ "spa" "config"
-__SlashCmd__ "spaui" "config"
+__SlashCmd__("spa", "config", L["cmd_config"])
 __AsyncSingle__()
 function ToggleConfigPanel()
     if InCombatLockdown() then
@@ -81,8 +80,7 @@ function ToggleConfigPanel()
 end
 
 -- 显示更新日志
-__SlashCmd__ "spa" "news"
-__SlashCmd__ "spaui" "news"
+__SlashCmd__("spa","news", L["cmd_news"])
 function ShowChangeLog()
     FirstModule = "ChangeLog"
     ToggleConfigPanel()
@@ -111,8 +109,7 @@ function Hide()
 end
 
 -- 切换调试模式
-__SlashCmd__ "spaui" "debug"
-__SlashCmd__ "spa" "debug"
+__SlashCmd__("spa", "debug", L["cmd_debug"])
 __AsyncSingle__()
 function ToggleDebugMode(info)
     if not _Config then return end
@@ -125,7 +122,7 @@ function ToggleDebugMode(info)
             _Config.DebugMode = true
             ShowMessage(L['config_debug_enable'])
         else
-            ShowMessage(L['command_error'])
+            ShowMessage(L['cmd_error'])
         end
     else
         _Config.DebugMode = false

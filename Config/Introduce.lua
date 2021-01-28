@@ -38,7 +38,7 @@ function OnEnable(self)
 
         Macros                  = {
             fontobject          = GameFontWhite,
-            text                = L["command_help"],
+            text                = L["cmd_help"],
             justifyH            = "LEFT",
             spacing             = 3,
             location            = {

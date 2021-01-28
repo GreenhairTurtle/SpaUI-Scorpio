@@ -1,8 +1,7 @@
 -- 来源为NGA论坛
 Scorpio "SpaUI.Features.Align" ""
 
-__SlashCmd__ "spa" "align"
-__SlashCmd__ "spaui" "align"
+__SlashCmd__("spa", "align", L["cmd_align"])
 __Async__()
 function ToggleAlign()
 	if AlignFrame then

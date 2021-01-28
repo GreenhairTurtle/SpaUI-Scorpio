@@ -19,12 +19,6 @@ function Reload()
     ReloadUI()
 end
 
-__SlashCmd__ "spa"
-__SlashCmd__ "spaui"
-function CmdHelp()
-    ShowMessage(L["command_help"])
-end
-
 -- 字符串染色
 __Arguments__{
     Variable("text",NEString),
