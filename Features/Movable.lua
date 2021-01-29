@@ -312,6 +312,17 @@ MovableFramesNeedWait = {
             movable             = true,
             Mover               = {}
         }
+    },
+    -- 战场计分板
+    ['Blizzard_PVPMatch'] = {
+        ['PVPMatchScoreboard'] = {
+            movable             = true,
+            Mover               = {}
+        },
+        ['PVPMatchResults'] = {
+            movable             = true,
+            Mover               = {}
+        }
     }
 }
 

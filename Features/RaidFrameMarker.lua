@@ -31,6 +31,15 @@ local function UpdateRaidTargetIcon(frame)
             RaidTargetMarkers[name].icon:Hide()
         end
     end
+
+    
+    if frame.name and frame.name:IsObjectType("FontString") then
+        if UnitIsGroupLeader(unit) then
+            frame.name:SetFontObject(GameFontNormalSmall)
+        else
+            frame.name:SetFontObject(GameFontHighlightSmall)
+        end
+    end
 end
 
 __SystemEvent__ "RAID_TARGET_UPDATE" "GROUP_ROSTER_UPDATE" "PLAYER_ENTERING_WORLD"

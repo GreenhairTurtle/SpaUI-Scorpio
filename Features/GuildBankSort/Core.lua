@@ -39,11 +39,7 @@ function GUILDBANKFRAME_OPENED()
     local currentTab = GetCurrentGuildBankTab()
     -- 记录刷新标签的时间（用来判断该标签数据是否过时）
     ViewedTab[GetCurrentGuildBankTab()] = GetTime()
-    if not CanSortTab(currentTab) then
-        SortButton:Hide()
-    else
-        SortButton:Show()
-    end
+    UpdateSortButtonStatus(currentTab)
 end
 
 __AddonSecureHook__ "Blizzard_GuildBankUI"
@@ -96,7 +92,7 @@ function ShowLoading(value, maxValue, prefix)
         local BarBackground = Texture("Background", ProgressBar, "BACKGROUND")
         BarBackground:SetAllPoints(true)
         BarBackground:SetColorTexture(0, 0, 0, 0.5)
-        local BarBorder = Texture("Border", ProgressBar, "ARTWORK")
+        local BarBorder = Texture("Border", ProgressBar, "ARTWORK", nil, 1)
         BarBorder:SetTexture[[Interface\CastingBar\UI-CastingBar-Border]]
         BarBorder:SetSize(256, 64)
         BarBorder:SetPoint("TOP", 0, 28)
@@ -107,7 +103,7 @@ function ShowLoading(value, maxValue, prefix)
         local Text = FontString("Text", ProgressBar, "ARTWORK", "GameFontHighlightSmall")
         Text:SetHeight(16)
         Text:SetPoint("TOP", 0, 5)
-        ProgressBar:SetStatusBarTexture[[Interface\TargetingFrame\UI-StatusBar]]
+        ProgressBar:SetStatusBarTexture([[Interface\TargetingFrame\UI-StatusBar]], "ARTWORK", 0)
         ProgressBar:SetStatusBarColor(1, 0.7, 0)
         ProgressBar:SetSize(195, 13)
         ProgressBar:SetPoint("LEFT", GuildBankFrameTab4, "RIGHT", 16, -3)
