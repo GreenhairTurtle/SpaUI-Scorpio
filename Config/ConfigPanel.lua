@@ -1,8 +1,6 @@
 Scorpio "SpaUI.Config" ""
 
-L = _Locale
-local InCombatLockdown = InCombatLockdown
-local FirstModule
+local CurrentModule
 
 CategoryList = {
     -- 介绍
@@ -14,18 +12,32 @@ CategoryList = {
     {
         name = L['config_category_features'],
         module = "Features",
-        hasChildren = true
-    },
-    -- 综合-自动修理&出售
-    {
-        name = L['config_category_features_auto_sell_repair'],
-        module = "AutoSell_Repair",
-        parent = "Features"
+        children = {
+            -- 综合-自动修理&出售
+            {
+                name = L['config_category_features_auto_sell_repair'],
+                module = "AutoSell_Repair",
+                parent = "Features"
+            }
+        }
     },
     -- 聊天
     {
         name = L['config_category_chat'],
         module = "Chat"
+    },
+    -- 任务
+    {
+        name = L['config_category_quest'],
+        module = "Quest",
+        children = {
+            -- 任务-自动交接
+            {
+                name = L['config_category_quest_auto_turn_in'],
+                module = "AutoTurnIn",
+                parent = "Quest"
+            }
+        }
     },
     -- 更新日志
     {
@@ -82,7 +94,7 @@ end
 -- 显示更新日志
 __SlashCmd__("spa","news", L["cmd_news"])
 function ShowChangeLog()
-    FirstModule = "ChangeLog"
+    CurrentModule = "ChangeLog"
     ToggleConfigPanel()
 end
 
@@ -90,13 +102,7 @@ function Show()
     if ConfigPanel then
         ConfigPanel:Show()
         -- 还原状态
-        for _, category in ipairs(CategoryList) do
-            local module = GetModuleByCategory(category)
-            if module.OnRestore then
-                module.OnRestore()
-            end
-        end
-        SelectCategory(FirstModule)
+        ConfigContainer:Restore()
     end
 end
 
@@ -112,6 +118,7 @@ end
 __SlashCmd__("spa", "debug", L["cmd_debug"])
 __AsyncSingle__()
 function ToggleDebugMode(info)
+    C_CVar.SetCVar("taintLog", 2)
     if not _Config then return end
     if info then
         info = strlower(info)
@@ -128,8 +135,12 @@ function ToggleDebugMode(info)
         _Config.DebugMode = false
     end
     if DebugButton then
-        Style[DebugButton].Visible = _Config.DebugMode
-        Style[DebugButton].Checked = _Config.DebugMode
+        DebugButton:SetChecked(_Config.DebugMode)
+        if _Config.DebugMode then
+            DebugButton:Show()
+        else
+            DebugButton:Hide()
+        end
     end
 end
 
@@ -150,7 +161,16 @@ local function CreateCategorys()
         button.OnClick = OnCategoryButtonClick
         button.OnCollpasedChanged = OnCategoryToggleSub
         button:SetCategory(category)
-        CategoryListButtons[index] = button
+        tinsert(CategoryListButtons, button)
+
+        if category.children then
+            for subIndex, subCategory in ipairs(category.children) do
+                local subButton = CategoryListButton("Category"..index.."Child"..subIndex, CategoryPanel.ScrollChild)
+                subButton.OnClick = OnCategoryButtonClick
+                subButton:SetCategory(subCategory)
+                tinsert(CategoryListButtons, subButton)
+            end
+        end
     end
     RefreshCategorys()
 end
@@ -163,7 +183,7 @@ function CreateConfigPanel()
 
     ConfigPanel = Dialog("SpaUIConfigPanel")
     CategoryPanel = FauxScrollFrame("CategoryList", ConfigPanel)
-    ConfigContainer = Frame("Container", ConfigPanel)
+    ConfigContainer = OptionsContainer("Container", ConfigPanel)
     -- 版本号
     FontString("Version", ConfigPanel)
     -- 默认设置
@@ -183,7 +203,7 @@ function CreateConfigPanel()
     FontString("CharIndicatorText", ConfigPanel)
 
     CreateCategorys()
-    SelectCategory(FirstModule)
+    SelectCategory(CurrentModule)
 
     Style[ConfigPanel] = {
         size                            = Size(858, 660),
@@ -326,6 +346,7 @@ end
 function OnCategoryButtonClick(self)
     for _, button in ipairs(CategoryListButtons) do
         local category = button.category
+        CurrentModule = category.module
         local module,childModule
         if category.parent then
             module = _Modules[category.parent]
@@ -346,12 +367,12 @@ function OnCategoryButtonClick(self)
 end
 
 -- 选中类别
-function SelectCategory(module)
+function SelectCategory(moduleName)
     if not CategoryListButtons then return end
-    module = module or "Introduce"
+    moduleName = moduleName or "Introduce"
     local selectedButton
     for _, button in ipairs(CategoryListButtons) do
-        if button.category.module == module then
+        if button.category.module == moduleName then
             selectedButton = button
         end
     end
@@ -364,13 +385,10 @@ end
 -- 点击确定
 __AsyncSingle__()
 function OnConfirmButtonClick(self)
-    for _, category in ipairs(CategoryList) do
-        local module = GetModuleByCategory(category)
-        if module.NeedReload and module.NeedReload() then
-            local result = Confirm(L["config_reload_confirm"])
-            if result then OnConfirm() end
-            return
-        end
+    if ConfigContainer:NeedReload() then
+        local result = Confirm(L["config_reload_confirm"])
+        if result then OnConfirm() end
+        return
     end
     Hide()
 end
@@ -378,25 +396,17 @@ end
 -- 点击取消
 __AsyncSingle__()
 function OnCancelButtonClick(self)
-    for _, category in ipairs(CategoryList) do
-        local module = GetModuleByCategory(category)
-        if module.NeedReload and module.NeedReload() then
-            local result = Confirm(L["config_cancel_confirm"])
-            if result then Hide() end
-            return
-        end
+    if ConfigContainer:NeedReload() then
+        local result = Confirm(L["config_cancel_confirm"])
+        if result then Hide() end
+        return
     end
     Hide()
 end
 
 -- 确定
 function OnConfirm()
-    for _, category in ipairs(CategoryList) do
-        local module = GetModuleByCategory(category)
-        if module.OnSaveConfig then
-            module.OnSaveConfig()
-        end
-    end
+    ConfigContainer:SaveConfig()
     ReloadUI()
 end
 
@@ -408,35 +418,12 @@ function OnDefaultButtonClick(self)
         _Config:Reset()
         _Config.Char:Reset()
         _Config.Char.Spec:ResetAll()
-        ReloadUI() 
+        ReloadUI()
     end
 end
 
--- 从ConfigBehaviors里复制默认值
-__Arguments__{RawTable, RawTable/nil, String/nil}
-function CopyDefaultFromConfigBehaviors(src, des, parentKey)
-    des = des or {}
-    for field, value in pairs(src) do
-        if type(value) == "table" then
-            if field ~= "Default" then
-                if parentKey then 
-                    des[parentKey] = des[parentKey] or {}
-                end
-                CopyDefaultFromConfigBehaviors(value, des[parentKey] or des, field)
-            else
-                if parentKey then des[parentKey] = value end
-            end
-        end
-    end
-    return des
-end
-
-__Arguments__{NEString, RawTable}
-function SetDefaultToConfigDB(key,table)
-    _Config:SetDefault(key,CopyDefaultFromConfigBehaviors(table))
-end
-
-__Arguments__{NEString, RawTable}
-function SetDefaultToCharConfigDB(key,table)
-    _Config.Char:SetDefault(key,CopyDefaultFromConfigBehaviors(table))
+-- 默认配置
+function SetDefaultToConfigDB(key, globalConfig, charConfig)
+    if globalConfig then _Config:SetDefault(key, globalConfig) end
+    if charConfig then _Config.Char:SetDefault(key, charConfig) end
 end

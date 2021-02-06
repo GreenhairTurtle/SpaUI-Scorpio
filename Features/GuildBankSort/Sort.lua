@@ -1,7 +1,5 @@
 Scorpio "SpaUI.Features.GuildBankSort.Sort" ""
 
-L = _Locale
-
 -- 整理
 __SystemEvent__ "SPAUI_GUILDBANK_SORT"
 __AsyncSingle__()
@@ -11,8 +9,8 @@ function Sort()
         ShowUIError(L["guild_bank_cannot_withdraw"])
         return
     end
-    local slotInfos, itemInfos = GetGuildBankSlotInfos(tab)
-    MergeItems(tab,slotInfos,itemInfos)
+    local slotInfos = GetGuildBankSlotInfos(tab)
+    MergeItems(tab, slotInfos)
     MoveItems(tab, slotInfos)
     HideLoading()
 end
@@ -22,107 +20,73 @@ function MoveItems(tab, slotInfos)
     local paths = {}
     for index = 1, #slotInfos - 1 do
         Continue()
-        local minIndex = index
+        local maxIndex = index
         -- 找到本次循环最大值
         for compareIndex = index + 1, #slotInfos do
-            if CompareSlot(slotInfos[compareIndex], slotInfos[minIndex]) > 0 then
-                minIndex = compareIndex
+            if CompareSlot(slotInfos[compareIndex], slotInfos[maxIndex]) >= 0 then
+                maxIndex = compareIndex
             end
         end
 
-        local slotInfo = slotInfos[minIndex]
+        local maxSlotInfo = slotInfos[maxIndex]
+        local maxItem = maxSlotInfo.item
+        local slotInfo = slotInfos[index]
         local item = slotInfo.item
-        -- 交换位置
-        slotInfos[minIndex] = slotInfos[index]
-        slotInfos[index] = slotInfo
-        if item and minIndex ~= index then
+
+        if maxItem and maxIndex ~= index and (item == nil or maxItem.itemId ~= item.itemId) then
+            -- 交换位置
+            slotInfos[maxIndex] = slotInfos[index]
+            slotInfos[index] = maxSlotInfo
             local path = {}
             path.srcTab = tab
-            path.srcSlot = minIndex
+            path.srcSlot = maxIndex
             path.desTab = tab
             path.desSlot = index
             tinsert(paths, path)
         end
     end
-    ApplyPaths(paths, "move")
+
+    ApplyPaths(paths, L["guild_bank_move_items"])
 end
 
 -- 合并物品
-function MergeItems(tab,slotInfos, itemInfos)
+function MergeItems(tab, slotInfos)
     local paths = {}
-    for index = 1, #slotInfos do
-        local slotInfo = slotInfos[index]
+    for index, slotInfo in ipairs(slotInfos) do
+        Continue()
         local item = slotInfo.item
         if item then
-            local itemInfo = itemInfos[item.itemId]
-            if #itemInfo > 1 then
-                for i = 1, #itemInfo do
-                    CreateMergeItemMovingPath(tab, slotInfos, itemInfo, i, paths)
+            local itemId = item.itemId
+            local itemStackCount = item.itemStackCount
+            -- 没堆满，遍历后续所有物品，查到相同则合并
+            if slotInfo.count < itemStackCount then
+                for i = index + 1, #slotInfos do
+                    -- 某一次合并后可能堆满了，跳出循环
+                    if slotInfo.count >= itemStackCount then break end
+                    local compareSlot = slotInfos[i]
+                    -- 是同一物品并且没有堆满，合并
+                    if compareSlot.item and compareSlot.item.itemId == itemId and compareSlot.count < itemStackCount then
+                        local path = {}
+                        path.srcTab = tab
+                        path.srcSlot = i
+                        path.desTab = tab
+                        path.desSlot = index
+                        tinsert(paths, path)
+
+                        if compareSlot.count + slotInfo.count <= itemStackCount then
+                            slotInfo.count = slotInfo.count + compareSlot.count
+                            compareSlot.item = nil
+                            compareSlot.count = 0
+                        else
+                            compareSlot.count = compareSlot.count - (itemStackCount - slotInfo.count)
+                            slotInfo.count = itemStackCount
+                        end
+                    end
                 end
             end
         end
     end
-    ApplyPaths(paths, "merge")
-end
-
--- 创建合并物品移动路径
-function CreateMergeItemMovingPath(tab, slotInfos, itemInfo, start, paths)
-    local startSlotIndex = itemInfo[start]
-    if not startSlotIndex then return end
-    local startSlot = slotInfos[startSlotIndex]
-    local startItem = startSlot.item
-    if startSlot.count >= startItem.itemStackCount then return end
-    if not startItem then return end
-    for index = start + 1, #itemInfo do
-        local slotIndex = itemInfo[index]
-        if slotIndex then
-            local slot = slotInfos[slotIndex]
-            local item = slot.item
-            if item and slot.count < item.itemStackCount then
-                local path = {}
-                path.srcTab = tab
-                path.srcSlot = slotIndex
-                path.desTab = tab
-                path.desSlot = startSlotIndex
-                tinsert(paths,path)
-
-                if slot.count + startSlot.count <= startItem.itemStackCount then
-                    startSlot.count = startSlot.count + slot.count
-                    -- 将被合并的格子数据清除
-                    slot.item = nil
-                    slot.count = 0
-                    itemInfo[index] = nil
-                else
-                    -- startSlot 堆叠上限了
-                    slot.count = slot.count - (startItem.itemStackCount - startSlot.count)
-                    startSlot.count = startItem.itemStackCount
-                    break
-                end
-            end
-        end
-    end
-end
-
--- 应用移动路径
-function ApplyPaths(paths, action)
-    local description
-    if action == "merge" then
-        description = L["guild_bank_merge_items"]
-    elseif action == "move" then
-        description = L["guild_bank_move_items"]
-    end
-
-    local count = #paths
-    for index, path in ipairs(paths) do
-        if not GuildBankFrame:IsShown() then break end
-        ShowLoading(index, count, description)
-        PickupGuildBankItem(path.srcTab, path.srcSlot)
-        PickupGuildBankItem(path.desTab, path.desSlot)
-        if CursorHasItem() then
-            PickupGuildBankItem(path.desTab, path.desSlot)
-        end
-        Delay(1)
-    end
+    ApplyPaths(paths, L["guild_bank_merge_items"])
 end
 
 -- return：负数：slot1 < slot2; 0:slot1 = slot2; 正数: slot1 > slot2;

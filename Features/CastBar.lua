@@ -1,8 +1,6 @@
 -- 施法条显示进度
 Scorpio "SpaUI.Features.Castbar" ""
 
-local GetNetStats = GetNetStats
-
 function OnEnable(self)
     CreateTimerAndLag()
 end
@@ -56,6 +54,10 @@ function CreateTimerAndLag()
     FocusFrameSpellBar.update = .1
     FocusFrameSpellBar.timer = FocusFrameSpellBarTimer
 
+    local PetCastBarTimer = FontString("SpaUIPetCastBarTimer", PetCastingBarFrame)
+    PetCastingBarFrame.update = .1
+    PetCastingBarFrame.timer = PetCastBarTimer
+
     Style[CastBarTimer] = {
         font                = {
             font            = "Fonts\\FRIZQT__.TTF",
@@ -96,10 +98,21 @@ function CreateTimerAndLag()
         location            = {Anchor("LEFT", 1, 0, FocusFrameSpellBar:GetName(), "RIGHT")}
     }
 
+    Style[PetCastBarTimer] = {
+        font                = {
+            font            = "Fonts\\FRIZQT__.TTF",
+            height          = 8,
+            outline         = "NORMAL",
+            monochrome      = false
+        },
+        textColor           = Color.WHITE,
+        location            = {Anchor("LEFT", 1, 0, PetCastingBarFrame:GetName(), "RIGHT")}
+    }
 
     CastingBarFrame:HookScript('OnUpdate', CastingBarFrame_OnUpdate_Hook)
     TargetFrameSpellBar:HookScript('OnUpdate', CastingBarFrame_OnUpdate_Hook)
     FocusFrameSpellBar:HookScript('OnUpdate', CastingBarFrame_OnUpdate_Hook)
+    PetCastingBarFrame:HookScript('OnUpdate', CastingBarFrame_OnUpdate_Hook)
 end
 
 -- 头像下方显示施法条可见性优化

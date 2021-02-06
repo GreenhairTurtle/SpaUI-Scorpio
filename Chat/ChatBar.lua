@@ -1,7 +1,5 @@
 Scorpio "SpaUI.Chat.ChatBar" ""
 
-L = _Locale
-
 CHAT_BAR_MESSAGE_TYPES = {
     "Say", "Yell", "Party", "Raid", "Instance_Chat", "Guild", "World", "Roll"
 }
@@ -14,15 +12,6 @@ SCALE_UP = 1
 CHANNEL_WORLD_DEFAULT_COLOR_R = 1
 CHANNEL_WORLD_DEFAULT_COLOR_G = 0.75294125080109
 CHANNEL_WORLD_DEFAULT_COLOR_B = 0.75294125080109
-
-local ChatTypeInfo = ChatTypeInfo
-local ChatEdit_UpdateHeader = ChatEdit_UpdateHeader
-local ChatFrame1EditBox = ChatFrame1EditBox
-local ChatFrame1Background = ChatFrame1Background
-local GetCVar = GetCVar
-local ChatMenu_SetChatType = ChatMenu_SetChatType
-local RandomRoll = RandomRoll
-local ChatFrame_OpenChat = ChatFrame_OpenChat
 
 function OnLoad(self)
     _Enabled = _Config.Chat.ChatBar.Enable

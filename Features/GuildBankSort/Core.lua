@@ -35,17 +35,11 @@ __SystemEvent__()
 function GUILDBANKFRAME_OPENED()
     if not SortButton then return end
     HideLoading()
-    ViewedTab = {}
-    local currentTab = GetCurrentGuildBankTab()
-    -- 记录刷新标签的时间（用来判断该标签数据是否过时）
-    ViewedTab[GetCurrentGuildBankTab()] = GetTime()
-    UpdateSortButtonStatus(currentTab)
 end
 
 __AddonSecureHook__ "Blizzard_GuildBankUI"
-function GuildBankTab_OnClick(self, mouseButton, currentTab)
-    UpdateSortButtonStatus(currentTab)
-    ViewedTab[currentTab] = GetTime()
+function GuildBankFrame_UpdateTabs()
+    UpdateSortButtonStatus(GetCurrentGuildBankTab())
 end
 
 function UpdateSortButtonStatus(tab)
@@ -132,22 +126,20 @@ function HideLoading()
     MaskLayer:Hide()
 end
 
--- 获取公会银行格子信息
--- return: slotInfos:每个格子对应的物品信息 itemInfos:每个物品对应的格子信息
+-- 获取公会银行物品信息
 function GetGuildBankSlotInfos(tab)
     local slotInfos = {}
-    local itemInfos = {}
     for slot = 1, GUILDBANK_TAB_ITEM_SIZE do
         Continue()
-        local info = {}
+        local slotInfo = {}
         local _, count = GetGuildBankItemInfo(tab,slot)
-        info.count = count
+        slotInfo.count = count
         if count > 0 then
             local link = GetGuildBankItemLink(tab, slot)
             if link then
                 local item = {}
                 local itemName, itemLink, itemQuality, itemLevel, itemMinLevel, itemType, itemSubType, itemStackCount,
-                    itemEquipLoc, _, sellPrice, classID, subclassID, _, expacID, setID, isCraftingReagent
+                    itemEquipLoc, itemTexture, sellPrice, classID, subclassID, _, expacID, setID, isCraftingReagent
                     = GetItemInfo(link)
                 item.itemId = tonumber(string.match(link, "item:(%d*)") or "0")
                 item.itemName = itemName
@@ -159,26 +151,32 @@ function GetGuildBankSlotInfos(tab)
                 item.itemSubType = itemSubType
                 item.itemStackCount = itemStackCount
                 item.itemEquipLoc = itemEquipLoc
+                item.itemTexture = itemTexture
                 item.sellPrice = sellPrice
                 item.classID = classID
                 item.subclassID = subclassID
                 item.expacID = expacID
                 item.setID = setID
                 item.isCraftingReagent = isCraftingReagent
-                info.item = item
-                
-                -- 存储物品信息
-                if item.itemId then
-                    local itemInfo = itemInfos[item.itemId]
-                    if not itemInfo then
-                        itemInfo = {}
-                        itemInfos[item.itemId] = itemInfo
-                    end
-                    tinsert(itemInfo,slot)
-                end
+                slotInfo.item = item
             end
         end
-        slotInfos[slot] = info
+        tinsert(slotInfos, slotInfo)
     end
-    return slotInfos, itemInfos
+    return slotInfos
+end
+
+-- 应用移动路径
+function ApplyPaths(paths, description)
+    local count = #paths
+    for index, path in ipairs(paths) do
+        if not GuildBankFrame:IsShown() then break end
+        ShowLoading(index, count, description)
+        PickupGuildBankItem(path.srcTab, path.srcSlot)
+        PickupGuildBankItem(path.desTab, path.desSlot)
+        if CursorHasItem() then
+            PickupGuildBankItem(path.desTab, path.desSlot)
+        end
+        Delay(1)
+    end
 end

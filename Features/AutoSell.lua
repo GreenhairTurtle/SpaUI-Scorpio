@@ -3,15 +3,6 @@ Scorpio "SpaUI.Features.AutoSell" ""
 
 --售卖间隔，防止频繁点击商人后打印无效的售卖信息引起误导
 SELL_INTERVAL = 1
-L = _Locale
-
-local GetContainerNumSlots = GetContainerNumSlots
-local GetContainerItemLink = GetContainerItemLink
-local GetItemInfo =GetItemInfo
-local GetContainerItemInfo = GetContainerItemInfo
-local UseContainerItem = UseContainerItem
-local PickupMerchantItem = PickupMerchantItem
-local GetCoinTextureString = GetCoinTextureString
 
 function OnLoad(self)
     Config = _Config.Char.Features.AutoSell_Repair.AutoSell

@@ -1,7 +1,5 @@
 Scorpio "SpaUI.Config.Features.AutoSell_Repair" ""
 
-L = _Locale
-
 class "AutoRepairConfig" (function(_ENV)
 
     __Arguments__{Integer, NEString, NEString}
@@ -35,11 +33,18 @@ class "AutoRepairConfig" (function(_ENV)
     end
 end)
 
-CharConfigBehaivors = {
+DefaultCharConfig = {
     AutoRepair                      = {
-        Default                     = {
-            Strategy                = AutoRepairConfig.GUILD.Strategy
-        },
+        Strategy                    = AutoRepairConfig.GUILD.Strategy
+    },
+
+    AutoSell                        = {
+        Enable                      = true
+    }
+}
+
+ConfigBehaivors = {
+    AutoRepair                      = {
         GetValue                    = function(self)
             local config = AutoRepairConfig.FromStrategy(DBChar.AutoRepair.Strategy)
             return config, config.Description
@@ -50,9 +55,6 @@ CharConfigBehaivors = {
         end,
     },
     AutoSell                        = {
-        Default                     = {
-            Enable                  = true
-        },
         GetValue                    = function(self)
             return DBChar.AutoSell.Enable
         end,
@@ -64,7 +66,7 @@ CharConfigBehaivors = {
 
 function OnLoad(self)
     _Enabled = false
-    SetDefaultToCharConfigDB(_Name,CharConfigBehaivors)
+    SetDefaultToConfigDB(_Name,nil, DefaultCharConfig)
     DBChar = _Config.Char[_Parent._Name][_Name]
 end
 
@@ -112,8 +114,9 @@ function OnEnable(self)
             location                    = {
                 Anchor("LEFT", 7, 0, "AutoRepairStrategy", "RIGHT")
             },
-            dropDownMenuWidth           = 140,
-            configBehavior              = CharConfigBehaivors.AutoRepair,
+            dropDownMenuWidth           = 125,
+            configBehavior              = ConfigBehaivors.AutoRepair,
+            displayTextJustifyH         = "RIGHT",
             dropDownInfos               = {
                 {
                     text                = AutoRepairConfig.GUILD.Description,
@@ -129,12 +132,6 @@ function OnEnable(self)
                     text                = AutoRepairConfig.NONE.Description,
                     value               = AutoRepairConfig.NONE,
                     tooltipText         = AutoRepairConfig.NONE.Detail
-                }
-            },
-
-            CharIndicator               = {
-                location                = {
-                    Anchor("LEFT", -5, 1)
                 }
             }
         },
@@ -156,7 +153,7 @@ function OnEnable(self)
         },
 
         AutoSellJunkEnableButton        = {
-            configBehavior              = CharConfigBehaivors.AutoSell,
+            configBehavior              = ConfigBehaivors.AutoSell,
             location                    = {
                 Anchor("TOPLEFT", -3, -5, "AutoSellTitle", "BOTTOMLEFT")
             },

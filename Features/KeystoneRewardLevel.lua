@@ -1,7 +1,6 @@
 -- 大米不同层数装备奖励明细
 Scorpio "SpaUI.Features.KeystoneRewardLevel" ""
 
-L = _Locale
 RewardItemMargin = 5
 local GetOwnedKeystoneLevel = C_MythicPlus.GetOwnedKeystoneLevel
 

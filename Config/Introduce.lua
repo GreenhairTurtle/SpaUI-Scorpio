@@ -1,7 +1,5 @@
 Scorpio "SpaUI.Config.Introduce" ""
 
-L = _Locale
-
 function OnLoad(self)
     _Enabled = false
 end

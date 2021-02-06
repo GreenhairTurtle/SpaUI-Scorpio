@@ -6,8 +6,6 @@
 --------------------------------------------------------------------------------
 Scorpio "SpaUI.Features.EasyDelete" ""
 
-local GetCursorInfo = GetCursorInfo
-
 function OnLoad(self)
     _Enabled = _Config.Features.EasyDelete.Enable
 end

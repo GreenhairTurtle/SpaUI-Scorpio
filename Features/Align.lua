@@ -2,7 +2,7 @@
 Scorpio "SpaUI.Features.Align" ""
 
 __SlashCmd__("spa", "align", L["cmd_align"])
-__Async__()
+__AsyncSingle__()
 function ToggleAlign()
 	if AlignFrame then
 		if AlignFrame:IsShown() then

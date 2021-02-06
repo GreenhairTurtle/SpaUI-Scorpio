@@ -9,4 +9,6 @@
     <Include file="Features\Features.xml"/>
     <!-- Chat -->
     <Include file="Chat\Chat.xml"/>
+    <!-- Quest -->
+    <Include file="Quest\Quest.xml"/>
 </Ui>

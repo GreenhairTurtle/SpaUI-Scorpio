@@ -3,7 +3,7 @@ Scorpio "SpaUI.Config" ""
 namespace "SpaUI.Widget.Config"
 
 __Sealed__()
-interface "ConfigItem" (function(_ENV)
+interface "OptionItem" (function(_ENV)
 
     __Abstract__()
     property "ConfigBehavior"
@@ -20,37 +20,81 @@ interface "ConfigItem" (function(_ENV)
         return self.ConfigBehavior and self.ConfigBehavior.NeedReload and self.ConfigBehavior:NeedReload()
     end
 
-    -- 保存配置回调
-    function OnSaveConfig(self)
-        if self.ConfigBehavior and self.ConfigBehavior.OnSaveConfig then
-            return self.ConfigBehavior:OnSaveConfig()
+    -- 保存配置
+    function SaveConfig(self)
+        if self.ConfigBehavior and self.ConfigBehavior.SaveConfig then
+            return self.ConfigBehavior:SaveConfig()
+        end
+    end
+
+    -- 重置，对于需要重载的配置项，在重载前的数值变更并不会真的应用
+    -- 如果没有重载，则此函数会将其值还原为原来的值
+    function Restore(self)
+        if self.ConfigBehavior then
+            if self.ConfigBehavior.GetValue then
+                self:OnRestore(self.ConfigBehavior.GetValue())
+            end
+            if self.ConfigBehavior.Restore then
+                return self.ConfigBehavior:Restore()
+            end
+        end
+    end
+
+    -- 重置回调，由实现ConfigItem的子类实现
+    __Abstract__()
+    function OnRestore(self, ...) end
+end)
+
+-------------------------
+-------- Widget ---------
+-------------------------
+
+-- Config Conatiner
+__Sealed__()
+class "OptionsContainer" (function(_ENV)
+    inherit "Frame"
+
+    local function IsOptionItem(item)
+        return Interface.ValidateValue(OptionItem, item)
+    end
+
+    -- 保存配置
+    function SaveConfig(self)
+        for _, child in self:GetChilds() do
+            if IsOptionItem(child) then
+                child:SaveConfig()
+            end
+            SaveConfig(child)
+        end
+    end
+
+    -- 是否需要重载
+    function NeedReload(self)
+        for _, child in self:GetChilds() do
+            if (IsOptionItem(child) and child:NeedReload()) or NeedReload(child) then
+                return true
+            end
         end
     end
 
     -- 重置
     function Restore(self)
-        if self.ConfigBehavior then
-            if self.ConfigBehavior.GetValue then
-                return self:OnRestore(self.ConfigBehavior.GetValue())
+        for _, child in self:GetChilds() do
+            if IsOptionItem(child) then
+                child:Restore()
             end
-            if self.ConfigBehavior.OnRestore then
-                return self.ConfigBehavior:OnRestore()
-            end
+            Restore(child)
         end
     end
-
-    -- 重置回调
-    __Abstract__()
-    function OnRestore(self, ...) end
 end)
 
 -- ConfigPanel CheckButton
 __Sealed__()
 class "OptionsCheckButton" (function(_ENV)
     inherit "CheckButton"
-    extend "ConfigItem"
+    extend "OptionItem"
     
-    property "TooltipText" { type = String }
+    property "TooltipText" { type = NEString }
     
     property "ConfigBehavior" {
         type                    = RawTable,
@@ -61,16 +105,31 @@ class "OptionsCheckButton" (function(_ENV)
         end
     }
 
+    function SetTooltipText(self, tooltipText)
+        self.TooltipText = tooltipText
+    end
+
     local function OnEnter(self)
         if self.TooltipText then
             GameTooltip:SetOwner(self,"ANCHOR_RIGHT")
-            GameTooltip:AddLine(self.TooltipText)
+            GameTooltip:SetText(self.TooltipText, nil, nil, nil, nil, true)
             GameTooltip:Show()
         end
     end
 
     local function OnLeave(self)
         GameTooltip:Hide()
+    end
+
+    local function ChangeChildrenEnabled(self)
+        local checked = self:GetChecked()
+        local enabled = self:IsEnabled()
+        for _, child in self:GetChilds() do
+            if child.SetEnabled then
+                child:InstantApplyStyle()
+                child:SetEnabled(enabled and checked)
+            end
+        end
     end
 
     local function OnClick(self)
@@ -81,12 +140,33 @@ class "OptionsCheckButton" (function(_ENV)
             PlaySound(SOUNDKIT.IG_MAINMENU_OPTION_CHECKBOX_OFF);
         end
         self:OnValueChange(checked)
+        ChangeChildrenEnabled(self)
+    end
+
+    function SetChecked(self, checked)
+        super.SetChecked(self, checked)
+        ChangeChildrenEnabled(self)
     end
 
     function OnRestore(self, value)
         self:SetChecked(value)
     end
 
+    function SetEnabled(self, enabled)
+        super.SetEnabled(self, enabled)
+        local Label = self:GetChild("Label")
+        if enabled then
+            local r, g, b = Label:GetFontObject():GetTextColor()
+            Label:SetTextColor(r, g, b)
+        else
+            Label:SetTextColor(Color.DISABLED.r, Color.DISABLED.g, Color.DISABLED.b)
+        end
+        ChangeChildrenEnabled(self)
+    end
+
+    __Template__{
+        Label = UICheckButtonLabel
+    }
     function __ctor(self)
         self.OnEnter = self.OnEnter + OnEnter
         self.OnLeave = self.OnLeave + OnLeave
@@ -94,31 +174,32 @@ class "OptionsCheckButton" (function(_ENV)
     end
 end)
 
-Style.UpdateSkin("Default",{
+Style.UpdateSkin("Default", {
     [OptionsCheckButton] = {
         size                    = Size(26, 26),
 
-        NormalTexture           = {
+        normalTexture           = {
             file                = [[Interface\Buttons\UI-CheckBox-Up]],
             setAllPoints        = true,
         },
-        PushedTexture           = {
+        pushedTexture           = {
             file                = [[Interface\Buttons\UI-CheckBox-Down]],
             setAllPoints        = true,
         },
-        HighlightTexture        = {
+        highlightTexture        = {
             file                = [[Interface\Buttons\UI-CheckBox-Highlight]],
             setAllPoints        = true,
             alphamode           = "ADD",
         },
-        CheckedTexture          = {
+        checkedTexture          = {
             file                = [[Interface\Buttons\UI-CheckBox-Check]],
             setAllPoints        = true,
         },
-        DisabledCheckedTexture  = {
+        disabledCheckedTexture  = {
             file                = [[Interface\Buttons\UI-CheckBox-Check-Disabled]],
             setAllPoints        = true,
         },
+        
         Label                   = {
             fontObject          = GameFontHighlightLeft,
             location            = { Anchor("LEFT", 2, 0, nil, "RIGHT") },
@@ -166,7 +247,7 @@ class "CategoryListButton"(function(_ENV)
             self:SetHighlightFontObject(GameFontHighlight);
             self:GetFontString():SetPoint("LEFT", 8, 2)
             self:Show()
-            if category.hasChildren then
+            if category.children then
                 toggle:Show()
             end
         end
@@ -248,7 +329,7 @@ Style.UpdateSkin("Default", {
 __Sealed__()
 class "OptionsDropDownMenu" (function(_ENV)
     inherit "Frame"
-    extend "ConfigItem"
+    extend "OptionItem"
 
     -- DropDownMenu GetValue至少需要返回两个参数
     -- return arg1:value
@@ -270,6 +351,27 @@ class "OptionsDropDownMenu" (function(_ENV)
             self:SetEnabled(infos and #infos > 0)
         end
     }
+
+    property "DisplayTextJustifyH" {
+        type                    = JustifyHType,
+        handler                 = function(self, justifyH)
+            UIDropDownMenu_JustifyText(self, justifyH)
+        end
+    }
+
+    property "TooltipText" { type = NEString }
+
+    local function OnEnter(self)
+        if self.TooltipText then
+            GameTooltip:SetOwner(self,"ANCHOR_TOP")
+            GameTooltip:SetText(self.TooltipText, nil, nil, nil, nil, true)
+            GameTooltip:Show()
+        end
+    end
+
+    local function OnLeave(self)
+        GameTooltip:Hide()
+    end
 
     local function OnItemSelect(button, arg1, arg2, checked)
         if button and button:GetParent() and button:GetParent().dropdown then
@@ -345,9 +447,14 @@ class "OptionsDropDownMenu" (function(_ENV)
         end
     end
 
+    __Template__{
+        Label = FontString
+    }
     function __ctor(self)
-        -- 锚点对齐框体.
+        self.OnEnter = self.OnEnter + OnEnter
+        self.OnLeave = self.OnLeave + OnLeave
         self:SetEnabled(false)
+        -- 锚点对齐框体.
         UIDropDownMenu_SetAnchor(self, 14, 22)
         UIDropDownMenu_Initialize(self, DropDownInitialize)
         UIDropDownMenu_JustifyText(self,"LEFT")
@@ -361,7 +468,6 @@ end)
 -- 角色配置指示器
 __Sealed__() 
 __ChildProperty__(OptionsDropDownMenu, "CharIndicator")
-__ChildProperty__(OptionsCheckButton, "CharIndicator")
 class "CharOptionsIndicator" {Texture}
 
 Style.UpdateSkin("Default", {
@@ -371,3 +477,45 @@ Style.UpdateSkin("Default", {
         size                        = Size(22, 22)
     }
 })
+
+class "OptionsModifierKey"(function(_ENV)
+
+    __Static__()
+    property "SHIFT" { set = false, type = NEString, default = "SHIFT" }
+
+    __Static__()
+    property "ALT" { set = false, type = NEString, default = "ALT" }
+
+    __Static__()
+    property "CTRL" { set = false, type = NEString, default = "CTRL" }
+
+    __Static__()
+    property "NONE" { set = false, type = NEString, default = "NONE" }
+
+    __Static__()
+    __Arguments__(NEString)
+    function IsKeyDown(key)
+        if key == "SHIFT" then
+            return IsShiftKeyDown()
+        elseif key == "ALT" then
+            return IsAltKeyDown()
+        elseif key == "CTRL" then
+            return IsControlKeyDown()
+        end
+    end
+
+    __Static__()
+    __Arguments__(NEString)
+    function GetKeyText(key)
+        if key == "SHIFT" then
+            return SHIFT_KEY
+        elseif key == "ALT" then
+            return ALT_KEY
+        elseif key == "CTRL" then
+            return CTRL_KEY
+        else
+            return NONE_KEY
+        end
+    end
+end)
+

@@ -1,9 +1,6 @@
 -- 参考了NDUI
 Scorpio "SpaUI.Features.TradeTabs" ""
 
-local GetSpellCooldown,CastSpell,IsCurrentSpell = GetSpellCooldown,CastSpell,IsCurrentSpell
-local tinsert = tinsert
-
 -- 需要去重的专业技能
 SkillLineNeedDistinct = {
 	[171] = true, -- 炼金
@@ -29,14 +26,12 @@ function CreateTradeTabContainer()
     TabContainer = Frame("SpaUITradeTabContainer",TradeSkillFrame)
     Log("TradeTabs Create TradeTabContainer")
 
-    TabContainer.OnShow = function(self)  
-        Log("TradeContainer OnShow")
+    TabContainer.OnShow = function(self)
         self:RegisterEvent("CURRENT_SPELL_CAST_CHANGED")
         UpdateTradeTabs()
     end
 
     TabContainer.OnHide = function(self)
-        Log("TradeContainer OnHide")
         self:UnregisterEvent("CURRENT_SPELL_CAST_CHANGED")
     end
 
@@ -84,6 +79,8 @@ local function AddSpellOffsetNeededShow(table,professionIndex)
 end
 
 -- 创建或更改按钮
+-- 监听SKILL_LINES_CHANGED事件用于解决遗忘/学习专业后动态切换问题
+-- 没有找到遗忘/学习专业的专属事件
 __AsyncSingle__()
 __SystemEvent__ "SKILL_LINES_CHANGED"
 function CreateOrChangeTradeTabs()

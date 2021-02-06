@@ -1,8 +1,6 @@
 -- 聊天表情 修改自SimpleChat
 Scorpio "SpaUI.Chat.ChatBar.ChatEmote" ""
 
-L = _Locale
-
 EMOTE_SIZE = 25
 EMOTE_SIZE_MARGIN = 6
 EMOTE_RAW_SIZE = 8

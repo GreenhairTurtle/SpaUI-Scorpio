@@ -1,7 +1,6 @@
 -- 各种ID，修改自idTip
 Scorpio "SpaUI.Features.Tooltips" ""
 
-L = _Locale
 -- 法术ID
 SpellIDPrefix = L["tooltip_spell_id"]
 -- NPC ID
@@ -12,14 +11,6 @@ CurrencyIDPrefix = L["tooltip_currency_id"]
 TaskIDPrefix = L["tooltip_task_id"]
 -- 物品id
 ItemIDPrefix = L["tooltip_item_id"]
-
-local IsAltKeyDown = IsAltKeyDown
-local UnitBuff = UnitBuff
-local UnitDebuff = UnitDebuff
-local UnitAura = UnitAura
-local IsInBattle = C_PetBattles.IsInBattle
-local UnitGUID = UnitGUID
-local GetCurrencyListLink = C_CurrencyInfo.GetCurrencyListLink
 
 -- Tooltip添加id
 function AddLine(tooltip, id, prefix)
@@ -64,11 +55,11 @@ GameTooltip:HookScript("OnTooltipSetSpell", function(self)
 end)
 
 GameTooltip:HookScript("OnTooltipSetUnit", function(self)
-    if IsInBattle() then return end
+    if C_PetBattles.IsInBattle() then return end
     local unit = select(2, self:GetUnit())
     if unit then
         local guid = UnitGUID(unit) or ""
-        local id = tonumber(guid:match("-(%d+)-%x+$"), 10)
+        local id = GetNpcID(guid)
         if id and guid:match("%a+") ~= "Player" then
             AddLine(GameTooltip, id, NpcIDPrefix)
         end
@@ -77,7 +68,7 @@ end)
 
 __SecureHook__(GameTooltip)
 function SetCurrencyToken(self,index)
-    local id = tonumber(string.match(GetCurrencyListLink(index),"currency:(%d+)"))
+    local id = tonumber(string.match(C_CurrencyInfo.GetCurrencyListLink(index),"currency:(%d+)"))
     AddLine(self, id, CurrencyIDPrefix)
 end
 

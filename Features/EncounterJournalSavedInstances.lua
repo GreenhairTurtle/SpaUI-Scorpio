@@ -1,7 +1,6 @@
 -- 地下城手册显示副本进度
 Scorpio "SpaUI.Features.EncounterJournalSavedInstances" ""
-local L = _Locale
-local GetNumSavedInstances,GetSavedInstanceInfo,GetSavedInstanceEncounterInfo = GetNumSavedInstances,GetSavedInstanceInfo,GetSavedInstanceEncounterInfo
+
 COMPLETED_COLOR = Color.RED
 UNCOMPLETED_COLOR = Color.GREEN
 

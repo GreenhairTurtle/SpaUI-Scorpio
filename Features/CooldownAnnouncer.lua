@@ -1,19 +1,6 @@
 -- 冷却广播员
 Scorpio "SpaUI.Features.CooldownAnnouncer" ""
 
-L = _Locale
-local HasAction = HasAction
-local GetActionInfo = GetActionInfo
-local GetMacroSpell = GetMacroSpell
-local GetMacroItem = GetMacroItem
-local GetSpellLink = GetSpellLink
-local GetSpellCooldown = GetSpellCooldown
-local IsInGroup = IsInGroup
-local SendChatMessage = SendChatMessage
-local GetItemCount = GetItemCount
-local GetItemInfo = GetItemInfo
-local GetItemCooldown = GetItemCooldown
-
 SupportAnnouncerFrames = {
     ActionButton1,ActionButton2,ActionButton3,ActionButton4,ActionButton5,ActionButton6,
     ActionButton7,ActionButton8,ActionButton9,ActionButton10,ActionButton11,ActionButton12,

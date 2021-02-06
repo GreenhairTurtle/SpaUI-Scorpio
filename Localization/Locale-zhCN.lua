@@ -10,7 +10,7 @@ L["debug_prefix"] = L["addon_name"].." Debug:"
 L["message_format"] = L["addon_name"]..":%s"
 L["minute_format"] = "%d分"
 L["second_format"] = "%d秒"
-L["enable"] = "启用"
+L["module_enable"] = "启用模块"
 L["combat_error"] = "你正在战斗中"
 
 -- command
@@ -47,21 +47,29 @@ L['config_load_more'] = "查看更多"
 L["config_reload_confirm"] = "保存更改需要重载界面"
 L["config_cancel_confirm"] = "部分更改还未保存，确定放弃？"
 L["config_default_confirm"] = "确定重置所有配置么？"
+
+
 -- Config Introduce
 L["config_category_introduce"] = "介绍"
 L["config_addon_introduct"] = [[
 |cFF00FFFFS|r|cFFFFC0CBp|r|cFFFF6347a|rUI只对暴雪原生界面进行了功能增强，几乎没有任何"美化"，未来也不会考虑。
 你可以输入命令 |cFF00BFFF/spa help|r 获取帮助
 ]]
+
+
 -- Config ChangeLog
 L["config_category_changelog"] = "更新日志"
+
+
 -- Config Features
 L["config_category_features"] = "综合"
 L["config_category_features_title"] = "杂项"
 L["config_category_features_esay_delete"] = "快速删除"
 L["config_category_features_easy_delete_tooltip"] = "删除物品时自动填写DELETE"
+
+
 -- Config AutoSell&Repair
-L["config_category_features_auto_sell_repair"] = "自动修理/出售"
+L["config_category_features_auto_sell_repair"] = L["config_char_indicator"].."自动修理/出售"
 L["config_features_auto_repair"] = "自动修理"
 L["config_features_auto_repair_strategy"] = "修理方案："
 L["config_features_auto_repair_strategy_guild"] = "使用公会修理"
@@ -71,7 +79,9 @@ L["config_features_auto_repair_strategy_auto_tooltip"] = "直接使用角色金�
 L["config_features_auto_repair_strategy_none"] = "从不"
 L["config_features_auto_repair_strategy_none_tooltip"] = "不启用自动修理"
 L["config_features_auto_sell"] = "自动出售"
-L["config_features_auto_sell_junk"] = L["config_char_indicator"].."自动出售垃圾"
+L["config_features_auto_sell_junk"] = "自动出售垃圾"
+
+
 -- Config Chat
 L["config_category_chat"] = "聊天"
 L["config_chat_enhanced"] = "聊天增强"
@@ -84,10 +94,31 @@ L["config_chat_linktip_tooltip"] = "启用/禁用聊天链接悬浮鼠标提示"
 L["config_chat_tab"] = "快捷切换频道"
 L["config_chat_tab_tooltip"] = "启用/禁用Tab快速切换频道"
 
+-- Config Quest
+L["config_category_quest"] = "任务"
+
+-- Config AutoTurnIn
+L["config_category_quest_auto_turn_in"] = L["config_char_indicator"].."自动交接任务"
+L["config_quest_auto_turn_in_title"] = "自动交接任务"
+L["config_quest_auto_turn_in_module_enable_tooltip"] = "启用/禁用自动交接任务模块\n|cFFFFFFFF禁用此模块会带来微不足道的性能提升|r"
+L["config_quest_auto_turn_in_enable_tooltip"] = "打开/关闭自动交接任务"
+L["config_quest_auto_turn_in_enable_key"] = "自动交接按键"
+L["config_quest_auto_turn_in_enable_key_tooltip"] = "自动交接开启时，按住按键会临时关闭自动交接，自动交接关闭时，按住按键会临时开启自动交接"
+L["config_quest_auto_turn_in_auto_weekly"] = "接受周常任务"
+L["config_quest_auto_turn_in_auto_daily"] = "接受日常任务"
+L["config_quest_auto_turn_in_auto_repeatable"] = "接受可重复任务"
+L["config_quest_auto_turn_in_auto_trivial"] = "接受其它任务（低等级任务）"
+L["config_quest_auto_turn_in_auto_trivial_weekly"] = "接受周常任务"
+L["config_quest_auto_turn_in_auto_trivial_daily"] = "接受日常任务"
+L["config_quest_auto_turn_in_auto_trivial_repeatable"] = "接受可重复任务"
+-- 带有(任务)标题的选项直接点击，翻译的时候需要在具体的客户端用 C_GossipInfo.GetOptions()来查看对应字符串
+L["config_quest_auto_turn_in_auto_gossip_pattern"] = "\124cFF0000FF%(任务%)\124r"
+
 -- AutoRepair
 L["auto_repair_guild_cost"] = "|cfff07100你本次修理消耗公会资金: %s|r"
 L["auto_repair_cost"] = "|cffead000修理花费: %s|r"
 L["auto_repair_no_money"] = "你没钱，穷逼！"
+
 
 -- AutoSell
 L["auto_sell_detail"] = "%s卖出了%s"
@@ -96,7 +127,7 @@ L["auto_sell_total"] = "共获得收入%s"
 
 -- Tooltip
 L["tooltip_spell_id"] = "法术ID："
-L["tooltip_npc_id"] = "NPCID："
+L["tooltip_npc_id"] = "NpcID："
 L["tooltip_currency_id"] = "货币ID："
 L["tooltip_task_id"] = "任务ID："
 L["tooltip_item_id"] = "物品ID："
@@ -246,9 +277,27 @@ L["guild_bank_sort_button_tooltip"] = "鼠标左键点击整理\n右键点击打
 L["guild_bank_merge_items"] = "正在合并物品(%d/%d)"
 L["guild_bank_move_items"] = "正在移动物品(%d/%d)"
 L["guild_bank_cannot_withdraw"] = "你的提取额度不足！"
+L["guild_bank_cannot_deposit"] = "该标签你无法存放物品！"
 L["guild_bank_transfer_dialog_title"] = "公会银行物品转移"
+L["guild_bank_transfer_src_title"] = "来源标签页：|T%s:15|t%s（第%d页）"
 L["guild_bank_transfer_filter_default"] = "任意"
 L["guild_bank_transfer_class_filter_title"] = "物品类型"
 L["guild_bank_transfer_subclass_filter_title"] = "物品子类型"
 L["guild_bank_transfer_expac_filter_title"] = "资料片"
 L["guild_bank_transfer_quality_filter_title"] = "稀有程度"
+L["guild_bank_transfer_add_item_tooltip"] = "右键添加此物品至待转移区域"
+L["guild_bank_transfer_remove_item_tooltip"] = "右键从待转移区域中移除此物品"
+L["guild_bank_transfer_src_transfer_all"] = "全部转移"
+L["guild_bank_transfer_waiting_title"] = "待转移物品："
+L["guild_bank_transfer_waiting_transfer_clear_all"] = "清除全部"
+L["guild_bank_transfer_to_bag"] = "转移至背包"
+L["guild_bank_transfer_to_bag_confirm"] = "确定转移至背包？"
+L["guild_bank_transfer_to_bag_description"] = "提取物品(%d/%d)"
+L["guild_bank_transfer_to_other_tab"] = "转移至其它标签"
+L["guild_bank_transfer_to_other_tab_picker_label"] = "标签页："
+L["guild_bank_transfer_to_other_tab_picker_default"] = "请选择"
+L["guild_bank_transfer_to_other_tab_picker_text"] = "%s(%d)"
+L["guild_bank_transfer_to_other_tab_retrive_data"] = "正在获取目标标签页信息，请稍等"
+L["guild_bank_transfer_to_other_tab_full"] = "目标标签页没有空栏位？"
+L["guild_bank_transfer_to_other_tab_description"] = "正在转移物品(%d/%d)"
+L["guild_bank_transfer_to_other_tab_confirm"] = "确定转移物品至|T%s:15|t%s（第%d页）？"

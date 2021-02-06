@@ -1,8 +1,5 @@
 Scorpio "SpaUI.Chat.ChatTab" ""
 
-local IsInGroup,IsInRaid,IsInGuild = IsInGroup,IsInRaid,IsInGuild
-local ChatEdit_UpdateHeader = ChatEdit_UpdateHeader
-
 -- tab切换频道，当既在副本又在非副本的小队或团里时，切换逻辑会较生硬
 -- 符合预期，不准备改好，两个团队频道来回切换也没什么大不了的
 function _G.ChatEdit_CustomTabPressed(self)

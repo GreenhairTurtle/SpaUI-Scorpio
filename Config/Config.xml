@@ -6,4 +6,5 @@
     <Script file="Chat.lua"/>
 
     <Include file="Features\Features.xml"/>
+    <Include file="Quest\Quest.xml"/>
 </Ui>

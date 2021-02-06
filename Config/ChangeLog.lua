@@ -1,6 +1,5 @@
 Scorpio "SpaUI.Config.ChangeLog" ""
 
-L = _Locale
 ChangeLogPageSize = 5
 
 function OnLoad(self)

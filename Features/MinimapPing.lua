@@ -1,13 +1,6 @@
 -- 小地图ping，修改自SexyMap
 Scorpio "SpaUI.Features.MinimapPing" ""
 
-L = _Locale
-local UnitClass = UnitClass
-local GetUnitName = GetUnitName
-local IsInRaid = IsInRaid
-local GetNumGroupMembers = GetNumGroupMembers
-local GetRaidRosterInfo = GetRaidRosterInfo
-
 __Async__()
 function CreateMinimapFrame()
     MinimapPingFrame = Frame("SpaUIMinimapPingFrame", Minimap)

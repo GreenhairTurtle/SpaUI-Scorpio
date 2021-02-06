@@ -55,10 +55,15 @@ function Log(...)
     end
 end
 
+function GetNpcID(guid)
+    return tonumber(strmatch((guid or ""), "%-(%d-)%-%x-$"))
+end
+
 -- 打印table
 -- 百度抄的
 function Dump(value, desciption, nesting)
-    if type(nesting) ~= "number" then nesting = 3 end
+    -- if not (_Config and _Config.DebugMode) then return end
+    if type(nesting) ~= "number" then nesting = 5 end
  
     local lookupTable = {}
     local result = {}

@@ -3,15 +3,6 @@ import "SpaUI.Widget.Config.Features"
 
 --修理间隔，防止频繁点击商人后打印无效的修理信息引起误导
 REPAIR_INTERVAL = 1
-L = _Locale
-
-local CanMerchantRepair = CanMerchantRepair
-local GetRepairAllCost = GetRepairAllCost
-local IsInGuild = IsInGuild
-local CanGuildBankRepair = CanGuildBankRepair
-local GetGuildBankWithdrawMoney = GetGuildBankWithdrawMoney
-local RepairAllItems = RepairAllItems
-local GetCoinTextureString = GetCoinTextureString
 
 function OnLoad(self)
     Config = _Config.Char.Features.AutoSell_Repair.AutoRepair
