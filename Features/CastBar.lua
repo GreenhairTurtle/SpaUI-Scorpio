@@ -38,8 +38,8 @@ local function CastingBarFrame_OnUpdate_Hook(self, elapsed)
     end
 end
 
-__Async__()
 function CreateTimerAndLag()
+    local CastBarFont = Font("SpaUICastBarFont", "Fonts\\FRIZQT__.TTF", 8, "NORMAL")
     local CastBarTimer = FontString("SpaUICastBarTimer", CastingBarFrame)
     local CastBarLag = Texture("SpaUICastBarLag", CastingBarFrame)
     CastingBarFrame.update = .1
@@ -59,12 +59,7 @@ function CreateTimerAndLag()
     PetCastingBarFrame.timer = PetCastBarTimer
 
     Style[CastBarTimer] = {
-        font                = {
-            font            = "Fonts\\FRIZQT__.TTF",
-            height          = 8,
-            outline         = "NORMAL",
-            monochrome      = false
-        },
+        fontObject          = CastBarFont,
         textColor           = Color.WHITE,
         location            = PLAYER_FRAME_CASTBARS_SHOWN and {Anchor("LEFT", 1, 0, CastingBarFrame:GetName(), "RIGHT")} or {Anchor("TOPRIGHT", 0, -2, CastingBarFrame:GetName(), "BOTTOMRIGHT")}
     }
@@ -77,34 +72,19 @@ function CreateTimerAndLag()
     }
 
     Style[TargetFrameSpellBarTimer] = {
-        font                = {
-            font            = "Fonts\\FRIZQT__.TTF",
-            height          = 8,
-            outline         = "NORMAL",
-            monochrome      = false
-        },
+        fontObject          = CastBarFont,
         textColor           = Color.WHITE,
         location            = {Anchor("LEFT", 1, 0, TargetFrameSpellBar:GetName(), "RIGHT")}
     }
 
     Style[FocusFrameSpellBarTimer] = {
-        font                = {
-            font            = "Fonts\\FRIZQT__.TTF",
-            height          = 8,
-            outline         = "NORMAL",
-            monochrome      = false
-        },
+        fontObject          = CastBarFont,
         textColor           = Color.WHITE,
         location            = {Anchor("LEFT", 1, 0, FocusFrameSpellBar:GetName(), "RIGHT")}
     }
 
     Style[PetCastBarTimer] = {
-        font                = {
-            font            = "Fonts\\FRIZQT__.TTF",
-            height          = 8,
-            outline         = "NORMAL",
-            monochrome      = false
-        },
+        fontObject          = CastBarFont,
         textColor           = Color.WHITE,
         location            = {Anchor("LEFT", 1, 0, PetCastingBarFrame:GetName(), "RIGHT")}
     }

@@ -1,4 +1,4 @@
-Scorpio "SpaUI.Config.Chat" ""
+Scorpio "SpaUI.Config.Social" ""
 
 DefaultConfig = {
     ChatBar                                 = {
@@ -18,7 +18,7 @@ DefaultConfig = {
     }
 }
 
-ConfigBehaivors = {
+ConfigBehaviors = {
     -- 聊天栏
     ChatBar                                 = {
         NeedReload                          = function(self)
@@ -84,87 +84,106 @@ ConfigBehaivors = {
 
 function OnLoad(self)
     _Enabled = false
-    SetDefaultToConfigDB(_Name, DefaultConfig)
+    _Parent.SetDefaultToConfigDB(_Name, DefaultConfig)
     DB = _Config[_Name]
 end
 
-function Show()
-    if not ChatContainer then _Enabled = true return end
-    ChatContainer:Show()
+function SetDefaultToConfigDB(childName, globalConfig, charConfig)
+    DefaultConfig = DefaultConfig or {}
+    DefaultConfig[childName] = globalConfig
+    DefaultCharConfig = DefaultCharConfig or {}
+    DefaultCharConfig[childName] = charConfig
+    _Parent.SetDefaultToConfigDB(_Name, DefaultConfig, DefaultCharConfig)
 end
 
-function Hide()
-    if not ChatContainer then return end
-    ChatContainer:Hide()
+function Show(childModule)
+    if not SocialContainer then
+        _Enabled = true
+    end
+    _Enabled = true
+    if childModule then
+        _Modules[childModule].Show()
+        SocialContainer:Hide()
+    else
+        SocialContainer:Show()
+    end
+end
+
+function Hide(childModule)
+    if childModule then
+        _Modules[childModule].Hide()
+    else
+        if not SocialContainer then return end
+        SocialContainer:Hide()
+    end
 end
 
 function OnEnable(self)
-    ChatContainer = Frame("ChatContainer", ConfigContainer)
-    FontString("ChatTitle", ChatContainer)
-    ChatBarEnableButton = OptionsCheckButton("ChatBarEnableButton", ChatContainer)
+    SocialContainer = Frame("SocialContainer", ConfigContainer)
+    FontString("ChatTitle", SocialContainer)
+    ChatBarEnableButton = OptionsCheckButton("ChatBarEnableButton", SocialContainer)
     ChatEmoteEnableButton = OptionsCheckButton("ChatEmoteEnableButton", ChatBarEnableButton)
-    OptionsCheckButton("ChatLinkTooltipEnableButton", ChatContainer)
-    OptionsCheckButton("ChatTab", ChatContainer)
+    OptionsCheckButton("ChatLinkTooltipEnableButton", SocialContainer)
+    OptionsCheckButton("ChatTab", SocialContainer)
 
-    Style[ChatContainer] = {
-        location                        = {
+    Style[SocialContainer]                      = {
+        location                                = {
             Anchor("TOPLEFT", 15, -15),
             Anchor("BOTTOMRIGHT", -15, 15)
         },
 
-        ChatTitle                       = {
-            location                    = {
+        ChatTitle                               = {
+            location                            = {
                 Anchor("TOPLEFT")
             },
-            text                        = L["config_chat_enhanced"],
-            fontObject                  = GameFontNormalLarge
+            text                                = L["config_chat_enhanced"],
+            fontObject                          = GameFontNormalLarge
         },
 
-        ChatBarEnableButton             = {
-            configBehavior              = ConfigBehaivors.ChatBar,
-            tooltipText                 = L["config_chat_bar_tooltip"],
-            location                    = {
+        ChatBarEnableButton                     = {
+            configBehavior                      = ConfigBehaviors.ChatBar,
+            tooltipText                         = L["config_chat_bar_tooltip"],
+            location                            = {
                 Anchor("TOPLEFT", -3, -5, "ChatTitle", "BOTTOMLEFT")
             },
 
-            Label                       = {
-                text                    = L["config_chat_bar"]
+            Label                               = {
+                text                            = L["config_chat_bar"]
             },
 
-            ChatEmoteEnableButton           = {
-                configBehavior              = ConfigBehaivors.ChatBar.ChatEmote,
-                enabled                     = DB.ChatBar.Enable,
-                tooltipText                 = L["config_chat_emote_tooltip"],
-                location                    = {
+            ChatEmoteEnableButton               = {
+                configBehavior                  = ConfigBehaviors.ChatBar.ChatEmote,
+                enabled                         = DB.ChatBar.Enable,
+                tooltipText                     = L["config_chat_emote_tooltip"],
+                location                        = {
                     Anchor("TOPLEFT", 15, -3, nil, "BOTTOMLEFT")
                 },
-                Label                       = {
-                    text                    = L["config_chat_emote"],
-                    fontObject              = GameFontNormal
+                Label                           = {
+                    text                        = L["config_chat_emote"]
                 }
             },
         },
 
-        ChatLinkTooltipEnableButton     = {
-            configBehavior              = ConfigBehaivors.ChatLinkTooltips,
-            tooltipText                 = L["config_chat_linktip_tooltip"],
-            location                    = {
+        ChatLinkTooltipEnableButton             = {
+            configBehavior                      = ConfigBehaviors.ChatLinkTooltips,
+            tooltipText                         = L["config_chat_linktip_tooltip"],
+            location                            = {
                 Anchor("LEFT", 0, 0, "ChatBarEnableButton", "LEFT"),
                 Anchor("TOP", 0, -3, "ChatBarEnableButton.ChatEmoteEnableButton", "BOTTOM")
             },
-            Label                       = {
-                text                    = L["config_chat_linktip"]
+            Label                               = {
+                text                            = L["config_chat_linktip"]
             }
         },
 
-        ChatTab                         = {
-            configBehavior              = ConfigBehaivors.ChatTab,
-            tooltipText                 = L["config_chat_tab_tooltip"],
-            location                    = {
+        ChatTab                                 = {
+            configBehavior                      = ConfigBehaviors.ChatTab,
+            tooltipText                         = L["config_chat_tab_tooltip"],
+            location                            = {
                 Anchor("TOPLEFT", 0, -3, "ChatLinkTooltipEnableButton", "BOTTOMLEFT")
             },
-            Label                       = {
-                text                    = L["config_chat_tab"]
+            Label                               = {
+                text                            = L["config_chat_tab"]
             }
         }
     }

@@ -14,7 +14,6 @@ function Hide()
     IntroduceContainer:Hide()
 end
 
-__Async__()
 function OnEnable(self)
     -- 介绍页
     IntroduceContainer = Frame("IntroduceContainer", ConfigContainer)

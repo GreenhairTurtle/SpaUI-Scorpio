@@ -7,7 +7,7 @@ Scorpio "SpaUI.Features.RaidFrameMarker" ""
 
 RaidTargetMarkers = {}
 
-local function UpdateRaidTargetIcon(frame)
+function UpdateRaidTargetIcon(frame)
     local unit = frame.unit
     local name = frame:GetName()
 
@@ -32,7 +32,6 @@ local function UpdateRaidTargetIcon(frame)
         end
     end
 
-    
     if frame.name and frame.name:IsObjectType("FontString") then
         if UnitIsGroupLeader(unit) then
             frame.name:SetFontObject(GameFontNormalSmall)
@@ -42,7 +41,17 @@ local function UpdateRaidTargetIcon(frame)
     end
 end
 
-__SystemEvent__ "RAID_TARGET_UPDATE" "GROUP_ROSTER_UPDATE" "PLAYER_ENTERING_WORLD"
-function UpdateRaidTarget()
-    CompactRaidFrameContainer_ApplyToFrames(CompactRaidFrameContainer, "normal", UpdateRaidTargetIcon)
+__Async__()
+function OnEnable()
+    local function Debounce()
+        local result = Wait(0.25, "RAID_TARGET_UPDATE", "GROUP_ROSTER_UPDATE", "PLAYER_ENTERING_WORLD")
+        return type(result) ~= "number"
+    end 
+
+    while Wait("RAID_TARGET_UPDATE", "GROUP_ROSTER_UPDATE", "PLAYER_ENTERING_WORLD") do
+        while Debounce() do
+            -- do nothing
+        end
+        CompactRaidFrameContainer_ApplyToFrames(CompactRaidFrameContainer, "normal", UpdateRaidTargetIcon)
+    end
 end

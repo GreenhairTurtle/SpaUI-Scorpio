@@ -43,7 +43,7 @@ DefaultCharConfig = {
     }
 }
 
-ConfigBehaivors = {
+ConfigBehaviors = {
     AutoRepair                      = {
         GetValue                    = function(self)
             local config = AutoRepairConfig.FromStrategy(DBChar.AutoRepair.Strategy)
@@ -84,7 +84,6 @@ function OnEnable(self)
     AutoSell_RepairContainer = Frame("AutoSell_RepairContainer", ConfigContainer)
     FontString("AutoRepairTitle", AutoSell_RepairContainer)
     OptionsDropDownMenu("AutoRepairDropDownMenu", AutoSell_RepairContainer)
-    FontString("AutoRepairStrategy", AutoSell_RepairContainer)
     OptionsLine("Line1", AutoSell_RepairContainer)
     FontString("AutoSellTitle", AutoSell_RepairContainer)
     OptionsCheckButton("AutoSellJunkEnableButton", AutoSell_RepairContainer)
@@ -103,19 +102,12 @@ function OnEnable(self)
             fontObject                  = GameFontNormalLarge
         },
 
-        AutoRepairStrategy              = {
-            text                        = L["config_features_auto_repair_strategy"],
-            location                    = {
-                Anchor("TOPLEFT", 0, -20, "AutoRepairTitle", "BOTTOMLEFT")
-            }
-        },
-
         AutoRepairDropDownMenu          = {
             location                    = {
-                Anchor("LEFT", 7, 0, "AutoRepairStrategy", "RIGHT")
+                Anchor("TOPLEFT", -18, -35, "AutoRepairTitle", "BOTTOMLEFT")
             },
             dropDownMenuWidth           = 125,
-            configBehavior              = ConfigBehaivors.AutoRepair,
+            configBehavior              = ConfigBehaviors.AutoRepair,
             displayTextJustifyH         = "RIGHT",
             dropDownInfos               = {
                 {
@@ -132,6 +124,13 @@ function OnEnable(self)
                     text                = AutoRepairConfig.NONE.Description,
                     value               = AutoRepairConfig.NONE,
                     tooltipText         = AutoRepairConfig.NONE.Detail
+                }
+            },
+
+            Label                       = {
+                text                    = L["config_features_auto_repair_strategy"],
+                location                = {
+                    Anchor("BOTTOMLEFT", 18, 5, nil, "TOPLEFT")
                 }
             }
         },
@@ -153,7 +152,7 @@ function OnEnable(self)
         },
 
         AutoSellJunkEnableButton        = {
-            configBehavior              = ConfigBehaivors.AutoSell,
+            configBehavior              = ConfigBehaviors.AutoSell,
             location                    = {
                 Anchor("TOPLEFT", -3, -5, "AutoSellTitle", "BOTTOMLEFT")
             },

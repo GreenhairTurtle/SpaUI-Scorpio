@@ -90,9 +90,9 @@ MovableFramesNeedWait = {
             movable             = true,
             Mover               = {}
         }
-    }, 
-    -- 要塞报告
-    ['Blizzard_GarrisonTemplates'] = {
+    },
+    -- 指挥台等
+    ['Blizzard_AdventureMap']   = {
         -- 小地图按钮面板
         ["GarrisonLandingPage"] = {
             movable             = true,
@@ -100,17 +100,17 @@ MovableFramesNeedWait = {
                 height          = 40
             }
         },
-        -- 盟约任务
-        ["CovenantMissionFrame"] = {
-            movable             = true,
-            Mover               = {}
-        },
         -- 8.0 指挥台
         ["BFAMissionFrame"]     = {
             movable             = true,
             Mover               = {}
+        },
+        -- 盟约任务
+        ["CovenantMissionFrame"] = {
+            movable             = true,
+            Mover               = {}
         }
-    }, 
+    },
     -- 名望
     ['Blizzard_CovenantRenown'] = {
         ["CovenantRenownFrame"] = {
@@ -336,7 +336,12 @@ function SetMovableForNeedWaitFrames()
     for addon,info in pairs(MovableFramesNeedWait) do
         if IsAddOnLoaded(addon) then
             for k,v in pairs(info) do
-                Style[_G[k]] = v
+                local addonFrame = _G[k]
+                if addonFrame then
+                    Style[_G[k]] = v
+                else
+                    Error(addon.." set movable error, frame name:"..k)
+                end
             end
             MovableFramesNeedWait[addon] = nil
         end
@@ -348,7 +353,12 @@ function SetMovableForNeedWaitFrames()
         local info = MovableFramesNeedWait[addon]
         if info then
             for k,v in pairs(info) do
-                Style[_G[k]] = v
+                local addonFrame = _G[k]
+                if addonFrame then
+                    Style[_G[k]] = v
+                else
+                    Error(addon.." set movable error, frame name:"..k)
+                end
             end
             MovableFramesNeedWait[addon] = nil
         end
@@ -434,5 +444,9 @@ function SetMovableForDirectFrames()
     Style[TaxiFrame] = {
         movable             = true,
         Mover               = {}
+    }
+    Style[AddonList]        = {
+        movable             = true,
+        Mover               = {},
     }
 end

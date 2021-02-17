@@ -585,6 +585,7 @@ function MarkItemAsTransfer(itemInfo, clear)
             slotInfo.markTransfer = not clear
         end
     end
+    GameTooltip:Hide()
     RefreshSrcData()
     RefreshWaitingTransferData()
 end

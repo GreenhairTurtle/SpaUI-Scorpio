@@ -1,4 +1,4 @@
-Scorpio "SpaUI.Chat.ChatBar" ""
+Scorpio "SpaUI.Social.ChatBar" ""
 
 CHAT_BAR_MESSAGE_TYPES = {
     "Say", "Yell", "Party", "Raid", "Instance_Chat", "Guild", "World", "Roll"
@@ -14,7 +14,7 @@ CHANNEL_WORLD_DEFAULT_COLOR_G = 0.75294125080109
 CHANNEL_WORLD_DEFAULT_COLOR_B = 0.75294125080109
 
 function OnLoad(self)
-    _Enabled = _Config.Chat.ChatBar.Enable
+    _Enabled = _Config.Social.ChatBar.Enable
 end
 
 function OnEnable(self)
@@ -72,7 +72,6 @@ function ChangeChatBarLocation(editbox)
 end
 
 -- 创建ChatBar按钮
-__Async__()
 function CreateChatBarButton(index)
     local type = CHAT_BAR_MESSAGE_TYPES[index]
     local button = Button("SpaUIChatBarButton"..type, ChatBar)
@@ -132,7 +131,7 @@ function OnWorldChannelButtonClick(button,key)
         local chatTypeInfo = ChatTypeInfo["CHANNEL" .. channelTarget]
         -- 改下世界频道的按钮颜色
         if chatTypeInfo then
-            button.Text:SetText(Color.ColorText(L["chat_bar_channel_world"], chatTypeInfo.r,chatTypeInfo.g, chatTypeInfo.b))
+            button.Text:SetText(ColorText(L["chat_bar_channel_world"], chatTypeInfo.r,chatTypeInfo.g, chatTypeInfo.b))
         end
         local editbox = ChatFrame_OpenChat("", ChatFrame1)
         editbox:SetAttribute("chatType", "CHANNEL")

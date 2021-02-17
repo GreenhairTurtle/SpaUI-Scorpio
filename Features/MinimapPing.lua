@@ -1,7 +1,6 @@
 -- 小地图ping，修改自SexyMap
 Scorpio "SpaUI.Features.MinimapPing" ""
 
-__Async__()
 function CreateMinimapFrame()
     MinimapPingFrame = Frame("SpaUIMinimapPingFrame", Minimap)
     MinimapPingFrame:SetPoint("TOP", Minimap, "TOP", 0, -10)

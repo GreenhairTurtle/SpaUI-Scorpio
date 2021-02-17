@@ -17,14 +17,15 @@ CategoryList = {
             {
                 name = L['config_category_features_auto_sell_repair'],
                 module = "AutoSell_Repair",
+                isCharOption = true,
                 parent = "Features"
             }
         }
     },
-    -- 聊天
+    -- 社交
     {
-        name = L['config_category_chat'],
-        module = "Chat"
+        name = L['config_category_social'],
+        module = "Social"
     },
     -- 任务
     {
@@ -35,7 +36,34 @@ CategoryList = {
             {
                 name = L['config_category_quest_auto_turn_in'],
                 module = "AutoTurnIn",
+                isCharOption = true,
                 parent = "Quest"
+            }
+        }
+    },
+    -- 动作条
+    {
+        name = L["config_category_actionbar"],
+        module = "ActionBar",
+        children = {
+            -- 动作条-右边动作条
+            {
+                name = L["config_category_actionbar_visibility"],
+                module = "Visibility",
+                parent = "ActionBar"
+            }
+        }
+    },
+    -- 单位框体
+    {
+        name = L["config_category_unitframes"],
+        module = "UnitFrames",
+        children = {
+            -- 单位框体-可见性
+            {
+                name = L["config_category_unitframes_visibility"],
+                module = "Visibility",
+                parent = "UnitFrames"
             }
         }
     },
@@ -52,7 +80,6 @@ function OnLoad()
 end
 
 -- 游戏菜单注入Config按钮
-__Async__()
 function InjectConfigButtonToGameMenu()
     if not SpaUIConfigButton then
         SpaUIConfigButton = Button("SpaUIConfigButton", GameMenuFrame, "GameMenuButtonTemplate")
@@ -118,7 +145,6 @@ end
 __SlashCmd__("spa", "debug", L["cmd_debug"])
 __AsyncSingle__()
 function ToggleDebugMode(info)
-    C_CVar.SetCVar("taintLog", 2)
     if not _Config then return end
     if info then
         info = strlower(info)
@@ -144,9 +170,7 @@ function ToggleDebugMode(info)
     end
 end
 
-__Async__()
 function OnEnable()
-    Log("ConfigPanel OnEnable")
     if not ConfigPanel then
         CreateConfigPanel()
     end
@@ -179,7 +203,6 @@ end
 __NoCombat__()
 function CreateConfigPanel()
     if ConfigPanel then return end
-    Log("Create ConfigPanel")
 
     ConfigPanel = Dialog("SpaUIConfigPanel")
     CategoryPanel = FauxScrollFrame("CategoryList", ConfigPanel)

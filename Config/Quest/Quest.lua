@@ -2,8 +2,6 @@ Scorpio "SpaUI.Config.Quest" ""
 
 function OnLoad(self)
     _Enabled = false
-    _Parent.SetDefaultToConfigDB(_Name, ConfigBehaivors)
-    DB = _Config[_Name]
 end
 
 function SetDefaultToConfigDB(childName, globalConfig, charConfig)

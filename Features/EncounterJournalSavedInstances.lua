@@ -41,7 +41,6 @@ function OnEnable(self)
 end
 
 -- 地下城手册显示的时候存下所有击杀进度
-__Async__()
 function OnEncounterJournalShow(self)
     if not self.SpaUISavedInstances then
         self.SpaUISavedInstances = {}
@@ -105,7 +104,6 @@ function EncounterJournal_ListInstances()
 end
 
 -- 在副本按钮上显示或隐藏进度
-__Async__()
 function ShowOrHideSavedInstanceForInstanceButton(button,savedInstances)
     if not button.savedInstanceFrames then
         button.savedInstanceFrames = {}

@@ -48,23 +48,21 @@ function OnLoad(self)
 end
 
 function OnEnable(self)
-    SpaUIAutoTurnInTooltip = CreateFrame('GameTooltip', 'SpaUIAutoTurnInTooltip', nil, 'GameTooltipTemplate')
-    SpaUIAutoTurnInTooltip:SetOwner(WorldFrame, "ANCHOR_NONE")
-    CreateAutoTurnInButton()
-end
-
-function CreateAutoTurnInButton()
     AutoTurnInButton = OptionsCheckButton("SpaUIAutoTurnInButton", ObjectiveTrackerFrame)
     AutoTurnInButton.OnClick = function(self)
         Config.Auto = self:GetChecked()     
         FireSystemEvent("SPAUI_TOGGLE_AUTO_TURN_IN")
     end
+    AutoTurnInButton.OnEnter = function(self)
+        GameTooltip:SetOwner(self)
+        GameTooltip:SetText(L["auto_quest_turnin_button_tooltip"]:format(OptionsModifierKey.GetKeyText(Config.ModifierKey)), nil, nil, nil, true)
+        GameTooltip:Show()
+    end
 
     Style[AutoTurnInButton] = {
         frameLevel          = ObjectiveTrackerFrame.HeaderMenu:GetFrameLevel(),
         size                = Size(17, 17),
-        checked             = Config.Auto,
-        tooltipText         = L['config_quest_auto_turn_in_enable_tooltip']
+        checked             = Config.Auto
     }
 end
 
@@ -141,18 +139,20 @@ local function GetActiveQuests()
             return activeQuests
         end
     end
-end
+end 
 
 local function IsQuestNpc()
     local activeQuests = GetActiveQuests()
     if activeQuests then
-        SpaUIAutoTurnInTooltip:SetUnit("npc")
-        for i = 3, SpaUIAutoTurnInTooltip:NumLines() do
-            local fontString = _G['SpaUIAutoTurnInTooltipTextLeft' .. i]
+        SpaUIScanningTooltip:ClearLines()
+        SpaUIScanningTooltip:SetUnit("npc")
+        for i = 1, SpaUIScanningTooltip:NumLines() do
+            local fontString = _G['SpaUIScanningTooltipTextLeft' .. i]
             local text = fontString and fontString:GetText()
             if text and activeQuests[text] then return true end
         end
     end
+    return nil
 end
 
 __SystemEvent__()
@@ -165,7 +165,7 @@ function GOSSIP_SHOW()
         local quests = C_GossipInfo.GetActiveQuests()
         for i = 1, activeNum do
             local quest = quests[i]
-            if quest and CanCompleteQuest(quest.questID, quest.isComplete) and GossipFrame:IsVisible() and UnitName("npc") then
+            if quest and CanCompleteQuest(quest.questID, quest.isComplete) and GossipFrame:IsVisible() and UnitExists("npc") then
                 return C_GossipInfo.SelectActiveQuest(i)
             end
         end
@@ -177,7 +177,7 @@ function GOSSIP_SHOW()
         for i = 1, availableNum do
            local quest = quests[i]
            if quest and CanAcceptQuest(quest.questID, quest.isTrivial, quest.frequency, quest.repeatable, quest.isIgnored) then
-                if GossipFrame:IsVisible() and UnitName("npc") then
+                if GossipFrame:IsVisible() and UnitExists("npc") then
                     return C_GossipInfo.SelectAvailableQuest(i)
                 end
            end
@@ -191,14 +191,14 @@ function GOSSIP_SHOW()
         for i = 1, gossipNum do
             local gossip = gossips[i]
             if gossip.type == "gossip" and gossip.name:match(L["config_quest_auto_turn_in_auto_gossip_pattern"]) then
-                if GossipFrame:IsVisible() and UnitName("npc") then
+                if GossipFrame:IsVisible() and UnitExists("npc") then
                     return C_GossipInfo.SelectOption(i)
                 end
             end
         end
 
         -- 是任务npc并且只有一个选项时
-        if GossipFrame:IsVisible() and UnitName("npc") then
+        if GossipFrame:IsVisible() and UnitExists("npc") then
             if gossipNum == 1 and gossips[1].type == "gossip" and IsQuestNpc() then
                 C_GossipInfo.SelectOption(1)
             end
@@ -209,7 +209,7 @@ end
 __SystemEvent__()
 function QUEST_PROGRESS()
     Log(_Name, "QUEST_PROGRESS")
-    if QuestFrame:IsVisible() and UnitName("npc") and CanCompleteQuest(GetQuestID(), IsQuestCompletable()) then
+    if QuestFrame:IsVisible() and UnitExists("npc") and CanCompleteQuest(GetQuestID(), IsQuestCompletable()) then
         CompleteQuest()
     end
 end
@@ -217,7 +217,7 @@ end
 __SystemEvent__()
 function QUEST_COMPLETE()
     Log(_Name, "QUEST_COMPLETE")
-    if QuestFrame:IsVisible() and UnitName("npc")
+    if QuestFrame:IsVisible() and UnitExists("npc")
         and not (GetNumQuestChoices() > 1) then
         GetQuestReward(1)
     end
@@ -233,7 +233,7 @@ function QUEST_GREETING()
         for i = 1, activeNum do
             local questID = GetActiveQuestID(i)
             local _, isComplete = GetActiveTitle(i)
-            if questID and CanCompleteQuest(questID, isComplete) and QuestFrame:IsVisible() and UnitName("npc") then
+            if questID and CanCompleteQuest(questID, isComplete) and QuestFrame:IsVisible() and UnitExists("npc") then
                 return SelectActiveQuest(i)
             end
         end
@@ -244,7 +244,7 @@ function QUEST_GREETING()
         for i = 1, availableNum do
            local isTrivial, frequency, isRepeatable, _, questID = GetAvailableQuestInfo(i)
            if questID and CanAcceptQuest(questID, isTrivial, frequency, isRepeatable) then
-                if QuestFrame:IsVisible() and UnitName("npc") then
+                if QuestFrame:IsVisible() and UnitExists("npc") then
                     return SelectAvailableQuest(i)
                 end
            end
@@ -259,7 +259,7 @@ function QUEST_DETAIL()
     if questID and questID > 0 then
         local frequency = QuestIsWeekly() and QUEST_WEEKLY or (QuestIsDaily() and QUEST_DAILY or QUEST_DEFAULT)
         if CanAcceptQuest(questID, C_QuestLog.IsQuestTrivial(questID), frequency, C_QuestLog.IsRepeatableQuest(questID)) then
-            if QuestFrame and QuestFrame:IsVisible() and UnitName("npc") then
+            if QuestFrame and QuestFrame:IsVisible() and UnitExists("npc") then
                 AcceptQuest()
             end
         end

@@ -8,6 +8,14 @@ interface "OptionItem" (function(_ENV)
     __Abstract__()
     property "ConfigBehavior"
 
+    function SetConfigBehavior(self, behavior)
+        self.ConfigBehavior = behavior
+    end
+
+    function GetConfigBehavior(self)
+        return self.ConfigBehavior
+    end
+
     -- 值变化回调
     function OnValueChange(self,...)
         if self.ConfigBehavior and self.ConfigBehavior.OnValueChange then
@@ -32,7 +40,7 @@ interface "OptionItem" (function(_ENV)
     function Restore(self)
         if self.ConfigBehavior then
             if self.ConfigBehavior.GetValue then
-                self:OnRestore(self.ConfigBehavior.GetValue())
+                self:OnRestore(self.ConfigBehavior:GetValue())
             end
             if self.ConfigBehavior.Restore then
                 return self.ConfigBehavior:Restore()
@@ -99,8 +107,20 @@ class "OptionsCheckButton" (function(_ENV)
     property "ConfigBehavior" {
         type                    = RawTable,
         handler                 = function(self, behavior)
-            if behavior and behavior.GetValue then
-                self:SetChecked(behavior:GetValue())
+            if behavior then
+                if behavior.GetValue then
+                    self:SetChecked(behavior:GetValue())
+                end
+                local Label = self:GetChild("Label")
+                local CharIndicator = self:GetChild("CharIndicator")
+                Label:ClearAllPoints()
+                if behavior.IsCharOption then
+                    CharIndicator:Show()
+                    Label:SetPoint("LEFT", CharIndicator, "RIGHT", 0, 0)
+                else
+                    CharIndicator:Hide()
+                    Label:SetPoint("LEFT", self, "RIGHT", 2, 0)
+                end
             end
         end
     }
@@ -165,12 +185,18 @@ class "OptionsCheckButton" (function(_ENV)
     end
 
     __Template__{
-        Label = UICheckButtonLabel
+        Label         = UICheckButtonLabel,
+        CharIndicator = Texture
     }
     function __ctor(self)
         self.OnEnter = self.OnEnter + OnEnter
         self.OnLeave = self.OnLeave + OnLeave
         self.OnClick = self.OnClick + OnClick
+        local Label = self:GetChild("Label")
+        local CharIndicator = self:GetChild("CharIndicator")
+        CharIndicator:SetPoint("LEFT", self, "RIGHT", 2, 0)
+        CharIndicator:Hide()
+        Label:SetPoint("LEFT", self, "RIGHT", 2, 0)
     end
 end)
 
@@ -199,10 +225,14 @@ Style.UpdateSkin("Default", {
             file                = [[Interface\Buttons\UI-CheckBox-Check-Disabled]],
             setAllPoints        = true,
         },
-        
+
+        CharIndicator           = {
+            file                = [[Interface\Addons\SpaUI\Media\char_indicator]],
+            size                = Size(22, 22)
+        },
+
         Label                   = {
-            fontObject          = GameFontHighlightLeft,
-            location            = { Anchor("LEFT", 2, 0, nil, "RIGHT") },
+            fontObject          = GameFontHighlightLeft
         }
     }
 })
@@ -234,7 +264,11 @@ class "CategoryListButton"(function(_ENV)
 
     function SetCategory(self,category)
         self.category = category
-        self:SetText(category.name)
+        local name = category.name
+        if category.isCharOption then
+            name = L["config_char_indicator"]..name
+        end
+        self:SetText(name)
         local toggle = self:GetChild("Toggle")
         if category.parent then
             self:SetNormalFontObject(GameFontHighlightSmall);
@@ -257,6 +291,13 @@ class "CategoryListButton"(function(_ENV)
         PlaySound(SOUNDKIT.IG_MAINMENU_OPTION_CHECKBOX_ON)
     end
 
+    local function OnDoubleClick(self)
+        if self.Collapsed then
+            PlaySound(SOUNDKIT.IG_MAINMENU_OPTION_CHECKBOX_ON);
+            self.Collapsed = not self.Collapsed
+        end
+    end
+
     local function OnToggleClick(self)
         PlaySound(SOUNDKIT.IG_MAINMENU_OPTION_CHECKBOX_ON);
         local parent = self:GetParent()
@@ -264,10 +305,11 @@ class "CategoryListButton"(function(_ENV)
     end
 
     __Template__{
-        Toggle  =   Button
+        Toggle          = Button
     }
     function __ctor(self)
         self.OnClick = self.OnClick + OnClick
+        self.OnDoubleClick = self.OnDoubleClick + OnDoubleClick
         local toggle = self:GetChild("Toggle")
         toggle.OnClick = toggle.OnClick + OnToggleClick
         self:InstantApplyStyle()
@@ -332,15 +374,24 @@ class "OptionsDropDownMenu" (function(_ENV)
     extend "OptionItem"
 
     -- DropDownMenu GetValue至少需要返回两个参数
+    -- 不要在ConfigBehavior内保存值
     -- return arg1:value
     -- return arg2:text
     property "ConfigBehavior" {
         type                    = RawTable,
         handler                 = function(self, behavior)
             CloseDropDownMenus()
-            if behavior and behavior.GetValue then
-                local _, text = behavior:GetValue()
-                self:SetText(text)
+            if behavior then
+                if behavior.GetValue then
+                    local _, text = behavior:GetValue()
+                    self:SetText(text)
+                end
+                local CharIndicator = self:GetChild("CharIndicator")
+                if behavior.IsCharOption then
+                    CharIndicator:Show()
+                else
+                    CharIndicator:Hide()
+                end
             end
         end
     }
@@ -448,7 +499,8 @@ class "OptionsDropDownMenu" (function(_ENV)
     end
 
     __Template__{
-        Label = FontString
+        Label           = FontString,
+        CharIndicator   = Texture
     }
     function __ctor(self)
         self.OnEnter = self.OnEnter + OnEnter
@@ -458,6 +510,13 @@ class "OptionsDropDownMenu" (function(_ENV)
         UIDropDownMenu_SetAnchor(self, 14, 22)
         UIDropDownMenu_Initialize(self, DropDownInitialize)
         UIDropDownMenu_JustifyText(self,"LEFT")
+
+        local CharIndicator = self:GetChild("CharIndicator")
+        local Label = self:GetChild("Label")
+        CharIndicator:SetTexture[[Interface\Addons\SpaUI\Media\char_indicator]]
+        CharIndicator:SetSize(22, 22)
+        CharIndicator:SetPoint("RIGHT", Label, "LEFT", 0, 0)
+        CharIndicator:Hide()
     end
 
     function __new(_,_,parent,...)
@@ -465,16 +524,213 @@ class "OptionsDropDownMenu" (function(_ENV)
     end
 end)
 
--- 角色配置指示器
-__Sealed__() 
-__ChildProperty__(OptionsDropDownMenu, "CharIndicator")
-class "CharOptionsIndicator" {Texture}
+-- ConfigPanel OptionsSlider
+class "OptionsSlider" (function(_ENV)
+    inherit "Slider"
+    extend "OptionItem"
+
+    property "ConfigBehavior" {
+        type                    = RawTable,
+        handler                 = function(self, behavior)
+            if behavior then
+                if behavior.GetValue then
+                    local value, minRange, maxRange, valueStep = behavior:GetValue()
+                    self:SetValueStep(valueStep)
+                    self:SetMinMaxValues(minRange, maxRange)
+                    self:SetValue(value)
+                end
+                local Label = self:GetChild("Label")
+                local CharIndicator = self:GetChild("CharIndicator")
+                Label:ClearAllPoints()
+                if behavior.IsCharOption then
+                    CharIndicator:Show()
+                    Label:SetPoint("BOTTOM", self, "TOP", 7, -3)
+                else
+                    CharIndicator:Hide()
+                    Label:SetPoint("BOTTOM", self, "TOP", 0, -3)
+                end
+            end
+        end
+    }
+
+    function SetValueStep(self, valueStep)
+        super.SetValueStep(self, valueStep)
+        self._ValueStep = valueStep
+    end
+
+    function GetValueStep(self)
+        return self._ValueStep or super.GetValueStep(self)
+    end
+
+    function SetMinMaxValues(self, minValue, maxValue)
+        super.SetMinMaxValues(self, minValue, maxValue)
+        -- Slider GetValue GetValueStep GetMinMaxValues取出来的浮点数精度太高了
+        self._MinValue = minValue
+        self._MaxValue = maxValue
+        local MinText = self:GetChild("MinText")
+        MinText:SetText(tostring(minValue))
+        local MaxText = self:GetChild("MaxText")
+        MaxText:SetText(tostring(maxValue))
+    end
+
+    function GetMinMaxValues(self)
+        local minValue, maxValue = super.GetMinMaxValues(self)
+        return self._MinValue or minValue, self._MaxValue or maxValue
+    end
+
+    function GetValue(self)
+        local value             = super.GetValue(self)
+        local step              = self:GetValueStep()
+
+        if value and step then
+            local count         = tostring(step):match("%.%d+")
+            count               = count and 10 ^ (#count - 1) or 1
+            return floor(count * value) / count
+        end
+
+        return value
+    end
+
+    local function OnValueChanged(self, value)
+        value = value or 0
+        local valueStep = self:GetValueStep()
+        local factor = 1 / valueStep
+		value = floor(value * factor + 0.5) / factor
+        local Text = self:GetChild("Text")
+        Text:SetText(tostring(value))
+        Text:SetCursorPosition(0)
+        Text:ClearFocus()
+        self:OnValueChange(value)
+    end
+
+    local function OnEnterPressed(self)
+        local Slider = self:GetParent()
+        local minValue, maxValue = self._MinValue, self._MaxValue
+        if not minValue or not maxValue then
+            minValue, maxValue = Slider:GetMinMaxValues()
+        end
+        local value = tonumber(self:GetText()) or Slider:GetValue() or minValue
+        local valueStep = self._ValueStep or Slider:GetValueStep()
+        local factor = 1 / valueStep
+		value = floor(value * factor + 0.5) / factor
+		value = max(minValue, min(maxValue, value))
+		Slider:SetValue(value)
+    end
+
+    local function OnChar(self)
+        self:SetText(self:GetText():gsub('[^%.0-9]+', ''):gsub('(%..*)%.', '%1'))
+    end
+
+    function OnRestore(self, value)
+        self:SetValue(value)
+    end
+
+    function SetEnabled(self, enable)
+        super.SetEnabled(self, enable)
+        local Text = self:GetChild("Text")
+        local MinText = self:GetChild("MinText")
+        local MaxText = self:GetChild("MaxText")
+        local Label = self:GetChild("Label")
+
+        if enable then
+            Label:SetTextColor(NORMAL_FONT_COLOR.r , NORMAL_FONT_COLOR.g , NORMAL_FONT_COLOR.b)
+            Text:SetTextColor(HIGHLIGHT_FONT_COLOR.r, HIGHLIGHT_FONT_COLOR.g, HIGHLIGHT_FONT_COLOR.b)
+            MinText:SetTextColor(HIGHLIGHT_FONT_COLOR.r, HIGHLIGHT_FONT_COLOR.g, HIGHLIGHT_FONT_COLOR.b)
+            MaxText:SetTextColor(HIGHLIGHT_FONT_COLOR.r, HIGHLIGHT_FONT_COLOR.g, HIGHLIGHT_FONT_COLOR.b)
+        else
+            local r, g, b = Color.DISABLED.r, Color.DISABLED.g, Color.DISABLED.b
+            Label:SetTextColor(r, g, b)
+            Text:SetTextColor(r, g, b)
+            MinText:SetTextColor(r, g, b)
+            MaxText:SetTextColor(r, g, b)
+        end
+    end
+
+    local function SetMaxLetters(inputBox, maxLetters)
+        EditBox.SetMaxLetters(inputBox, maxLetters)
+        local text = inputBox:GetText()
+        if text then
+            inputBox:SetText(text:sub(1, maxLetters))
+            inputBox:SetCursorPosition(0)
+        end
+    end
+
+    __Template__{
+        MinText             = FontString,
+        MaxText             = FontString,
+        Text                = InputBox,
+        Label               = FontString,
+        CharIndicator       = Texture
+    }
+    function __ctor(self)
+        self:InstantApplyStyle()
+        self.OnValueChanged = self.OnValueChanged + OnValueChanged
+        local Text = self:GetChild("Text")
+        Text.SetMaxLetters = SetMaxLetters
+        Text.OnEnterPressed = Text.OnEnterPressed + OnEnterPressed
+        Text.OnChar = Text.OnChar + OnChar
+    end
+end)
 
 Style.UpdateSkin("Default", {
-    [CharOptionsIndicator] = {
-        file                        = [[Interface\Addons\SpaUI\Media\char_indicator]],
-        setAllPoints                = true,
-        size                        = Size(22, 22)
+    [OptionsSlider] = {
+        hitRectInsets               = Inset(0, 0, -10, -10),
+        orientation                 = "HORIZONTAL",
+        enableMouse                 = true,
+        size                        = Size(144, 17),
+        backdrop                    = {
+            bgFile                  = "Interface\\Buttons\\UI-SliderBar-Background",
+	        edgeFile                = "Interface\\Buttons\\UI-SliderBar-Border",
+	        tile                    = true,
+	        tileEdge                = true,
+	        tileSize                = 8,
+	        edgeSize                = 8,
+	        insets                  = { left = 3, right = 3, top = 6, bottom = 6 },
+        },
+
+        ThumbTexture                = {
+            file                    = [[Interface\Buttons\UI-SliderBar-Button-Horizontal]],
+            size                    = Size(32, 32),
+        },
+
+        MinText                     = {
+            fontObject              = OptionsFontHighlight,
+            location                = {
+                Anchor("TOPLEFT", -4, 0, nil, "BOTTOMLEFT")
+            }
+        },
+
+        MaxText                     = {
+            fontObject              = OptionsFontHighlight,
+            location                = {
+                Anchor("TOPRIGHT", 4, 0, nil, "BOTTOMRIGHT")
+            }
+        },
+
+        Text                        = {
+            fontObject              = OptionsFontHighlight,
+            location                = {
+                Anchor("TOP", 0, 0, nil, "BOTTOM")
+            },
+            justifyH                = "CENTER"
+        },
+
+        CharIndicator               = {
+            file                    = [[Interface\Addons\SpaUI\Media\char_indicator]],
+            size                    = Size(22, 22),
+            location                = {
+                Anchor("RIGHT", 0, 0, "Label", "LEFT")
+            },
+            visible                 = false
+        },
+
+        Label                       = {
+            fontObject              = GameFontNormalSmall,
+            justifyH                = "CENTER",
+            location                = {
+                Anchor("BOTTOM", 0, -3, nil, "TOP")
+            }
+        }
     }
 })
 

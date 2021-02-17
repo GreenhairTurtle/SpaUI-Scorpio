@@ -16,7 +16,6 @@ function Hide()
     ChangeLogContainer:Hide()
 end
 
-__Async__()
 function OnEnable(self)
     CreateChangeLogContent()
     -- 介绍页
@@ -39,6 +38,7 @@ function OnEnable(self)
 end
 
 -- 加载更新日志
+-- 不考虑复用了，以后只显示最近的10条就好了
 function LoadChangeLogItems()
     if not ChangeLogContent or #ChangeLogContent <= 0 then return end
     local currentSize = ChangeLogContainer.CurrentSize or 0

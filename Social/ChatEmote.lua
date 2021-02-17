@@ -1,15 +1,11 @@
 -- 聊天表情 修改自SimpleChat
-Scorpio "SpaUI.Chat.ChatBar.ChatEmote" ""
+Scorpio "SpaUI.Social.ChatBar.ChatEmote" ""
 
 EMOTE_SIZE = 25
 EMOTE_SIZE_MARGIN = 6
 EMOTE_RAW_SIZE = 8
 ALPHA_PRESS = 0.6
 ALPHA_NORMAL = 1
-local format = format
-local ChatEdit_ChooseBoxForSend = ChatEdit_ChooseBoxForSend
-local GetAllChatBubbles = C_ChatBubbles.GetAllChatBubbles
-local GetCVarBool = C_CVar.GetCVarBool
 
 EMOTES = {
     -- 原版暴雪提供的8个图标
@@ -22,62 +18,62 @@ EMOTES = {
     {L["chat_emote_rt7"], [=[Interface\TargetingFrame\UI-RaidTargetingIcon_7]=]},
     {L["chat_emote_rt8"], [=[Interface\TargetingFrame\UI-RaidTargetingIcon_8]=]},
     -- 自定义表情
-    {L["chat_emote_angle"], [=[Interface\Addons\SpaUI\Chat\emojis\Angel]=]},
-    {L["chat_emote_angry"], [=[Interface\Addons\SpaUI\Chat\emojis\Angry]=]},
-    {L["chat_emote_laugh"], [=[Interface\Addons\SpaUI\Chat\emojis\Biglaugh]=]},
-    {L["chat_emote_applause"], [=[Interface\Addons\SpaUI\Chat\emojis\Clap]=]},
-    {L["chat_emote_cool"], [=[Interface\Addons\SpaUI\Chat\emojis\Cool]=]},
-    {L["chat_emote_cry"], [=[Interface\Addons\SpaUI\Chat\emojis\Cry]=]},
-    {L["chat_emote_lovely"], [=[Interface\Addons\SpaUI\Chat\emojis\Cutie]=]},
-    {L["chat_emote_despise"], [=[Interface\Addons\SpaUI\Chat\emojis\Despise]=]},
-    {L["chat_emote_dream"], [=[Interface\Addons\SpaUI\Chat\emojis\Dreamsmile]=]},
-    {L["chat_emote_embarrassed"],[=[Interface\Addons\SpaUI\Chat\emojis\Embarrass]=]},
-    {L["chat_emote_evil"], [=[Interface\Addons\SpaUI\Chat\emojis\Evil]=]},
-    {L["chat_emote_excited"], [=[Interface\Addons\SpaUI\Chat\emojis\Excited]=]},
-    {L["chat_emote_dizzy"], [=[Interface\Addons\SpaUI\Chat\emojis\Faint]=]},
-    {L["chat_emote_fight"], [=[Interface\Addons\SpaUI\Chat\emojis\Fight]=]},
-    {L["chat_emote_influenza"], [=[Interface\Addons\SpaUI\Chat\emojis\Flu]=]},
-    {L["chat_emote_stay"], [=[Interface\Addons\SpaUI\Chat\emojis\Freeze]=]},
-    {L["chat_emote_frown"], [=[Interface\Addons\SpaUI\Chat\emojis\Frown]=]},
-    {L["chat_emote_salute"], [=[Interface\Addons\SpaUI\Chat\emojis\Greet]=]},
-    {L["chat_emote_grimace"], [=[Interface\Addons\SpaUI\Chat\emojis\Grimace]=]},
-    {L["chat_emote_barking_teeth"],[=[Interface\Addons\SpaUI\Chat\emojis\Growl]=]}, 
-    {L["chat_emote_happy"], [=[Interface\Addons\SpaUI\Chat\emojis\Happy]=]},
-    {L["chat_emote_heart"], [=[Interface\Addons\SpaUI\Chat\emojis\Heart]=]},
-    {L["chat_emote_fear"], [=[Interface\Addons\SpaUI\Chat\emojis\Horror]=]},
-    {L["chat_emote_sick"], [=[Interface\Addons\SpaUI\Chat\emojis\Ill]=]},
-    {L["chat_emote_innocent"],[=[Interface\Addons\SpaUI\Chat\emojis\Innocent]=]},
-    {L["chat_emote_kung_fu"], [=[Interface\Addons\SpaUI\Chat\emojis\Kongfu]=]},
-    {L["chat_emote_anthomaniac"], [=[Interface\Addons\SpaUI\Chat\emojis\Love]=]},
-    {L["chat_emote_mail"], [=[Interface\Addons\SpaUI\Chat\emojis\Mail]=]},
-    {L["chat_emote_makeup"], [=[Interface\Addons\SpaUI\Chat\emojis\Makeup]=]},
-    {L["chat_emote_mario"], [=[Interface\Addons\SpaUI\Chat\emojis\Mario]=]},
-    {L["chat_emote_meditation"],[=[Interface\Addons\SpaUI\Chat\emojis\Meditate]=]},
-    {L["chat_emote_poor"], [=[Interface\Addons\SpaUI\Chat\emojis\Miserable]=]},
-    {L["chat_emote_good"], [=[Interface\Addons\SpaUI\Chat\emojis\Okay]=]},
-    {L["chat_emote_beautiful"], [=[Interface\Addons\SpaUI\Chat\emojis\Pretty]=]},
-    {L["chat_emote_spit"], [=[Interface\Addons\SpaUI\Chat\emojis\Puke]=]},
-    {L["chat_emote_shake_hands"],[=[Interface\Addons\SpaUI\Chat\emojis\Shake]=]}, 
-    {L["chat_emote_yell"], [=[Interface\Addons\SpaUI\Chat\emojis\Shout]=]},
-    {L["chat_emote_shut_up"], [=[Interface\Addons\SpaUI\Chat\emojis\Shuuuu]=]},
-    {L["chat_emote_shy"], [=[Interface\Addons\SpaUI\Chat\emojis\Shy]=]},
-    {L["chat_emote_sleep"], [=[Interface\Addons\SpaUI\Chat\emojis\Sleep]=]},
-    {L["chat_emote_smile"], [=[Interface\Addons\SpaUI\Chat\emojis\Smile]=]},
-    {L["chat_emote_surprised"],[=[Interface\Addons\SpaUI\Chat\emojis\Suprise]=]},
-    {L["chat_emote_failure"],[=[Interface\Addons\SpaUI\Chat\emojis\Surrender]=]}, 
-    {L["chat_emote_sweat"], [=[Interface\Addons\SpaUI\Chat\emojis\Sweat]=]},
-    {L["chat_emote_tears"], [=[Interface\Addons\SpaUI\Chat\emojis\Tear]=]},
-    {L["chat_emote_tragedy"], [=[Interface\Addons\SpaUI\Chat\emojis\Tears]=]},
-    {L["chat_emote_thinking"], [=[Interface\Addons\SpaUI\Chat\emojis\Think]=]},
-    {L["chat_emote_snicker"], [=[Interface\Addons\SpaUI\Chat\emojis\Titter]=]},
-    {L["chat_emote_wretched"], [=[Interface\Addons\SpaUI\Chat\emojis\Ugly]=]},
-    {L["chat_emote_victory"], [=[Interface\Addons\SpaUI\Chat\emojis\Victory]=]},
-    {L["chat_emote_lei_feng"],[=[Interface\Addons\SpaUI\Chat\emojis\Volunteer]=]},
-    {L["chat_emote_injustice"],[=[Interface\Addons\SpaUI\Chat\emojis\Wronged]=]}
+    {L["chat_emote_angle"], [=[Interface\Addons\SpaUI\Social\emojis\Angel]=]},
+    {L["chat_emote_angry"], [=[Interface\Addons\SpaUI\Social\emojis\Angry]=]},
+    {L["chat_emote_laugh"], [=[Interface\Addons\SpaUI\Social\emojis\Biglaugh]=]},
+    {L["chat_emote_applause"], [=[Interface\Addons\SpaUI\Social\emojis\Clap]=]},
+    {L["chat_emote_cool"], [=[Interface\Addons\SpaUI\Social\emojis\Cool]=]},
+    {L["chat_emote_cry"], [=[Interface\Addons\SpaUI\Social\emojis\Cry]=]},
+    {L["chat_emote_lovely"], [=[Interface\Addons\SpaUI\Social\emojis\Cutie]=]},
+    {L["chat_emote_despise"], [=[Interface\Addons\SpaUI\Social\emojis\Despise]=]},
+    {L["chat_emote_dream"], [=[Interface\Addons\SpaUI\Social\emojis\Dreamsmile]=]},
+    {L["chat_emote_embarrassed"],[=[Interface\Addons\SpaUI\Social\emojis\Embarrass]=]},
+    {L["chat_emote_evil"], [=[Interface\Addons\SpaUI\Social\emojis\Evil]=]},
+    {L["chat_emote_excited"], [=[Interface\Addons\SpaUI\Social\emojis\Excited]=]},
+    {L["chat_emote_dizzy"], [=[Interface\Addons\SpaUI\Social\emojis\Faint]=]},
+    {L["chat_emote_fight"], [=[Interface\Addons\SpaUI\Social\emojis\Fight]=]},
+    {L["chat_emote_influenza"], [=[Interface\Addons\SpaUI\Social\emojis\Flu]=]},
+    {L["chat_emote_stay"], [=[Interface\Addons\SpaUI\Social\emojis\Freeze]=]},
+    {L["chat_emote_frown"], [=[Interface\Addons\SpaUI\Social\emojis\Frown]=]},
+    {L["chat_emote_salute"], [=[Interface\Addons\SpaUI\Social\emojis\Greet]=]},
+    {L["chat_emote_grimace"], [=[Interface\Addons\SpaUI\Social\emojis\Grimace]=]},
+    {L["chat_emote_barking_teeth"],[=[Interface\Addons\SpaUI\Social\emojis\Growl]=]}, 
+    {L["chat_emote_happy"], [=[Interface\Addons\SpaUI\Social\emojis\Happy]=]},
+    {L["chat_emote_heart"], [=[Interface\Addons\SpaUI\Social\emojis\Heart]=]},
+    {L["chat_emote_fear"], [=[Interface\Addons\SpaUI\Social\emojis\Horror]=]},
+    {L["chat_emote_sick"], [=[Interface\Addons\SpaUI\Social\emojis\Ill]=]},
+    {L["chat_emote_innocent"],[=[Interface\Addons\SpaUI\Social\emojis\Innocent]=]},
+    {L["chat_emote_kung_fu"], [=[Interface\Addons\SpaUI\Social\emojis\Kongfu]=]},
+    {L["chat_emote_anthomaniac"], [=[Interface\Addons\SpaUI\Social\emojis\Love]=]},
+    {L["chat_emote_mail"], [=[Interface\Addons\SpaUI\Social\emojis\Mail]=]},
+    {L["chat_emote_makeup"], [=[Interface\Addons\SpaUI\Social\emojis\Makeup]=]},
+    {L["chat_emote_mario"], [=[Interface\Addons\SpaUI\Social\emojis\Mario]=]},
+    {L["chat_emote_meditation"],[=[Interface\Addons\SpaUI\Social\emojis\Meditate]=]},
+    {L["chat_emote_poor"], [=[Interface\Addons\SpaUI\Social\emojis\Miserable]=]},
+    {L["chat_emote_good"], [=[Interface\Addons\SpaUI\Social\emojis\Okay]=]},
+    {L["chat_emote_beautiful"], [=[Interface\Addons\SpaUI\Social\emojis\Pretty]=]},
+    {L["chat_emote_spit"], [=[Interface\Addons\SpaUI\Social\emojis\Puke]=]},
+    {L["chat_emote_shake_hands"],[=[Interface\Addons\SpaUI\Social\emojis\Shake]=]}, 
+    {L["chat_emote_yell"], [=[Interface\Addons\SpaUI\Social\emojis\Shout]=]},
+    {L["chat_emote_shut_up"], [=[Interface\Addons\SpaUI\Social\emojis\Shuuuu]=]},
+    {L["chat_emote_shy"], [=[Interface\Addons\SpaUI\Social\emojis\Shy]=]},
+    {L["chat_emote_sleep"], [=[Interface\Addons\SpaUI\Social\emojis\Sleep]=]},
+    {L["chat_emote_smile"], [=[Interface\Addons\SpaUI\Social\emojis\Smile]=]},
+    {L["chat_emote_surprised"],[=[Interface\Addons\SpaUI\Social\emojis\Suprise]=]},
+    {L["chat_emote_failure"],[=[Interface\Addons\SpaUI\Social\emojis\Surrender]=]}, 
+    {L["chat_emote_sweat"], [=[Interface\Addons\SpaUI\Social\emojis\Sweat]=]},
+    {L["chat_emote_tears"], [=[Interface\Addons\SpaUI\Social\emojis\Tear]=]},
+    {L["chat_emote_tragedy"], [=[Interface\Addons\SpaUI\Social\emojis\Tears]=]},
+    {L["chat_emote_thinking"], [=[Interface\Addons\SpaUI\Social\emojis\Think]=]},
+    {L["chat_emote_snicker"], [=[Interface\Addons\SpaUI\Social\emojis\Titter]=]},
+    {L["chat_emote_wretched"], [=[Interface\Addons\SpaUI\Social\emojis\Ugly]=]},
+    {L["chat_emote_victory"], [=[Interface\Addons\SpaUI\Social\emojis\Victory]=]},
+    {L["chat_emote_lei_feng"],[=[Interface\Addons\SpaUI\Social\emojis\Volunteer]=]},
+    {L["chat_emote_injustice"],[=[Interface\Addons\SpaUI\Social\emojis\Wronged]=]}
 }
 
 function OnLoad(self)
-    _Enabled = _Config.Chat.ChatBar.ChatEmote.Enable
+    _Enabled = _Config.Social.ChatBar.ChatEmote.Enable
 end
 
 function OnEnable(self)
@@ -189,7 +185,6 @@ function CreateEmoteTableFrame()
 end
 
 -- 生成表情按钮
-__Async__()
 function CreateChatEmoteButton()
     ChatEmoteButton = Button("SpaUIChatEmoteButton")
     Style[ChatEmoteButton] = {
@@ -197,7 +192,7 @@ function CreateChatEmoteButton()
         location = {Anchor("RIGHT", -CHAT_BAR_BUTTON_MARGIN, 0, ChatBar:GetName() ,"LEFT")},
         alpha = ALPHA_LEAVE,
         normalTexture = {
-            file = [[Interface\Addons\SpaUI\Chat\emojis\greet]],
+            file = [[Interface\Addons\SpaUI\Social\emojis\greet]],
             setAllPoints = true
         }
     }
@@ -237,21 +232,6 @@ function DefaultReplaceEmote(msg)
     return msg
 end
 
--- 替换聊天气泡表情
-function ReplaceChatBubbleEmote()
-    local chatBubbles = GetAllChatBubbles()
-    local frame, text, after
-    for _, v in pairs(chatBubbles) do
-        frame = v:GetChildren()
-        if (frame and frame.String) then
-            text = frame.String:GetText()
-            after = text:gsub("%{.-%}", DefaultReplaceEmote)
-            if (after ~= text) then
-                return frame.String:SetText(after)
-            end
-        end
-    end
-end
 
 -- 启用/禁用气泡消息接收监听
 __AsyncSingle__(true)
@@ -262,7 +242,7 @@ function ChatBubblesMsgEnabled(enable, events)
         local count = 5
         repeat
             Delay(0.1)
-            local chatBubbles = GetAllChatBubbles()
+            local chatBubbles = C_ChatBubbles.GetAllChatBubbles()
             local frame, text, after
             for _, v in pairs(chatBubbles) do
                 frame = v:GetChildren()
@@ -285,8 +265,8 @@ end
 -- 监听聊天气泡设置变更
 __SecureHook__(_G,"InterfaceOptionsDisplayPanelChatBubblesDropDown_SetValue")
 function OnChatBubblesSettingChanged()
-    local chatBubbles = GetCVarBool("chatBubbles")
-    local chatBubblesParty = GetCVarBool("chatBubblesParty")
+    local chatBubbles = C_CVar.GetCVarBool("chatBubbles")
+    local chatBubblesParty = C_CVar.GetCVarBool("chatBubblesParty")
     if chatBubbles or chatBubblesParty then
         local events = {}
         if chatBubbles then

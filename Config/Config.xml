@@ -3,8 +3,10 @@
     <Script file="ConfigPanel.lua"/>
     <Script file="ChangeLog.lua"/>
     <Script file="Introduce.lua"/>
-    <Script file="Chat.lua"/>
 
     <Include file="Features\Features.xml"/>
     <Include file="Quest\Quest.xml"/>
+    <Include file="ActionBar\ActionBar.xml"/>
+    <Include file="Social\Social.xml"/>
+    <Include file="UnitFrames\UnitFrames.xml"/>
 </Ui>

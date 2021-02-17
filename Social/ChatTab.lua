@@ -1,9 +1,10 @@
-Scorpio "SpaUI.Chat.ChatTab" ""
+Scorpio "SpaUI.Social.ChatTab" ""
 
 -- tab切换频道，当既在副本又在非副本的小队或团里时，切换逻辑会较生硬
 -- 符合预期，不准备改好，两个团队频道来回切换也没什么大不了的
-function _G.ChatEdit_CustomTabPressed(self)
-    if not _Config.Chat.ChatTab.Enable then return end
+__SecureHook__()
+function ChatEdit_CustomTabPressed(self)
+    if not _Config.Social.ChatTab.Enable then return end
     local type = self:GetAttribute("chatType")
     if type == "SAY" then
         -- 说切换为大喊

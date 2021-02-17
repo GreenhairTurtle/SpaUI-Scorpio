@@ -179,4 +179,10 @@ function ApplyPaths(paths, description)
         end
         Delay(1)
     end
+    if CursorHasItem() then
+        if count > 0 then
+            local path = paths[count]
+            PickupGuildBankItem(path.desTab, path.desSlot)
+        end
+    end
 end

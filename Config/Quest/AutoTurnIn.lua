@@ -2,7 +2,7 @@ Scorpio "SpaUI.Config.Quest.AutoTurnIn" ""
 
 DefaultCharConfig = {
     Enable                  = true,
-    Auto                    = true,
+    Auto                    = false,
     ModifierKey             = OptionsModifierKey.SHIFT,
     AutoDaily               = false,
     AutoWeekly              = true,
@@ -13,7 +13,7 @@ DefaultCharConfig = {
     AutoTrivialRepeatable   = false
 }
 
-ConfigBehaivors = {
+ConfigBehaviors = {
     GetValue                        = function(self)
         return DBChar.Enable
     end,
@@ -188,7 +188,7 @@ function OnEnable(self)
         },
 
         AutoTurnInModuleEnableButton                    = {
-            configBehavior                              = ConfigBehaivors,
+            configBehavior                              = ConfigBehaviors,
             location                                    = {
                 Anchor("TOPLEFT", -3, -5, "AutoTurnInTitle", "BOTTOMLEFT")
             },
@@ -199,7 +199,7 @@ function OnEnable(self)
             },
 
             AutoTurnInEnableButton                      = {
-                configBehavior                          = ConfigBehaivors.AutoTurnIn,
+                configBehavior                          = ConfigBehaviors.AutoTurnIn,
                 location                                = {
                     Anchor("LEFT"),
                     Anchor("TOP", 0, -10, "$parent.$parent.Line1", "BOTTOM")
@@ -214,7 +214,7 @@ function OnEnable(self)
                 location                                = {
                     Anchor("TOPLEFT", -13, -30, "AutoTurnInEnableButton", "BOTTOMLEFT"),
                 },
-                configBehavior                          = ConfigBehaivors.ModifierKey,
+                configBehavior                          = ConfigBehaviors.ModifierKey,
                 dropDownMenuWidth                       = 120,
                 displayTextJustifyH                     = "RIGHT",
                 tooltipText                             = L["config_quest_auto_turn_in_enable_key_tooltip"],
@@ -243,7 +243,7 @@ function OnEnable(self)
             },
 
             AutoWeeklyEnableButton                      = {
-                configBehavior                          = ConfigBehaivors.AutoWeekly,
+                configBehavior                          = ConfigBehaviors.AutoWeekly,
                 location                                = {
                     Anchor("LEFT"),
                     Anchor("TOP", 0, -10, "$parent.$parent.Line2", "BOTTOM")
@@ -255,7 +255,7 @@ function OnEnable(self)
             },
 
             AutoDailyEnableButton                       = {
-                configBehavior                          = ConfigBehaivors.AutoDaily,
+                configBehavior                          = ConfigBehaviors.AutoDaily,
                 location                                = {
                     Anchor("TOP", 0, -10, "$parent.$parent.Line2", "BOTTOM")
                 },
@@ -266,7 +266,7 @@ function OnEnable(self)
             },
 
             AutoRepeatableEnableButton                  = {
-                configBehavior                          = ConfigBehaivors.AutoRepeatable,
+                configBehavior                          = ConfigBehaviors.AutoRepeatable,
                 location                                = {
                     Anchor("TOPLEFT", 0, -10, "AutoWeeklyEnableButton", "BOTTOMLEFT")
                 },
@@ -277,7 +277,7 @@ function OnEnable(self)
             },
 
             AutoTrivialEnableButton                     = {
-                configBehavior                          = ConfigBehaivors.AutoTrivial,
+                configBehavior                          = ConfigBehaviors.AutoTrivial,
                 location                                = {
                     Anchor("LEFT"),
                     Anchor("TOP", 0, -10, "$parent.$parent.Line3", "BOTTOM")
@@ -289,7 +289,7 @@ function OnEnable(self)
                 },
 
                 AutoTrivialWeeklyEnableButton           = {
-                    configBehavior                      = ConfigBehaivors.AutoTrivialWeekly,
+                    configBehavior                      = ConfigBehaviors.AutoTrivialWeekly,
                     location                            = {
                         Anchor("TOP", 0, -10, "$parent.$parent.$parent.Line3", "BOTTOM")
                     },
@@ -300,7 +300,7 @@ function OnEnable(self)
                 },
 
                 AutoTrivialDailyEnableButton            = {
-                    configBehavior                      = ConfigBehaivors.AutoTrivialDaily,
+                    configBehavior                      = ConfigBehaviors.AutoTrivialDaily,
                     location                            = {
                         Anchor("TOPLEFT", 0, -10, nil, "BOTTOMLEFT")
                     },
@@ -311,7 +311,7 @@ function OnEnable(self)
                 },
 
                 AutoTrivialRepeatableEnableButton       = {
-                    configBehavior                      = ConfigBehaivors.AutoTrivialRepeatable,
+                    configBehavior                      = ConfigBehaviors.AutoTrivialRepeatable,
                     location                            = {
                         Anchor("TOPLEFT", 0, -10, "AutoTrivialWeeklyEnableButton", "BOTTOMLEFT")
                     },

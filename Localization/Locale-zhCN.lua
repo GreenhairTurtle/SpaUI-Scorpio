@@ -7,6 +7,7 @@ if not L then return end
 L["addon_name"] = "|cFF00FFFFS|r|cFFFFC0CBp|r|cFFFF6347a|rUI"
 L["addon_loaded_tip"] = "|cFF00BFFF%s|r 已载入，你可以输入|cFF00BFFF/spa|r获取帮助"
 L["debug_prefix"] = L["addon_name"].." Debug:"
+L["error_prefix"] = L["addon_name"].." 错误:"
 L["message_format"] = L["addon_name"]..":%s"
 L["minute_format"] = "%d分"
 L["second_format"] = "%d秒"
@@ -69,7 +70,7 @@ L["config_category_features_easy_delete_tooltip"] = "删除物品时自动填写
 
 
 -- Config AutoSell&Repair
-L["config_category_features_auto_sell_repair"] = L["config_char_indicator"].."自动修理/出售"
+L["config_category_features_auto_sell_repair"] = "自动修理/出售"
 L["config_features_auto_repair"] = "自动修理"
 L["config_features_auto_repair_strategy"] = "修理方案："
 L["config_features_auto_repair_strategy_guild"] = "使用公会修理"
@@ -82,8 +83,8 @@ L["config_features_auto_sell"] = "自动出售"
 L["config_features_auto_sell_junk"] = "自动出售垃圾"
 
 
--- Config Chat
-L["config_category_chat"] = "聊天"
+-- Config Social
+L["config_category_social"] = "社交"
 L["config_chat_enhanced"] = "聊天增强"
 L["config_chat_bar"] = "聊天栏"
 L["config_chat_bar_tooltip"] = "启用/禁用聊天栏"
@@ -94,11 +95,13 @@ L["config_chat_linktip_tooltip"] = "启用/禁用聊天链接悬浮鼠标提示"
 L["config_chat_tab"] = "快捷切换频道"
 L["config_chat_tab_tooltip"] = "启用/禁用Tab快速切换频道"
 
+
 -- Config Quest
 L["config_category_quest"] = "任务"
 
+
 -- Config AutoTurnIn
-L["config_category_quest_auto_turn_in"] = L["config_char_indicator"].."自动交接任务"
+L["config_category_quest_auto_turn_in"] = "自动交接任务"
 L["config_quest_auto_turn_in_title"] = "自动交接任务"
 L["config_quest_auto_turn_in_module_enable_tooltip"] = "启用/禁用自动交接任务模块\n|cFFFFFFFF禁用此模块会带来微不足道的性能提升|r"
 L["config_quest_auto_turn_in_enable_tooltip"] = "打开/关闭自动交接任务"
@@ -113,6 +116,61 @@ L["config_quest_auto_turn_in_auto_trivial_daily"] = "接受日常任务"
 L["config_quest_auto_turn_in_auto_trivial_repeatable"] = "接受可重复任务"
 -- 带有(任务)标题的选项直接点击，翻译的时候需要在具体的客户端用 C_GossipInfo.GetOptions()来查看对应字符串
 L["config_quest_auto_turn_in_auto_gossip_pattern"] = "\124cFF0000FF%(任务%)\124r"
+
+
+-- Config ActionBar
+L["config_category_actionbar"] = "动作条"
+L["config_actionbar_mainbar"] = "主动作条"
+L["config_actionbar_microbuttons_bagsbar"] = "微型菜单和背包栏"
+L["config_actionbar_multibar_right"] = "右边动作条"
+L["config_actionbar_multibar_left"] = "右边动作条2"
+L["config_actionbar_title"] = "动作条增强"
+L["config_actionbar_out_of_range_color"] = "动作条超出距离染色"
+
+
+-- Config ActionBar Visibility
+L["config_category_actionbar_visibility"] = "可见性"
+L["config_actionbar_visibility_description"] = "当条件满足或不满足时应用样式内对应的更改"
+L["config_actionbar_visibility_actionbar_dropdown_label"] = "选择动作条"
+L["config_actionbar_visibility_mainbar_tooltip"] = "主动作条包括左下方动作条、右下方动作条、宠物动作条及姿态条"
+L["config_actionbar_visibility_style_title"] = "样式"
+L["config_actionbar_visibility_conditional_opacity"] = "条件达成时不透明度"
+L["config_actionbar_visibility_normal_opacity"] = "一般情况不透明度"
+L["config_actionbar_visibility_fade_animation"] = "淡入淡出"
+L["config_actionbar_visibility_fade_duration"] = "淡入淡出时间(秒)"
+L["config_actionbar_visibility_fade_animation_tooltip"] = "当不透明度改变时使用过渡动画"
+L["config_actionbar_visibility_conditional_title"] = "条件"
+L["config_actionbar_visibility_condiation_incombat"] = "在战斗中"
+L["config_actionbar_visibility_condiation_ininstance"] = "在副本中"
+-- L["config_actionbar_visibility_condiation_ismouseover"] = "鼠标划入"
+L["config_actionbar_visibility_condiation_hastarget"] = "拥有目标"
+L["config_actionbar_visibility_condiation_target_canattack"] = "目标可攻击"
+
+
+-- Config UnitFrames
+L["config_category_unitframes"] = "单位框体"
+L["config_unitframes_player"] = "玩家框体"
+L["config_unitframes_pet"] = "宠物框体"
+L["config_unitframes_target"] = "目标框体"
+L["config_unitframes_focus"] = "焦点框体"
+
+
+-- Config UnitFrames Visibility
+L["config_category_unitframes_visibility"] = "可见性"
+L["config_unitframes_visibility_description"] = "当条件满足或不满足时应用样式内对应的更改"
+L["config_unitframes_visibility_style_title"] = "样式"
+L["config_unitframes_visibility_conditional_title"] = "条件"
+L["config_unitframes_visibility_unitframes_dropdown_label"] = "选择框体"
+L["config_unitframes_visibility_fade_animation_tooltip"] = "当不透明度改变时使用过渡动画"
+L["config_unitframes_visibility_fade_animation"] = "淡入淡出"
+L["config_unitframes_visibility_fade_duration"] = "淡入淡出时间(秒)"
+L["config_unitframes_visibility_conditional_opacity"] = "条件达成时不透明度"
+L["config_unitframes_visibility_normal_opacity"] = "一般情况不透明度"
+L["config_unitframes_visibility_condiation_incombat"] = "在战斗中"
+L["config_unitframes_visibility_condiation_ininstance"] = "在副本中"
+-- L["config_unitframes_visibility_condiation_ismouseover"] = "鼠标划入"
+L["config_unitframes_visibility_condiation_hastarget"] = "拥有目标"
+
 
 -- AutoRepair
 L["auto_repair_guild_cost"] = "|cfff07100你本次修理消耗公会资金: %s|r"
@@ -259,7 +317,7 @@ L['ej_savedinstance_boss_not_killed'] = "|cFF00FF00未击杀|r"
 
 
 -- Quest
-L["auto_quest_turnin_button_tooltip"] = "自动交接任务开关\n开启后按住Shift键可以暂时屏蔽"
+L["auto_quest_turnin_button_tooltip"] = "自动交接任务开关\n开启后按住%s可以暂时屏蔽"
 
 
 -- CooldownAnnouncer
@@ -301,3 +359,6 @@ L["guild_bank_transfer_to_other_tab_retrive_data"] = "正在获取目标标签�
 L["guild_bank_transfer_to_other_tab_full"] = "目标标签页没有空栏位？"
 L["guild_bank_transfer_to_other_tab_description"] = "正在转移物品(%d/%d)"
 L["guild_bank_transfer_to_other_tab_confirm"] = "确定转移物品至|T%s:15|t%s（第%d页）？"
+
+-- ReputationParagonBar
+L["reputation_paragon_standing_text"] = "典范"

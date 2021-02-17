@@ -1,11 +1,10 @@
-Scorpio "SpaUI.Chat" ""
+Scorpio "SpaUI.Social" ""
 
 BIG_FOOT_CHANNEL_NAME = "大脚世界频道"
-local GetNumActiveChannels = C_ChatInfo.GetNumActiveChannels
 
 -- 找到大脚世界频道的频道id
 function GetWorldChannelID()
-    local num = GetNumActiveChannels()
+    local num = C_ChatInfo.GetNumActiveChannels()
     for i = 1, num do
         local _, name = GetChannelName(i)
         if name == BIG_FOOT_CHANNEL_NAME then return i end

@@ -8,7 +8,7 @@ DefaultConfig = {
     }
 }
 
-ConfigBehaivors = {
+ConfigBehaviors = {
     EasyDelete                              = {
         Default                             = {
             Enable                          = true
@@ -88,7 +88,7 @@ function OnEnable(self)
         },
 
         EasyDeleteEnableButton          = {
-            configBehavior              = ConfigBehaivors.EasyDelete,
+            configBehavior              = ConfigBehaviors.EasyDelete,
             tooltipText                 = L["config_category_features_easy_delete_tooltip"],
             location                    = {
                 Anchor("TOPLEFT", -3, -5, "FeaturesTitle", "BOTTOMLEFT")

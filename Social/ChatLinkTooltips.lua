@@ -1,5 +1,5 @@
 -- 来源于插件开发教程及翻译 https://bbs.nga.cn/read.php?tid=24295645
-Scorpio "SpaUI.Chat.ChatLinkTooltips" ""
+Scorpio "SpaUI.Social.ChatLinkTooltips" ""
 
 ShowTooltipTypes = {
     item                = true,
@@ -17,7 +17,7 @@ ShowTooltipTypes = {
 }
 
 function ShowTooltip(frame, link)
-    if _Config.Chat.ChatLinkTooltips.Enable and link then
+    if _Config.Social.ChatLinkTooltips.Enable and link then
         local type = strsplit(":", link)
         if ShowTooltipTypes[type] then
             GameTooltip:SetOwner(frame, "ANCHOR_CURSOR")

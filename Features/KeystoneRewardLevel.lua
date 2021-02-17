@@ -35,7 +35,6 @@ function IsFirstWeek()
     return GetServerTime() < time(dateTable)
 end
 
-__AsyncSingle__()
 function CreateRewardFrames()
     if not ChallengesFrame then 
         Log("ChallengesFrame is nil")
@@ -121,7 +120,6 @@ function CreateRewardFrames()
     ChallengesFrame:HookScript("OnShow",UpdateCurrentReward)
 end
 
-__Async__()
 function UpdateCurrentReward()
     if not RewardContainer then return end
     RewardContainer:Show()

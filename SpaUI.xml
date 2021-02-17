@@ -7,8 +7,12 @@
     <Include file="Config\Config.xml"/>
     <!-- Features -->
     <Include file="Features\Features.xml"/>
-    <!-- Chat -->
-    <Include file="Chat\Chat.xml"/>
+    <!-- Social -->
+    <Include file="Social\Social.xml"/>
     <!-- Quest -->
     <Include file="Quest\Quest.xml"/>
+    <!-- ActionBar -->
+    <Include file="ActionBar\ActionBar.xml"/>
+    <!-- UnitFrames -->
+    <Include file="UnitFrames\UnitFrames.xml"/>
 </Ui>
