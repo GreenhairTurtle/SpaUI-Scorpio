@@ -60,7 +60,7 @@ function Log(...)
     end
 end
 
-function Error(...)
+function ShowError(...)
     print(L["error_prefix"], ...)
 end
 

@@ -340,7 +340,7 @@ function SetMovableForNeedWaitFrames()
                 if addonFrame then
                     Style[_G[k]] = v
                 else
-                    Error(addon.." set movable error, frame name:"..k)
+                    ShowError(addon.." set movable error, frame name:"..k)
                 end
             end
             MovableFramesNeedWait[addon] = nil
@@ -357,7 +357,7 @@ function SetMovableForNeedWaitFrames()
                 if addonFrame then
                     Style[_G[k]] = v
                 else
-                    Error(addon.." set movable error, frame name:"..k)
+                    ShowError(addon.." set movable error, frame name:"..k)
                 end
             end
             MovableFramesNeedWait[addon] = nil
