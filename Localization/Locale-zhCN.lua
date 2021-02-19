@@ -149,10 +149,9 @@ L["config_actionbar_visibility_condiation_target_canattack"] = "目标可攻击"
 
 -- Config UnitFrames
 L["config_category_unitframes"] = "单位框体"
-L["config_unitframes_player"] = "玩家框体"
-L["config_unitframes_pet"] = "宠物框体"
-L["config_unitframes_target"] = "目标框体"
-L["config_unitframes_focus"] = "焦点框体"
+L["config_unitframes_player"] = "玩家"
+L["config_unitframes_target"] = "目标"
+L["config_unitframes_focus"] = "焦点"
 
 
 -- Config UnitFrames Visibility
@@ -169,7 +168,6 @@ L["config_unitframes_visibility_normal_opacity"] = "一般情况不透明度"
 L["config_unitframes_visibility_condiation_incombat"] = "在战斗中"
 L["config_unitframes_visibility_condiation_ininstance"] = "在副本中"
 -- L["config_unitframes_visibility_condiation_ismouseover"] = "鼠标划入"
-L["config_unitframes_visibility_condiation_hastarget"] = "拥有目标"
 
 
 -- AutoRepair

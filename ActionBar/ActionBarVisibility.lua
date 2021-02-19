@@ -243,8 +243,13 @@ function PLAYER_REGEN_ENABLED()
     OnConditionChanged(false)
 end
 
+__SystemEvent__()
+function PLAYER_ENTERING_WORLD()
+    OnConditionChanged()
+end
+
 -- 条件变更时回调
-__SystemEvent__ "PLAYER_TARGET_CHANGED" "PLAYER_ENTERING_WORLD" "UPDATE_OVERRIDE_ACTIONBAR"
+__SystemEvent__ "PLAYER_TARGET_CHANGED" "UPDATE_OVERRIDE_ACTIONBAR"
 function OnConditionChanged(inCombat, bar, isEnter)
     if not OpacityInfos then return end
     inCombat = inCombat or InCombatLockdown()

@@ -19,21 +19,6 @@ DefaultConfig                   = {
         FadeAnimate             = true,
 
         Condition               = {
-            HasTarget           = false,
-            InCombat            = true,
-            InInstance          = true
-        }
-    },
-
-    -- 宠物框体
-    PetFrame                    = {
-        OpacityConditional      = 100,
-        OpacityNormal           = 30,
-        FadeDuration            = 1,
-        FadeAnimate             = true,
-
-        Condition               = {
-            HasTarget           = false,
             InCombat            = true,
             InInstance          = true
         }
@@ -47,7 +32,6 @@ DefaultConfig                   = {
         FadeAnimate             = true,
 
         Condition               = {
-            HasTarget           = false,
             InCombat            = true,
             InInstance          = true
         }
@@ -61,7 +45,6 @@ DefaultConfig                   = {
         FadeAnimate             = true,
 
         Condition               = {
-            HasTarget           = false,
             InCombat            = true,
             InInstance          = true
         }
@@ -137,23 +120,6 @@ ConfigBehaviors = {
         },
 
         Condition               = {
-            HasTarget           = {
-                GetValue        = function(self)
-                    return DB.PlayerFrame.Condition.HasTarget
-                end,
-                OnValueChange   = function(self, value)
-                    DB.PlayerFrame.Condition.HasTarget = value
-                end
-            },
-
-            TargetCanAttack     = {
-                GetValue        = function(self)
-                    return DB.PlayerFrame.Condition.TargetCanAttack
-                end,
-                OnValueChange   = function(self, value)
-                    DB.PlayerFrame.Condition.TargetCanAttack = value
-                end
-            },
 
             InCombat            = {
                 GetValue        = function(self)
@@ -170,83 +136,6 @@ ConfigBehaviors = {
                 end,
                 OnValueChange   = function(self, value)
                     DB.PlayerFrame.Condition.InInstance = value
-                end
-            }
-        },
-    },
-
-    -- 宠物框体
-    PetFrame                    = {
-        OpacityConditional      = {
-            GetValue            = function(self)
-                return DB.PetFrame.OpacityConditional, UNITFRAMES_MIN_OPACITY, UNITFRAMES_MAX_OPACITY, UNITFRAMES_OPACITY_STEP
-            end,
-            OnValueChange       = function(self, value)
-                DB.PetFrame.OpacityConditional = value
-            end
-        },
-
-        OpacityNormal           = {
-            GetValue            = function(self)
-                return DB.PetFrame.OpacityNormal, UNITFRAMES_MIN_OPACITY, UNITFRAMES_MAX_OPACITY, UNITFRAMES_OPACITY_STEP
-            end,
-            OnValueChange       = function(self, value)
-                DB.PetFrame.OpacityNormal = value
-            end
-        },
-
-        FadeAnimate             = {
-            GetValue            = function(self)
-                return DB.PetFrame.FadeAnimate
-            end,
-            OnValueChange       = function(self, value)
-                DB.PetFrame.FadeAnimate = value
-            end
-        },
-
-        FadeDuration            = {
-            GetValue            = function(self)
-                return DB.PetFrame.FadeDuration, UNITFRAMES_FADE_DURATION_MIN, UNITFRAMES_FADE_DURATION_MAX, UNITFRAMES_FADE_DURATION_STEP
-            end,
-            OnValueChange       = function(self, value)
-                DB.PetFrame.FadeDuration = value
-            end
-        },
-
-        Condition               = {
-            HasTarget           = {
-                GetValue        = function(self)
-                    return DB.PetFrame.Condition.HasTarget
-                end,
-                OnValueChange   = function(self, value)
-                    DB.PetFrame.Condition.HasTarget = value
-                end
-            },
-
-            TargetCanAttack     = {
-                GetValue        = function(self)
-                    return DB.PetFrame.Condition.TargetCanAttack
-                end,
-                OnValueChange   = function(self, value)
-                    DB.PetFrame.Condition.TargetCanAttack = value
-                end
-            },
-
-            InCombat            = {
-                GetValue        = function(self)
-                    return DB.PetFrame.Condition.InCombat
-                end,
-                OnValueChange   = function(self, value)
-                    DB.PetFrame.Condition.InCombat = value
-                end
-            },
-
-            InInstance          = {
-                GetValue        = function(self)
-                    return DB.PetFrame.Condition.InInstance
-                end,
-                OnValueChange   = function(self, value)
-                    DB.PetFrame.Condition.InInstance = value
                 end
             }
         },
@@ -291,23 +180,6 @@ ConfigBehaviors = {
         },
 
         Condition               = {
-            HasTarget           = {
-                GetValue        = function(self)
-                    return DB.TargetFrame.Condition.HasTarget
-                end,
-                OnValueChange   = function(self, value)
-                    DB.TargetFrame.Condition.HasTarget = value
-                end
-            },
-
-            TargetCanAttack     = {
-                GetValue        = function(self)
-                    return DB.TargetFrame.Condition.TargetCanAttack
-                end,
-                OnValueChange   = function(self, value)
-                    DB.TargetFrame.Condition.TargetCanAttack = value
-                end
-            },
 
             InCombat            = {
                 GetValue        = function(self)
@@ -368,23 +240,6 @@ ConfigBehaviors = {
         },
 
         Condition               = {
-            HasTarget           = {
-                GetValue        = function(self)
-                    return DB.FocusFrame.Condition.HasTarget
-                end,
-                OnValueChange   = function(self, value)
-                    DB.FocusFrame.Condition.HasTarget = value
-                end
-            },
-
-            TargetCanAttack     = {
-                GetValue        = function(self)
-                    return DB.FocusFrame.Condition.TargetCanAttack
-                end,
-                OnValueChange   = function(self, value)
-                    DB.FocusFrame.Condition.TargetCanAttack = value
-                end
-            },
 
             InCombat            = {
                 GetValue        = function(self)
@@ -440,8 +295,6 @@ function OnEnable(self)
     FontString("UnitFramesVisibilityConditionalTitle", UnitFramesVisibilityContainer)
     ConditionInCombatButton = OptionsCheckButton("ConditionInCombatButton", UnitFramesVisibilityEnableButton)
     ConditionInInstanceButton = OptionsCheckButton("ConditionInInstanceButton", UnitFramesVisibilityEnableButton)
-    ConditionHasTargetButton = OptionsCheckButton("ConditionHasTargetButton", UnitFramesVisibilityEnableButton)
-    ConditionTargetCanAttackButton = OptionsCheckButton("ConditionTargetCanAttackButton", ConditionHasTargetButton)
     
     OnUnitFrameSelectedChanged()
 
@@ -540,10 +393,6 @@ function OnEnable(self)
                         value                                               = UNITFRAME_PLAYER
                     },
                     {
-                        text                                                = L["config_unitframes_pet"],
-                        value                                               = UNITFRAME_PET
-                    },
-                    {
                         text                                                = L["config_unitframes_target"],
                         value                                               = UNITFRAME_TARGET
                     },
@@ -637,16 +486,6 @@ function OnEnable(self)
                 Label                                                       = {
                     text                                                    = L["config_unitframes_visibility_condiation_ininstance"]
                 }
-            },
-
-            ConditionHasTargetButton                                        = {
-                location                                                    = {
-                    Anchor("TOPLEFT", 0, -10, "ConditionInInstanceButton", "BOTTOMLEFT"),
-                },
-                
-                Label                                                       = {
-                    text                                                    = L["config_unitframes_visibility_condiation_hastarget"]
-                }
             }
         }
     }
@@ -670,6 +509,4 @@ function OnUnitFrameSelectedChanged()
     UnitFramesNormalOpacitySlider:SetConfigBehavior(behavior.OpacityNormal)
     ConditionInCombatButton:SetConfigBehavior(behavior.Condition.InCombat)
     ConditionInInstanceButton:SetConfigBehavior(behavior.Condition.InInstance)
-    ConditionHasTargetButton:SetConfigBehavior(behavior.Condition.HasTarget)
-    ConditionTargetCanAttackButton:SetConfigBehavior(behavior.Condition.TargetCanAttack)
 end

@@ -2,16 +2,13 @@ Scorpio "SpaUI.Config.UnitFrames" ""
 
 -- 玩家框体
 UNITFRAME_PLAYER = 1
--- 宠物框体
-UNITFRAME_PET = 2
 -- 目标框体
-UNITFRAME_TARGET = 3
+UNITFRAME_TARGET = 2
 -- 焦点框体
-UNITFRAME_FOCUS = 4
+UNITFRAME_FOCUS = 3
 
 UNITFRAMES                                     = {
     [UNITFRAME_PLAYER]                         = L["config_unitframes_player"],
-    [UNITFRAME_PET]                            = L["config_unitframes_pet"],
     [UNITFRAME_TARGET]                         = L["config_unitframes_target"],
     [UNITFRAME_FOCUS]                          = L["config_unitframes_focus"]
 }
