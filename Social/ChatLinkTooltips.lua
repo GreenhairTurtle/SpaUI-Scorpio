@@ -13,7 +13,7 @@ ShowTooltipTypes = {
     mawpower            = true,--心能
     keystone            = true,--钥石
     currency            = true,
-    conduit             = true --导灵器
+    conduit             = true,--导灵器
 }
 
 function ShowTooltip(frame, link)

@@ -1,5 +1,5 @@
 -- 参考了NDUI
-Scorpio "SpaUI.Features.TradeTabs" ""
+Scorpio "SpaUI.Features.TradeSkill.TradeTabs" ""
 
 -- 需要去重的专业技能
 SkillLineNeedDistinct = {

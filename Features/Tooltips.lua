@@ -60,7 +60,7 @@ GameTooltip:HookScript("OnTooltipSetUnit", function(self)
     if unit then
         local guid = UnitGUID(unit) or ""
         local id = GetNpcID(guid)
-        if id and guid:match("%a+") ~= "Player" then
+        if id and not UnitIsPlayer(unit) then
             AddLine(GameTooltip, id, NpcIDPrefix)
         end
     end

@@ -32,10 +32,6 @@ function MERCHANT_SHOW()
             end
         end
     end
-
-    if total > 0 then
-        ShowMessage(string.format(L["auto_sell_total"], GetCoinTextureString(total)))
-    end
-
+    
     Delay(SELL_INTERVAL)
 end

@@ -169,7 +169,7 @@ end
 struct "ChinaDate" {
     { name = "month",           type = Number, require = true },
     { name = "day",             type = Number, require = true },
-    { name = "dayDes",          type = NEStrings, default = nil },
+    { name = "dayDes",          type = struct { NEString } , default = nil },
     { name = "rest",            type = Boolean, default = false },
     { name = "work",            type = Boolean, default = false }
 }

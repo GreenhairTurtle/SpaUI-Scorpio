@@ -14,9 +14,9 @@ function MERCHANT_SHOW()
     -- 不使用自动修理
     if RepairStrategy == AutoRepairConfig.NONE then return end
     if CanMerchantRepair() then
-        local cost , canRepair = GetRepairAllCost()
+        local cost, canRepair = GetRepairAllCost()
         if canRepair then
-            if RepairStrategy == AutoRepairConfig.GUILD and IsInGuild() and CanGuildBankRepair() and GetGuildBankWithdrawMoney() >= cost then
+            if RepairStrategy == AutoRepairConfig.GUILD and IsInGuild() and CanGuildBankRepair() and  GetGuildBankWithdrawMoney() >= cost and GetGuildBankMoney() >= cost then
                 RepairAllItems(true)
                 ShowMessage(format(L["auto_repair_guild_cost"],GetCoinTextureString(cost)))
             else

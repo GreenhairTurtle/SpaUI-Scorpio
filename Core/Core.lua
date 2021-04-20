@@ -5,8 +5,6 @@ L = _Locale
 
 namespace "SpaUI"
 
-struct "NEStrings" { NEString }
-
 function OnLoad(self)
     ScorpioVersion = GetAddOnMetadata("Scorpio","version")
     AddonVersion = GetAddOnMetadata(addonName,"version")
@@ -18,27 +16,11 @@ function OnLoad(self)
     C_CVar.SetCVar("taintLog", 2)
 end
 
+
 -- 简化/reload
 __SlashCmd__ "rl"
 function Reload()
     ReloadUI()
-end
-
--- 字符串染色
-__Arguments__{
-    Variable("text", NEString),
-    Variable("r",ColorFloat),
-    Variable("g",ColorFloat),
-    Variable("b",ColorFloat),
-    Variable("a",ColorFloat,true,1)
-}
-function ColorText(text,r,g,b,a)
-    return Color(r,g,b,a)..text..Color.CLOSE
-end
-
-__Arguments__{Color, NEString}
-function FormatText(color, text)
-    return color..text..Color.CLOSE
 end
 
 -- 显示红字错误
@@ -62,15 +44,6 @@ end
 
 function ShowError(...)
     print(L["error_prefix"], ...)
-end
-
-function GetNpcID(guid)
-    return tonumber(strmatch((guid or ""), "%-(%d-)%-%x-$"))
-end
-
--- 是否为中国区
-function IsChinaRegion()
-    return GetCurrentRegion() == 5
 end
 
 -- 打印table

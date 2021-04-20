@@ -13,12 +13,9 @@ end
 function OnEnable(self)
     -- create item link container
     EasyDeleteLink = FontString("SpaUIEasyDeleteLink", StaticPopup1)
-
-    Style[EasyDeleteLink] = {
-        fontobject = GameFontHighlight,
-        location   = {Anchor("CENTER", 0, -5)},
-        visible    = false
-    }
+    EasyDeleteLink:SetFontObject(GameFontHighlight)
+    EasyDeleteLink:SetPoint("CENTER", 0, -5)
+    EasyDeleteLink:Hide()
 
     StaticPopup1:HookScript('OnHide',function(self) EasyDeleteLink:Hide() end)
 end

@@ -31,12 +31,14 @@ function InitActionBars()
         end
     end
 
+    -- 背包和微型菜单按钮
     for _, button in ipairs(MicroButtonsBarWidgets) do
         if button then
-            MicroButtonAndBagsBar:HookScript("OnEnter", OnMicroButtonAndBagsBarEnter)
-            MicroButtonAndBagsBar:HookScript("OnLeave", OnMicroButtonAndBagsBarLeave)
+            button:HookScript("OnEnter", OnMicroButtonAndBagsBarEnter)
+            button:HookScript("OnLeave", OnMicroButtonAndBagsBarLeave)
         end
     end
+    
 
     -- MainActionBar
     for _, button in ipairs(MainBarWidgets) do
@@ -206,7 +208,7 @@ function OnOpacityConditionChanged(opacityInfo, inCombat, inInstance, hasTarget,
     if isEnter or HasOverrideActionBar() or (HasVehicleActionBar() and not IsPossessBarVisible()) then
         ToAlpha = 1
     elseif (inCombat and opacityInfo.Condition.InCombat) or (inInstance and opacityInfo.Condition.InInstance) then
-        ToAlpha = opacityInfo.Config.OpacityConditional
+        ToAlpha = opacityInfo.Config.OpacityConditional/100
     elseif hasTarget and opacityInfo.Condition.HasTarget then
         if opacityInfo.Condition.TargetCanAttack then
             if targetCanAttack then
@@ -256,7 +258,6 @@ function OnConditionChanged(inCombat, bar, isEnter)
     local inInstance = IsInInstance()
     local hasTarget = UnitExists("target") and not UnitIsDeadOrGhost("target")
     local targetCanAttack = UnitCanAttack("player", "target")
-
     -- Log("OnConditionChanged", inCombat, inInstance, hasTarget, targetCanAttack)
     local needChange = false
     for _, opacityInfo in pairs(OpacityInfos) do
@@ -274,7 +275,7 @@ end
 -- 不透明度是否已经应用完成
 function OpacityIsChangingDone(opacityInfo)
     local current = opacityInfo.CurrentAlpha
-    return math.abs(current - opacityInfo.ToAlpha) <= 10e-4
+    return math.abs(current - opacityInfo.ToAlpha) <= 10e-3
 end
 
 -- 获取不透明度变化增量
@@ -297,6 +298,7 @@ function SetOpacity(opacityInfo, lastFrameTime)
         if increment == 0 then
             alpha = opacityInfo.ToAlpha
         else
+            increment = floor(10^4 * increment + 0.5) / 10^4
             alpha = opacityInfo.CurrentAlpha + increment
             if alpha > 1 then
                 alpha = 1

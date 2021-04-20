@@ -4,8 +4,8 @@ UNITFRAMES_MIN_OPACITY = 0
 UNITFRAMES_MAX_OPACITY = 100
 UNITFRAMES_OPACITY_STEP = 1
 UNITFRAMES_FADE_DURATION_MIN = 0.5
-UNITFRAMES_FADE_DURATION_MAX = 2
-UNITFRAMES_FADE_DURATION_STEP = 0.01
+UNITFRAMES_FADE_DURATION_MAX = 5
+UNITFRAMES_FADE_DURATION_STEP = 0.1
 SelectedUnitFrame = UNITFRAME_PLAYER
 
 DefaultConfig                   = {
@@ -20,7 +20,9 @@ DefaultConfig                   = {
 
         Condition               = {
             InCombat            = true,
-            InInstance          = true
+            InInstance          = true,
+            HasTarget           = true,
+            TargetCanAttack     = true,
         }
     },
 
@@ -33,7 +35,9 @@ DefaultConfig                   = {
 
         Condition               = {
             InCombat            = true,
-            InInstance          = true
+            InInstance          = true,
+            HasTarget           = true,
+            TargetCanAttack     = true,
         }
     },
 
@@ -46,7 +50,9 @@ DefaultConfig                   = {
 
         Condition               = {
             InCombat            = true,
-            InInstance          = true
+            InInstance          = true,
+            HasTarget           = false,
+            TargetCanAttack     = true,
         }
     }
 }
@@ -137,7 +143,25 @@ ConfigBehaviors = {
                 OnValueChange   = function(self, value)
                     DB.PlayerFrame.Condition.InInstance = value
                 end
-            }
+            },
+            
+            HasTarget           = {
+                GetValue        = function(self)
+                    return DB.PlayerFrame.Condition.HasTarget
+                end,
+                OnValueChange   = function(self, value)
+                    DB.PlayerFrame.Condition.HasTarget = value
+                end
+            },
+
+            TargetCanAttack     = {
+                GetValue        = function(self)
+                    return DB.PlayerFrame.Condition.TargetCanAttack
+                end,
+                OnValueChange   = function(self, value)
+                    DB.PlayerFrame.Condition.TargetCanAttack = value
+                end
+            },
         },
     },
 
@@ -197,7 +221,25 @@ ConfigBehaviors = {
                 OnValueChange   = function(self, value)
                     DB.TargetFrame.Condition.InInstance = value
                 end
-            }
+            },
+ 
+            HasTarget           = {
+                GetValue        = function(self)
+                    return DB.TargetFrame.Condition.HasTarget
+                end,
+                OnValueChange   = function(self, value)
+                    DB.TargetFrame.Condition.HasTarget = value
+                end
+            },
+
+            TargetCanAttack     = {
+                GetValue        = function(self)
+                    return DB.TargetFrame.Condition.TargetCanAttack
+                end,
+                OnValueChange   = function(self, value)
+                    DB.TargetFrame.Condition.TargetCanAttack = value
+                end
+            },
         },
     },
 
@@ -257,7 +299,25 @@ ConfigBehaviors = {
                 OnValueChange   = function(self, value)
                     DB.FocusFrame.Condition.InInstance = value
                 end
-            }
+            },
+
+            HasTarget           = {
+                GetValue        = function(self)
+                    return DB.FocusFrame.Condition.HasTarget
+                end,
+                OnValueChange   = function(self, value)
+                    DB.FocusFrame.Condition.HasTarget = value
+                end
+            },
+
+            TargetCanAttack     = {
+                GetValue        = function(self)
+                    return DB.FocusFrame.Condition.TargetCanAttack
+                end,
+                OnValueChange   = function(self, value)
+                    DB.FocusFrame.Condition.TargetCanAttack = value
+                end
+            },
         },
     }
 }
@@ -295,6 +355,8 @@ function OnEnable(self)
     FontString("UnitFramesVisibilityConditionalTitle", UnitFramesVisibilityContainer)
     ConditionInCombatButton = OptionsCheckButton("ConditionInCombatButton", UnitFramesVisibilityEnableButton)
     ConditionInInstanceButton = OptionsCheckButton("ConditionInInstanceButton", UnitFramesVisibilityEnableButton)
+    ConditionHasTargetButton = OptionsCheckButton("ConditionHasTargetButton", UnitFramesVisibilityEnableButton)
+    ConditionTargetCanAttackButton = OptionsCheckButton("ConditionTargetCanAttackButton", ConditionHasTargetButton)
     
     OnUnitFrameSelectedChanged()
 
@@ -486,6 +548,25 @@ function OnEnable(self)
                 Label                                                       = {
                     text                                                    = L["config_unitframes_visibility_condiation_ininstance"]
                 }
+            },
+
+            ConditionHasTargetButton                                        = {
+                location                                                    = {
+                    Anchor("TOPLEFT", 0, -10, "ConditionInInstanceButton", "BOTTOMLEFT"),
+                },
+
+                Label                                                       = {
+                    text                                                    = L["config_unitframes_visibility_condiation_hastarget"]
+                },
+
+                ConditionTargetCanAttackButton                              = {
+                    location                                                = {
+                        Anchor("TOPLEFT", 15, -3, nil, "BOTTOMLEFT"),
+                    },
+                    Label                                                   = {
+                        text                                                = L["config_unitframes_visibility_condiation_target_canattack"]
+                    }
+                }
             }
         }
     }
@@ -509,4 +590,6 @@ function OnUnitFrameSelectedChanged()
     UnitFramesNormalOpacitySlider:SetConfigBehavior(behavior.OpacityNormal)
     ConditionInCombatButton:SetConfigBehavior(behavior.Condition.InCombat)
     ConditionInInstanceButton:SetConfigBehavior(behavior.Condition.InInstance)
+    ConditionHasTargetButton:SetConfigBehavior(behavior.Condition.HasTarget)
+    ConditionTargetCanAttackButton:SetConfigBehavior(behavior.Condition.TargetCanAttack)
 end

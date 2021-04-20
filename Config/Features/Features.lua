@@ -10,9 +10,6 @@ DefaultConfig = {
 
 ConfigBehaviors = {
     EasyDelete                              = {
-        Default                             = {
-            Enable                          = true
-        },
         NeedReload                          = function(self)
             return self.TempValue ~= nil and self.TempValue ~= DB.EasyDelete.Enable
         end,
@@ -29,7 +26,7 @@ ConfigBehaviors = {
         end,
         Restore                             = function(self)
             self.TempValue = nil
-        end,
+        end
     }
 }
 
@@ -63,8 +60,9 @@ function Hide(childModule)
     if childModule then
         _Modules[childModule].Hide()
     else
-        if not FeaturesContainer then return end
-        FeaturesContainer:Hide()
+        if FeaturesContainer then
+            FeaturesContainer:Hide()
+        end
     end
 end
 
@@ -83,18 +81,18 @@ function OnEnable(self)
             location                    = {
                 Anchor("TOPLEFT")
             },
-            text                        = L["config_category_features_title"],
+            text                        = L["config_features_title"],
             fontObject                  = GameFontNormalLarge
         },
 
         EasyDeleteEnableButton          = {
             configBehavior              = ConfigBehaviors.EasyDelete,
-            tooltipText                 = L["config_category_features_easy_delete_tooltip"],
+            tooltipText                 = L["config_features_easy_delete_tooltip"],
             location                    = {
                 Anchor("TOPLEFT", -3, -5, "FeaturesTitle", "BOTTOMLEFT")
             },
             Label                       = {
-                text                    = L["config_category_features_esay_delete"]
+                text                    = L["config_features_easy_delete"]
             }
         }
     }

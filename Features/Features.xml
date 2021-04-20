@@ -10,11 +10,12 @@
     <Script file="Align.lua"/>
     <Script file="Movable.lua"/>
     <Script file="Tooltips.lua"/>
-    <Script file="TradeTabs.lua"/>
     <Script file="CooldownAnnouncer.lua"/>
     <Script file="RaidFrameMarker.lua"/>
     <Script file="ReputationParagonBar.lua"/>
 
     <Include file="GuildBankSort\GuildBankSort.xml"/>
     <Include file="Calendar\Calendar.xml"/>
+    <Include file="TradeSkill\TradeSkill.xml"/>
+    <Include file="Inspect\Inspect.xml"/>
 </Ui>

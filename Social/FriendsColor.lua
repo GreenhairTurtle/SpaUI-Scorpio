@@ -70,7 +70,6 @@ function FriendsFrame_UpdateFriendButton(button)
 end
 
 -- 查询列表染色，虽然没有啥意义
--- todo bug
 __SecureHook__()
 __SecureHook__(WhoListScrollFrame, "update")
 function WhoList_Update()

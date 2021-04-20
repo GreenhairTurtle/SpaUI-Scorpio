@@ -113,8 +113,9 @@ function Hide(childModule)
     if childModule then
         _Modules[childModule].Hide()
     else
-        if not SocialContainer then return end
-        SocialContainer:Hide()
+        if SocialContainer then
+            SocialContainer:Hide()
+        end
     end
 end
 

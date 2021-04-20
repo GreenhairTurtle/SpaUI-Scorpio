@@ -15,4 +15,6 @@
     <Include file="ActionBar\ActionBar.xml"/>
     <!-- UnitFrames -->
     <Include file="UnitFrames\UnitFrames.xml"/>
+    <!-- Database -->
+    <Include file="Database\Database.xml"/>
 </Ui>

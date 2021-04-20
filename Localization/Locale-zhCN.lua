@@ -64,9 +64,9 @@ L["config_category_changelog"] = "更新日志"
 
 -- Config Features
 L["config_category_features"] = "综合"
-L["config_category_features_title"] = "杂项"
-L["config_category_features_esay_delete"] = "快速删除"
-L["config_category_features_easy_delete_tooltip"] = "删除物品时自动填写DELETE"
+L["config_features_title"] = "杂项"
+L["config_features_easy_delete"] = "快速删除"
+L["config_features_easy_delete_tooltip"] = "删除物品时自动填写DELETE"
 
 
 -- Config AutoSell&Repair
@@ -98,6 +98,8 @@ L["config_chat_tab_tooltip"] = "启用/禁用Tab快速切换频道"
 
 -- Config Quest
 L["config_category_quest"] = "任务"
+L["config_quest_title"] = "任务增强"
+L["config_quest_objective_enhanced"] = "任务追踪增强"
 
 
 -- Config AutoTurnIn
@@ -168,6 +170,8 @@ L["config_unitframes_visibility_normal_opacity"] = "一般情况不透明度"
 L["config_unitframes_visibility_condiation_incombat"] = "在战斗中"
 L["config_unitframes_visibility_condiation_ininstance"] = "在副本中"
 -- L["config_unitframes_visibility_condiation_ismouseover"] = "鼠标划入"
+L["config_unitframes_visibility_condiation_hastarget"] = "拥有目标"
+L["config_unitframes_visibility_condiation_target_canattack"] = "目标可攻击"
 
 
 -- AutoRepair
@@ -178,7 +182,6 @@ L["auto_repair_no_money"] = "你没钱，穷逼！"
 
 -- AutoSell
 L["auto_sell_detail"] = "%s卖出了%s"
-L["auto_sell_total"] = "共获得收入%s"
 
 
 -- Tooltip

@@ -50,7 +50,7 @@ end
 function OnEnable(self)
     AutoTurnInButton = OptionsCheckButton("SpaUIAutoTurnInButton", ObjectiveTrackerFrame)
     AutoTurnInButton.OnClick = function(self)
-        Config.Auto = self:GetChecked()     
+        Config.Auto = self:GetChecked()
         FireSystemEvent("SPAUI_TOGGLE_AUTO_TURN_IN")
     end
     AutoTurnInButton.OnEnter = function(self)
@@ -61,7 +61,7 @@ function OnEnable(self)
 
     Style[AutoTurnInButton] = {
         frameLevel          = ObjectiveTrackerFrame.HeaderMenu:GetFrameLevel(),
-        size                = Size(17, 17),
+        size                = Size(18, 18),
         checked             = Config.Auto
     }
 end

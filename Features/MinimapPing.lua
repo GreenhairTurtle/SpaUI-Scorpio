@@ -13,7 +13,7 @@ function CreateMinimapFrame()
         MinimapPingFrame:Hide()
     end
 
-    Style[MinimapPingFrame] = {
+    Style[MinimapPingFrame]     = {
         size                    = Size(100,20),
         backdrop                = {
             bgFile              = [[Interface\Tooltips\UI-Tooltip-Background]],

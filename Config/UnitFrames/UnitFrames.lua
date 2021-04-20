@@ -43,8 +43,9 @@ function Hide(childModule)
     if childModule then
         _Modules[childModule].Hide()
     else
-        if not UnitFramesContainer then return end
-        UnitFramesContainer:Hide()
+        if UnitFramesContainer then
+            UnitFramesContainer:Hide()
+        end
     end
 end
 

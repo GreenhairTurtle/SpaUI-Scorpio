@@ -92,7 +92,7 @@ MovableFramesNeedWait = {
         }
     },
     -- 指挥台等
-    ['Blizzard_AdventureMap']   = {
+    ['Blizzard_GarrisonTemplates']   = {
         -- 小地图按钮面板
         ["GarrisonLandingPage"] = {
             movable             = true,
